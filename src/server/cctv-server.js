@@ -3,6 +3,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { timingSafeEqual } from 'node:crypto';
+import { execSync } from 'node:child_process';
 import { EventBroadcaster } from './event-broadcaster.js';
 import { StudioDatabase, getStudioDb } from '../storage/db.js';
 import { WorktreeManager } from '../git/worktree-manager.js';
@@ -531,6 +532,60 @@ export class CctvServer {
       }
     }
 
+    // POST /api/studio/task/:id/clarify - Resolve founder clarification on ambiguous task
+    if (method === 'POST' && pathname.startsWith('/api/studio/task/') && pathname.endsWith('/clarify')) {
+      const match = pathname.match(/^\/api\/studio\/task\/([^/]+)\/clarify$/);
+      if (match) {
+        const taskId = match[1];
+        try {
+          const body = await this._parseBody(req);
+          const decision = body.decision || body.clarification || body.instruction;
+          if (!decision) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: 'Clarification decision or directive is required.' }));
+          }
+
+          const resolved = this.teamLead.resolveFounderClarification({
+            taskId,
+            founderDecision: decision
+          });
+
+          const assignedEmp = resolved.assignedEmployee;
+          this.broadcaster.log('FOUNDER', `[${taskId}] Founder resolved clarification with directive: "${decision.slice(0, 60)}"`);
+          this.broadcaster.decision({
+            gate: 'Task Clarification',
+            title: `Clarification Resolved for ${taskId}`,
+            explanation: `Founder directed: "${decision}". Task assigned to ${assignedEmp ? assignedEmp.name : 'Specialist'}.`
+          });
+
+          if (this.studioDb) {
+            try {
+              this.studioDb.prepare(`
+                UPDATE tasks SET status = 'ASSIGNED', active_agent = ?, updated_at = CURRENT_TIMESTAMP WHERE task_id = ?
+              `).run(assignedEmp ? assignedEmp.name : 'Specialist Agent', taskId);
+            } catch {}
+          }
+
+          const queueItem = resolved.queueItem || this.teamLead.getQueue().find(q => q.taskId === taskId);
+          if (queueItem && this.autoExecute) {
+            this.dispatchAutonomousExecution(queueItem);
+          }
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({
+            success: true,
+            taskId,
+            message: `Clarification applied and task ${taskId} assigned to specialist.`,
+            task: queueItem || resolved.taskSpec,
+            assignedEmployee: assignedEmp
+          }));
+        } catch (err) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: err.message }));
+        }
+      }
+    }
+
     // 404 Fallback
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Route not found' }));
@@ -683,11 +738,22 @@ export class CctvServer {
     }
 
     if (emp) {
+      let realCommitSha = null;
+      try {
+        realCommitSha = execSync('git rev-parse --short HEAD', {
+          cwd: PROJECT_ROOT,
+          encoding: 'utf-8',
+          stdio: ['ignore', 'pipe', 'ignore']
+        }).trim();
+      } catch {
+        realCommitSha = 'c0' + taskId.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 6);
+      }
+
       this.employeePool.recordCompletedTask(emp.id, {
         taskId,
         goal: prompt,
         prTitle: `feat(${taskId.toLowerCase()}): ${deliverable.title}`,
-        commitSha: 'sha-' + Math.random().toString(16).slice(2, 10)
+        commitSha: realCommitSha
       });
       // Worker transitions to DONE with completed task reference (stays DONE until next assignment)
       this.employeePool.setEmployeeState(emp.id, 'DONE', { taskId });

@@ -51,6 +51,95 @@
       --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.03);
     }
 
+    body.dark-theme {
+      --bg-page: #0b0f19;
+      --bg-surface: #111827;
+      --bg-card: #111827;
+      --bg-subtle: #1f2937;
+      --bg-hover: #374151;
+      
+      --border-light: #1f2937;
+      --border-color: #374151;
+      --border-subtle: #4b5563;
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+
+      --primary-blue-light: rgba(37, 99, 235, 0.18);
+      --emerald-light: rgba(16, 185, 129, 0.18);
+      --amber-light: rgba(245, 158, 11, 0.18);
+      --rose-light: rgba(239, 68, 68, 0.18);
+      --purple-light: rgba(139, 92, 246, 0.18);
+    }
+    body.dark-theme .clean-panel,
+    body.dark-theme .summary-card,
+    body.dark-theme .sidebar,
+    body.dark-theme .top-header,
+    body.dark-theme .cabin-directive-card,
+    body.dark-theme dialog {
+      background-color: var(--bg-surface) !important;
+      color: var(--text-main);
+    }
+    body.dark-theme dialog::backdrop {
+      background: rgba(0, 0, 0, 0.75);
+    }
+    body.dark-theme .modal-input,
+    body.dark-theme .cabin-input,
+    body.dark-theme .search-input-wrap input {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+    body.dark-theme #reportModalContent {
+      background: var(--bg-subtle) !important;
+      color: var(--text-main) !important;
+    }
+    body.dark-theme .toast-card {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+
+    /* Toast Notification Container */
+    #toastContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .toast-card {
+      pointer-events: auto;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.05);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 280px;
+      max-width: 420px;
+      transform: translateX(120%);
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      opacity: 0;
+    }
+    .toast-card.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    .toast-card.toast-success { border-left: 4px solid #10b981; }
+    .toast-card.toast-error { border-left: 4px solid #ef4444; }
+    .toast-card.toast-warning { border-left: 4px solid #f59e0b; }
+    .toast-card.toast-info { border-left: 4px solid #2563eb; }
+
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 
     body {
@@ -61,6 +150,7 @@
       overflow: hidden;
       font-size: 13px;
       -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     /* Custom Modern Slim Scrollbars */
@@ -1192,6 +1282,8 @@
   </style>
 </head>
 <body>
+  <!-- Toast Notification Container -->
+  <div id="toastContainer"></div>
 
   <!-- 1. LEFT SIDEBAR -->
   <aside class="sidebar">
@@ -1257,6 +1349,10 @@
           <div class="status-dot-green"></div>
           System Online
         </div>
+
+        <button id="themeToggleBtn" class="notification-bell-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode" style="font-size: 14px;">
+          🌙
+        </button>
 
         <button class="notification-bell-btn" onclick="openNotifications()" title="Notifications">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
@@ -1356,6 +1452,27 @@
             </div>
           </div>
 
+          <!-- Task Backlog & Execution Queue Panel -->
+          <div class="clean-panel" id="taskBacklogPanel">
+            <div class="panel-top-row" style="flex-wrap: wrap; gap: 8px;">
+              <span class="panel-heading" style="display: flex; align-items: center; gap: 8px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                Task Backlog &amp; Queue
+                <span id="backlogCountBadge" class="status-badge" style="background: var(--bg-subtle); color: var(--text-muted); font-size: 11px;">0 tasks</span>
+              </span>
+              <div style="display: flex; gap: 5px;" id="backlogFilterGroup">
+                <button class="tag-chip active" id="filterAllTasksBtn" onclick="filterBacklog('ALL')" style="cursor: pointer;">All</button>
+                <button class="tag-chip" id="filterActiveTasksBtn" onclick="filterBacklog('ACTIVE')" style="cursor: pointer;">Active</button>
+                <button class="tag-chip" id="filterClarifyTasksBtn" onclick="filterBacklog('CLARIFY')" style="cursor: pointer;">Clarify</button>
+                <button class="tag-chip" id="filterDoneTasksBtn" onclick="filterBacklog('DONE')" style="cursor: pointer;">Done</button>
+              </div>
+            </div>
+
+            <div class="task-backlog-list" id="taskBacklogList" style="padding: 0 16px 14px; max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+              <!-- Dynamically rendered from real queue & active tasks -->
+            </div>
+          </div>
+
           <!-- Recent Activity Stream -->
           <div class="clean-panel">
             <div class="panel-top-row">
@@ -1452,6 +1569,44 @@
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeDirectiveModal()">Cancel</button>
       <button class="btn-create-task" onclick="submitFounderInstruction()">Send Guidance</button>
+    </div>
+  </dialog>
+
+  <!-- Clarify Task Directive Modal -->
+  <dialog id="clarificationModal" style="width: 560px; max-width: 94vw;">
+    <div class="modal-head">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 16px;">💡</span>
+        <h3 class="modal-title" id="clarifyModalTitle">Clarify Directive with Team Lead</h3>
+      </div>
+      <button onclick="closeClarificationModal()" style="background: transparent; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted);">✕</button>
+    </div>
+    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;" id="clarifyModalSubtitle">
+      Dr. Elena Rostova identified design ambiguities and requires your guidance before dispatching to a specialist.
+    </p>
+
+    <div style="background: var(--primary-blue-light); border: 1px solid #bfdbfe; border-radius: var(--radius-md); padding: 12px; margin-bottom: 14px;">
+      <div style="font-size: 10.5px; font-weight: 700; color: #1e40af; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">
+        Inquiry / Dilemma:
+      </div>
+      <div id="clarifyModalQuestion" style="font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.5;">
+        Question text
+      </div>
+    </div>
+
+    <div style="font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">Select Preferred Approach:</div>
+    <div id="clarifyModalOptions" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
+      <!-- Populated dynamically with options -->
+    </div>
+
+    <div style="font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">Or Custom Directive / Notes:</div>
+    <textarea id="clarifyCustomInput" class="modal-input" style="height: 65px; margin-top: 0;" placeholder="Add specific requirements or constraints..."></textarea>
+
+    <input type="hidden" id="clarifyActiveTaskId" value="" />
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeClarificationModal()">Cancel</button>
+      <button class="btn-create-task" onclick="submitClarification()">Resolve &amp; Assign Specialist →</button>
     </div>
   </dialog>
 
@@ -1703,6 +1858,46 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
     }
+
+    // Modern Toast Notification Utility (Replaces native alert/confirm)
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const card = document.createElement('div');
+      card.className = `toast-card toast-${type}`;
+      let icon = 'ℹ️';
+      if (type === 'success') icon = '✓';
+      else if (type === 'error') icon = '✕';
+      else if (type === 'warning') icon = '⚠️';
+      card.innerHTML = `<span style="font-size: 15px; font-weight: 700;">${icon}</span><span style="flex: 1; line-height: 1.4;">${escapeHtml(message)}</span>`;
+      container.appendChild(card);
+      setTimeout(() => card.classList.add('show'), 10);
+      setTimeout(() => {
+        card.classList.remove('show');
+        setTimeout(() => card.remove(), 300);
+      }, 4000);
+    }
+
+    // Theme Management (Light / Dark with LocalStorage persistence)
+    function initTheme() {
+      const savedTheme = localStorage.getItem('sauronix_theme');
+      const btn = document.getElementById('themeToggleBtn');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        if (btn) btn.innerText = '☀️';
+      } else {
+        document.body.classList.remove('dark-theme');
+        if (btn) btn.innerText = '🌙';
+      }
+    }
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle('dark-theme');
+      localStorage.setItem('sauronix_theme', isDark ? 'dark' : 'light');
+      const btn = document.getElementById('themeToggleBtn');
+      if (btn) btn.innerText = isDark ? '☀️' : '🌙';
+      showToast(`Switched to ${isDark ? 'Dark' : 'Light'} theme`, 'info');
+    }
+    initTheme();
 
     // State
     let currentInterveneEmpId = null;
@@ -2020,7 +2215,10 @@
       // D. Render Needs Your Attention Panel
       renderAttentionPanel(blockedAgents, queue);
 
-      // E. Update System Diagnostics Dialog
+      // E. Render Multi-Task Backlog & Queue
+      renderBacklogList();
+
+      // F. Update System Diagnostics Dialog
       document.getElementById('diagTasksCount').innerText = `${tasks.length} total (${activeTasksCount} active)`;
     }
 
@@ -2328,11 +2526,260 @@
       }
     }
 
-    // Task Cooldown Management (1-Minute Deliberate Pacing)
+    // Backlog Filtering & Real Data Rendering
+    let currentBacklogFilter = 'ALL';
+
+    function filterBacklog(filter) {
+      currentBacklogFilter = filter;
+      document.querySelectorAll('#backlogFilterGroup .tag-chip').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'var(--bg-subtle)';
+        btn.style.color = 'var(--text-muted)';
+      });
+      const filterIdMap = {
+        'ALL': 'filterAllTasksBtn',
+        'ACTIVE': 'filterActiveTasksBtn',
+        'CLARIFY': 'filterClarifyTasksBtn',
+        'DONE': 'filterDoneTasksBtn'
+      };
+      const activeBtn = document.getElementById(filterIdMap[filter]);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.background = '#eff6ff';
+        activeBtn.style.color = 'var(--primary-blue)';
+      }
+      renderBacklogList();
+    }
+
+    function renderBacklogList() {
+      const container = document.getElementById('taskBacklogList');
+      const countBadge = document.getElementById('backlogCountBadge');
+      if (!container) return;
+
+      const queue = queueDataState || [];
+      const tasks = tasksDataState || [];
+
+      // Merge tasks and queue uniquely by taskId/task_id
+      const taskMap = new Map();
+      tasks.forEach(t => {
+        const id = t.task_id || t.taskId;
+        if (id) taskMap.set(id, {
+          taskId: id,
+          goal: t.goal || t.rawPrompt || 'Autonomous directive',
+          status: t.status || 'PENDING',
+          activeAgent: t.active_agent || 'Unassigned',
+          riskLevel: (t.risk_level || 'MEDIUM').toUpperCase(),
+          deliverable: t.deliverable,
+          rawPrompt: t.rawPrompt || t.goal
+        });
+      });
+
+      queue.forEach(q => {
+        const id = q.taskId;
+        if (!id) return;
+        const existing = taskMap.get(id) || {};
+        taskMap.set(id, {
+          ...existing,
+          taskId: id,
+          goal: q.goal || q.rawPrompt || existing.goal || 'Autonomous directive',
+          status: q.status || existing.status || 'QUEUED',
+          activeAgent: q.assignedEmployee?.name || existing.activeAgent || 'Team Lead',
+          riskLevel: (q.taskSpec?.riskLevel || existing.riskLevel || 'MEDIUM').toUpperCase(),
+          clarification: q.clarification,
+          rawPrompt: q.rawPrompt || existing.rawPrompt
+        });
+      });
+
+      let taskList = Array.from(taskMap.values());
+      if (countBadge) countBadge.innerText = `${taskList.length} task${taskList.length === 1 ? '' : 's'}`;
+
+      if (currentBacklogFilter === 'ACTIVE') {
+        taskList = taskList.filter(t => t.status === 'RUNNING' || t.status === 'WORKING' || t.status === 'ASSIGNED' || t.status === 'QUEUED' || t.status === 'READY_FOR_PR' || t.status === 'PENDING');
+      } else if (currentBacklogFilter === 'CLARIFY') {
+        taskList = taskList.filter(t => t.status === 'AWAITING_CLARIFICATION' || t.status === 'BLOCKED');
+      } else if (currentBacklogFilter === 'DONE') {
+        taskList = taskList.filter(t => t.status === 'DONE' || t.status === 'COMPLETED');
+      }
+
+      if (taskList.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px;">
+            No tasks matching "${currentBacklogFilter}" filter.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = taskList.map(task => {
+        const isClarify = task.status === 'AWAITING_CLARIFICATION';
+        const isDone = task.status === 'DONE' || task.status === 'COMPLETED';
+        const badgeClass = getStatusBadgeClass(task.status);
+        const badgeText = formatStatusLabel(task.status);
+
+        return `
+          <div class="backlog-task-row" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px solid var(--border-light); gap: 12px; transition: all 0.15s ease; cursor: pointer;" onclick="selectAndInspectTask('${escapeHtml(task.taskId)}')">
+            <div style="display: flex; flex-direction: column; min-width: 0; flex: 1;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 700; color: var(--primary-blue);">${escapeHtml(task.taskId)}</span>
+                <span class="status-badge ${badgeClass}" style="font-size: 10px; padding: 1px 6px;">${escapeHtml(badgeText)}</span>
+                <span class="tag-chip" style="font-size: 9.5px; padding: 1px 5px;">${escapeHtml(task.riskLevel)}</span>
+              </div>
+              <div style="font-size: 12px; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${escapeHtml(task.goal || task.rawPrompt)}
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+                Specialist: <span style="font-weight: 500; color: var(--text-main);">${escapeHtml(task.activeAgent)}</span>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;" onclick="event.stopPropagation()">
+              ${isClarify ? `
+                <button class="btn-create-task" style="font-size: 11px; padding: 4px 10px; background: #f59e0b; border-color: #f59e0b;" onclick="openClarificationModal('${escapeHtml(task.taskId)}')">
+                  Clarify →
+                </button>
+              ` : (isDone ? `
+                <button class="btn-secondary" style="font-size: 11px; padding: 4px 10px;" onclick="openTaskReportModalById('${escapeHtml(task.taskId)}')">
+                  Report ↗
+                </button>
+              ` : `
+                <button class="btn-secondary" style="font-size: 11px; padding: 4px 10px;" onclick="selectAndInspectTask('${escapeHtml(task.taskId)}')">
+                  Inspect
+                </button>
+              `)}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectAndInspectTask(taskId) {
+      const queue = queueDataState || [];
+      const tasks = tasksDataState || [];
+      const found = queue.find(q => q.taskId === taskId) || tasks.find(t => (t.task_id || t.taskId) === taskId);
+      if (found) {
+        selectedTaskForModal = found;
+        openDetailsModal();
+      }
+    }
+
+    function openTaskReportModalById(taskId) {
+      const queue = queueDataState || [];
+      const tasks = tasksDataState || [];
+      const found = queue.find(q => q.taskId === taskId) || tasks.find(t => (t.task_id || t.taskId) === taskId);
+      if (found) {
+        openTaskReportModal(found);
+      } else {
+        openTaskReportModal({ taskId, status: 'COMPLETED' });
+      }
+    }
+
+    // Clarification Directive Handlers
+    function openClarificationModal(taskId) {
+      const queue = queueDataState || [];
+      const tasks = tasksDataState || [];
+      const task = queue.find(q => q.taskId === taskId) || tasks.find(t => (t.task_id || t.taskId) === taskId);
+
+      const questionEl = document.getElementById('clarifyModalQuestion');
+      const optionsEl = document.getElementById('clarifyModalOptions');
+      const activeTaskIdEl = document.getElementById('clarifyActiveTaskId');
+      const customInput = document.getElementById('clarifyCustomInput');
+
+      activeTaskIdEl.value = taskId;
+      customInput.value = '';
+
+      let questionText = 'Team Lead detected design ambiguity and requires founder directive:';
+      let options = [];
+
+      if (task && task.clarification) {
+        questionText = task.clarification.question || task.clarification.inquiry || questionText;
+        options = task.clarification.options || [];
+      } else if (task) {
+        questionText = `For task "${task.goal || task.rawPrompt}": How should the specialist implement this requirement?`;
+        options = [
+          'Standard implementation adhering to project coding standards',
+          'Minimal non-breaking patch with backward compatibility',
+          'Comprehensive implementation with full test coverage'
+        ];
+      }
+
+      questionEl.innerText = questionText;
+      optionsEl.innerHTML = '';
+
+      if (options.length === 0) {
+        options = [
+          'Approve recommended architecture and dispatch to specialist',
+          'Require strict adherence to zero-breaking-change policy'
+        ];
+      }
+
+      options.forEach((opt, idx) => {
+        const optLabel = typeof opt === 'string' ? opt : (opt.text || opt.label || JSON.stringify(opt));
+        const optVal = typeof opt === 'string' ? opt : (opt.value || optLabel);
+        const row = document.createElement('label');
+        row.style.display = 'flex';
+        row.style.alignItems = 'flex-start';
+        row.style.gap = '8px';
+        row.style.padding = '8px 10px';
+        row.style.borderRadius = 'var(--radius-sm)';
+        row.style.background = 'var(--bg-subtle)';
+        row.style.cursor = 'pointer';
+        row.style.fontSize = '12px';
+        row.innerHTML = `
+          <input type="radio" name="clarifyOption" value="${escapeHtml(optVal)}" ${idx === 0 ? 'checked' : ''} style="margin-top: 2px;" />
+          <span style="color: var(--text-main); line-height: 1.4;">${escapeHtml(optLabel)}</span>
+        `;
+        optionsEl.appendChild(row);
+      });
+
+      document.getElementById('clarificationModal').showModal();
+    }
+
+    function closeClarificationModal() {
+      const modal = document.getElementById('clarificationModal');
+      if (modal) modal.close();
+    }
+
+    async function submitClarification() {
+      const taskId = document.getElementById('clarifyActiveTaskId').value;
+      const customInput = document.getElementById('clarifyCustomInput').value.trim();
+      const selectedRadio = document.querySelector('input[name="clarifyOption"]:checked');
+      const selectedOption = selectedRadio ? selectedRadio.value : '';
+
+      const decision = customInput || selectedOption;
+      if (!decision) {
+        showToast('Please select an option or enter a custom directive.', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/studio/task/${encodeURIComponent(taskId)}/clarify`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`,
+            'X-Studio-CSRF': CSRF_TOKEN,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ decision })
+        });
+        const data = await res.json();
+        if (data.success) {
+          closeClarificationModal();
+          showToast('Clarification resolved! Specialist agent assigned.', 'success');
+          appendActivityLog('now', `Clarification submitted for ${taskId}: "${decision.slice(0, 45)}..."`);
+          await refreshAllRealData();
+        } else {
+          showToast('Clarification failed: ' + (data.error || 'Unknown error'), 'error');
+        }
+      } catch (err) {
+        showToast('Connection error: ' + err.message, 'error');
+      }
+    }
+
+    // Capacity & Cooldown Management
     let taskCooldownSeconds = 0;
     let taskCooldownTimer = null;
 
-    function startTaskCooldown(seconds = 60) {
+    function startTaskCooldown(seconds = 5) {
       taskCooldownSeconds = seconds;
       if (taskCooldownTimer) clearInterval(taskCooldownTimer);
       updateCooldownUI();
@@ -2354,7 +2801,7 @@
         btn.disabled = true;
         btn.style.opacity = '0.75';
         btn.style.cursor = 'not-allowed';
-        btn.innerHTML = `<span>⏳ In Progress (${taskCooldownSeconds}s)</span>`;
+        btn.innerHTML = `<span>⏳ Dispatched (${taskCooldownSeconds}s)</span>`;
       } else {
         btn.disabled = false;
         btn.style.opacity = '1';
@@ -2365,9 +2812,10 @@
 
     // Modal Triggers
     function openTaskModal() {
-      if (taskCooldownSeconds > 0) {
-        alert(`Team Lead Dr. Elena Rostova is actively managing an in-flight directive. Please allow up to 1 minute for accurate synthesis and QA validation.\n\nCooldown: ${taskCooldownSeconds}s remaining.`);
-        return;
+      const employees = teamDataState.employees || [];
+      const workingCount = employees.filter(e => e.status === 'WORKING').length;
+      if (employees.length > 0 && workingCount >= employees.length) {
+        showToast(`All ${employees.length} specialist agents are currently active. New tasks will queue automatically.`, 'info');
       }
       document.getElementById('taskPromptInput').value = '';
       document.getElementById('newTaskModal').showModal();
@@ -2378,13 +2826,9 @@
 
     // Task Dispatch
     async function dispatchTaskToLead() {
-      if (taskCooldownSeconds > 0) {
-        alert(`Team Lead is executing directive. Cooldown: ${taskCooldownSeconds}s remaining.`);
-        return;
-      }
       const prompt = document.getElementById('taskPromptInput').value.trim();
       if (!prompt) {
-        alert('Please enter a task description.');
+        showToast('Please enter a task description.', 'warning');
         return;
       }
 
@@ -2401,14 +2845,15 @@
         const data = await res.json();
         if (data.success) {
           closeTaskModal();
-          startTaskCooldown(60);
+          startTaskCooldown(3);
+          showToast('Directive dispatched to Team Lead Dr. Elena Rostova!', 'success');
           appendActivityLog('now', `Founder submitted new task directive: "${prompt.slice(0, 45)}..."`);
           await refreshAllRealData();
         } else {
-          alert('Submission failed: ' + (data.error || 'Unknown error'));
+          showToast('Submission failed: ' + (data.error || 'Unknown error'), 'error');
         }
       } catch (err) {
-        alert('Failed to submit task: ' + err.message);
+        showToast('Failed to submit task: ' + err.message, 'error');
       }
     }
 
@@ -2418,7 +2863,7 @@
       if (!input) return;
       const prompt = input.value.trim();
       if (!prompt) {
-        alert('Please enter a follow-up directive.');
+        showToast('Please enter a follow-up directive.', 'warning');
         return;
       }
       input.disabled = true;
@@ -2434,15 +2879,15 @@
         });
         if (res.ok) {
           input.value = '';
-          startTaskCooldown(60);
+          showToast('Follow-up directive dispatched to specialist!', 'success');
           appendActivityLog('now', `Founder assigned follow-up directive: "${prompt.slice(0, 45)}..."`);
           await refreshAllRealData();
         } else {
           const data = await res.json();
-          alert('Error: ' + (data.error || 'Failed to dispatch follow-up directive'));
+          showToast('Error: ' + (data.error || 'Failed to dispatch follow-up directive'), 'error');
         }
       } catch (err) {
-        alert('Connection error: ' + err.message);
+        showToast('Connection error: ' + err.message, 'error');
       } finally {
         if (input) input.disabled = false;
       }
@@ -2460,6 +2905,7 @@
           }
         });
         if (res.ok) {
+          showToast('Specialist released to standby pool.', 'info');
           appendActivityLog('now', `Specialist released to standby pool.`);
           await refreshAllRealData();
         }
@@ -2481,7 +2927,7 @@
     async function submitFounderInstruction() {
       const instruction = document.getElementById('founderInstructionInput').value.trim();
       if (!instruction) {
-        alert('Please enter instructions.');
+        showToast('Please enter instructions.', 'warning');
         return;
       }
 
@@ -2497,14 +2943,15 @@
         });
         if (res.ok) {
           closeDirectiveModal();
+          showToast('Directive transmitted to specialist.', 'success');
           appendActivityLog('now', `Founder transmitted directive to ${currentInterveneEmpId}`);
           await refreshAllRealData();
         } else {
           const data = await res.json();
-          alert('Error: ' + (data.error || 'Failed to send instruction'));
+          showToast('Error: ' + (data.error || 'Failed to send instruction'), 'error');
         }
       } catch (err) {
-        alert('Failed to send guidance: ' + err.message);
+        showToast('Failed to send guidance: ' + err.message, 'error');
       }
     }
 
@@ -2853,12 +3300,12 @@
           body: JSON.stringify({ reason: 'Emergency Stop invoked from Founder Console' })
         });
         const data = await res.json();
-        alert('EMERGENCY STOP ENGAGED: ' + (data.result?.action || data.message || 'Worktrees preserved.'));
+        showToast('EMERGENCY STOP ENGAGED: ' + (data.result?.action || data.message || 'Worktrees preserved.'), 'error');
         closeSystemHealthModal();
         appendActivityLog('now', 'EMERGENCY STOP executed by Founder');
         await refreshAllRealData();
       } catch (err) {
-        alert('Emergency stop request error: ' + err.message);
+        showToast('Emergency stop request error: ' + err.message, 'error');
       }
     }
 
@@ -2867,7 +3314,7 @@
       if (blockedAgents.length > 0) {
         openEmployeeModal(blockedAgents[0]);
       } else {
-        alert('No pending notifications. All agents and pipelines operational.');
+        showToast('All systems nominal. No pending alerts.', 'info');
       }
     }
 
@@ -2883,13 +3330,29 @@
     }
 
     function handleSearch(query) {
-      if (!query) return;
-      query = query.toLowerCase();
-      // Highlight matching employee or task
-      const rows = document.querySelectorAll('.team-member-row');
-      rows.forEach(r => {
+      const q = (query || '').trim().toLowerCase();
+      const memberRows = document.querySelectorAll('.team-member-row');
+      const backlogRows = document.querySelectorAll('.backlog-task-row');
+
+      if (!q) {
+        memberRows.forEach(r => { r.style.opacity = '1'; });
+        backlogRows.forEach(r => { r.style.display = 'flex'; r.style.opacity = '1'; });
+        return;
+      }
+
+      memberRows.forEach(r => {
         const text = r.textContent.toLowerCase();
-        r.style.opacity = text.includes(query) ? '1' : '0.4';
+        r.style.opacity = text.includes(q) ? '1' : '0.25';
+      });
+
+      backlogRows.forEach(r => {
+        const text = r.textContent.toLowerCase();
+        if (text.includes(q)) {
+          r.style.display = 'flex';
+          r.style.opacity = '1';
+        } else {
+          r.style.opacity = '0.25';
+        }
       });
     }
 

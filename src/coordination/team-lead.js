@@ -126,7 +126,23 @@ export class TeamLead {
 
     const refinedPrompt = `${taskRecord.rawPrompt} [Founder Decision: ${founderDecision}]`;
     const res = this.analyzeAndRefineTask({ taskId, rawPrompt: refinedPrompt, forceRefine: true });
-    return { taskSpec: res.taskSpec };
+
+    // Update queue item if present in queue
+    const queueItem = this.taskQueue.find(q => q.taskId === taskId);
+    if (queueItem) {
+      queueItem.status = 'QUEUED';
+      queueItem.rawPrompt = refinedPrompt;
+      queueItem.clarification = null;
+      queueItem.taskSpec = res.taskSpec;
+      // Immediately dispatch through employee assignment pipeline
+      this.processQueue();
+    }
+
+    return {
+      taskSpec: res.taskSpec,
+      assignedEmployee: queueItem?.assignedEmployee || null,
+      queueItem: queueItem || null
+    };
   }
 
   /**
@@ -343,12 +359,19 @@ export class TeamLead {
    * @param {any[]} [options.attachments]
    * @returns {object} The enqueued task object
    */
-  enqueueTask(rawPrompt, { taskId = null, suggestedFiles = null, attachments = [] } = {}) {
+  enqueueTask(rawPrompt, options = {}) {
+    let prompt = rawPrompt;
+    let opts = options;
+    if (typeof rawPrompt === 'object' && rawPrompt !== null && rawPrompt.rawPrompt) {
+      prompt = rawPrompt.rawPrompt;
+      opts = { ...rawPrompt, ...options };
+    }
+    const { taskId = null, suggestedFiles = null, attachments = [] } = opts;
     const id = taskId || `TASK-${this.nextQueueSeq++}`;
     const queueItem = {
       id,
       taskId: id,
-      rawPrompt,
+      rawPrompt: prompt,
       suggestedFiles,
       attachments,
       status: 'QUEUED', // QUEUED, AWAITING_CLARIFICATION, ASSIGNED, COMPLETED, ERROR
@@ -371,10 +394,12 @@ export class TeamLead {
       if (item.status !== 'QUEUED') continue;
 
       try {
-        const refinement = this.analyzeAndRefineTask({
+        const isFounderResolved = (item.rawPrompt || '').includes('[Founder Decision:');
+        const refinement = item.taskSpec ? { needsClarification: false, taskSpec: item.taskSpec } : this.analyzeAndRefineTask({
           taskId: item.taskId,
           rawPrompt: item.rawPrompt,
-          suggestedFiles: item.suggestedFiles
+          suggestedFiles: item.suggestedFiles,
+          forceRefine: isFounderResolved
         });
 
         if (refinement.needsClarification) {
