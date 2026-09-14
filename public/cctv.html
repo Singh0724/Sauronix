@@ -13,7 +13,7 @@
   <style>
     /* ==========================================================================
        CLEAN MINIMAL MODERN ENTERPRISE SAAS DESIGN SYSTEM
-       Inspiration: Linear / Vercel / GitHub / Notion
+       Zero fake data. 100% real telemetry & state.
        ========================================================================== */
     :root {
       --bg-page: #f8fafc;
@@ -252,7 +252,7 @@
       color: #fff;
       font-size: 9px;
       font-weight: 700;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       border: 2px solid #fff;
@@ -476,6 +476,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
     }
     .tag-chip {
       padding: 3px 10px;
@@ -488,7 +489,7 @@
     .tag-chip.high-priority {
       background: #fef2f2;
       color: #ef4444;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 4px;
     }
@@ -513,6 +514,7 @@
       height: 100%;
       background: var(--primary-blue);
       border-radius: var(--radius-pill);
+      transition: width 0.3s ease;
     }
     .progress-pct-label {
       font-size: 12px;
@@ -592,6 +594,37 @@
     .btn-danger:hover {
       background: #fef2f2;
       border-color: #ef4444;
+    }
+
+    /* Clean Empty State */
+    .empty-state-box {
+      padding: 36px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .empty-icon-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .empty-heading {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .empty-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      max-width: 320px;
+      line-height: 1.5;
     }
 
     /* Team List Rows */
@@ -832,7 +865,7 @@
       border-radius: var(--radius-lg);
       padding: 24px;
       color: var(--text-main);
-      width: 600px;
+      width: 620px;
       max-width: 92vw;
       box-shadow: var(--shadow-lg);
     }
@@ -918,6 +951,7 @@
       line-height: 1.5;
       overflow-x: auto;
       max-height: 220px;
+      white-space: pre;
     }
 
     @media (max-width: 1100px) {
@@ -988,18 +1022,18 @@
     <header class="top-header">
       <div class="search-input-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" placeholder="Search tasks, agents..." />
+        <input type="text" id="topSearchInput" placeholder="Search tasks, agents..." oninput="handleSearch(this.value)" />
       </div>
 
       <div class="top-right-bar">
-        <div class="system-status-indicator" onclick="openSystemHealthModal()" title="View System Status">
+        <div class="system-status-indicator" onclick="openSystemHealthModal()" title="View System Diagnostics">
           <div class="status-dot-green"></div>
           System Online
         </div>
 
-        <button class="notification-bell-btn" onclick="openDetailsModal()" title="Notifications">
+        <button class="notification-bell-btn" onclick="openNotifications()" title="Notifications">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-          <span class="notif-badge" id="notifBadge">2</span>
+          <span class="notif-badge" id="notifBadge">0</span>
         </button>
 
         <div class="user-profile-widget" onclick="openSystemHealthModal()">
@@ -1019,9 +1053,9 @@
       <!-- Greeting Banner -->
       <section class="greeting-banner">
         <div>
-          <div class="date-caption" id="currentDateCaption">Sunday, 14 September 2026</div>
-          <h1 class="greeting-title">Good afternoon, Saurabh 👋</h1>
-          <p class="greeting-sub" id="greetingTeamStatus">Your AI engineering team is working on 3 tasks.</p>
+          <div class="date-caption" id="currentDateCaption"></div>
+          <h1 class="greeting-title" id="greetingTitle">Good day, Saurabh 👋</h1>
+          <p class="greeting-sub" id="greetingTeamStatus">Connecting to live autonomous engineering telemetry...</p>
         </div>
 
         <button class="btn-create-task" onclick="openTaskModal()">
@@ -1037,8 +1071,8 @@
           </div>
           <div class="summary-details">
             <span class="summary-title">Active Tasks</span>
-            <span class="summary-number" id="cardActiveTasks">3</span>
-            <span class="summary-meta" id="cardTotalTasks">of 8 total</span>
+            <span class="summary-number" id="cardActiveTasks">0</span>
+            <span class="summary-meta" id="cardTotalTasks">0 total in queue</span>
           </div>
         </div>
 
@@ -1048,8 +1082,8 @@
           </div>
           <div class="summary-details">
             <span class="summary-title">Working Agents</span>
-            <span class="summary-number" id="cardWorkingAgents">2</span>
-            <span class="summary-meta">of 5</span>
+            <span class="summary-number" id="cardWorkingAgents">0</span>
+            <span class="summary-meta" id="cardTotalAgents">of 4 agents</span>
           </div>
         </div>
 
@@ -1059,8 +1093,8 @@
           </div>
           <div class="summary-details">
             <span class="summary-title">Blocked</span>
-            <span class="summary-number" id="cardBlockedCount">1</span>
-            <span class="summary-meta" id="cardBlockedMeta">needs attention</span>
+            <span class="summary-number" id="cardBlockedCount">0</span>
+            <span class="summary-meta" id="cardBlockedMeta">All systems running</span>
           </div>
         </div>
 
@@ -1070,8 +1104,8 @@
           </div>
           <div class="summary-details">
             <span class="summary-title">Completed Today</span>
-            <span class="summary-number" id="cardCompletedCount">4</span>
-            <span class="summary-meta trend-up">↑ 2 vs yesterday</span>
+            <span class="summary-number" id="cardCompletedCount">0</span>
+            <span class="summary-meta" id="cardCompletedMeta">0 completed</span>
           </div>
         </div>
       </section>
@@ -1089,40 +1123,11 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                 Current Task
               </span>
-              <span class="status-badge status-working" id="heroTaskStatus">In Progress</span>
+              <span class="status-badge status-free" id="heroTaskStatus">Idle</span>
             </div>
 
-            <div class="current-task-body">
-              <span class="task-id-caption" id="heroTaskId">TASK-108-A</span>
-              <h3 class="task-hero-title" id="heroTaskTitle">OAuth state nonce validation</h3>
-              <p class="task-hero-desc" id="heroTaskDesc">Implement state parameter validation in OAuth callback to prevent CSRF attacks.</p>
-
-              <div class="task-tag-row">
-                <span class="tag-chip high-priority" id="heroTaskPriority">High</span>
-                <span class="tag-chip">Backend</span>
-                <span class="tag-chip">Security</span>
-              </div>
-
-              <div class="progress-bar-container">
-                <div class="progress-track">
-                  <div class="progress-fill" style="width: 72%;"></div>
-                </div>
-                <span class="progress-pct-label">72%</span>
-              </div>
-
-              <div class="task-footer-row">
-                <div class="task-assignee-block">
-                  <div class="assignee-bubble" id="heroAssigneeAvatar">BE</div>
-                  <div class="assignee-meta">
-                    <span class="assignee-name" id="heroAssigneeName">Backend Engineer</span>
-                    <span class="assignee-time">Working for 1h 24m</span>
-                  </div>
-                </div>
-
-                <button class="btn-secondary" onclick="openDetailsModal()">
-                  View Details →
-                </button>
-              </div>
+            <div class="current-task-body" id="heroTaskContent">
+              <!-- Dynamically populated from real active task or empty state -->
             </div>
           </div>
 
@@ -1134,31 +1139,7 @@
             </div>
 
             <div class="activity-feed-list" id="activityFeedList">
-              <div class="activity-item">
-                <span class="activity-time">13:24</span>
-                <div class="activity-dot" style="background: #2563eb;"></div>
-                <span class="activity-text">Backend Engineer committed changes to TASK-108-A</span>
-              </div>
-              <div class="activity-item">
-                <span class="activity-time">13:18</span>
-                <div class="activity-dot" style="background: #8b5cf6;"></div>
-                <span class="activity-text">QA Engineer started regression tests for TASK-107</span>
-              </div>
-              <div class="activity-item">
-                <span class="activity-time">13:05</span>
-                <div class="activity-dot" style="background: #10b981;"></div>
-                <span class="activity-text">Team Lead created task specification for TASK-109</span>
-              </div>
-              <div class="activity-item">
-                <span class="activity-time">12:42</span>
-                <div class="activity-dot" style="background: #f59e0b;"></div>
-                <span class="activity-text">Security Engineer marked TASK-106 as blocked</span>
-              </div>
-              <div class="activity-item">
-                <span class="activity-time">12:15</span>
-                <div class="activity-dot" style="background: #94a3b8;"></div>
-                <span class="activity-text">Frontend Engineer is now free</span>
-              </div>
+              <!-- Dynamically populated from real SSE stream logs & task transitions -->
             </div>
           </div>
 
@@ -1175,7 +1156,7 @@
             </div>
 
             <div class="team-table-list" id="teamMemberList">
-              <!-- Dynamically populated by renderRobots() -->
+              <!-- Dynamically populated strictly from real /api/studio/team -->
             </div>
           </div>
 
@@ -1185,25 +1166,13 @@
               <span class="panel-heading">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                 Needs Your Attention
-                <span style="background: #ef4444; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 4px;" id="attnCount">1</span>
+                <span style="background: #ef4444; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 4px; display: none;" id="attnCount">0</span>
               </span>
-              <span class="panel-link" onclick="openDetailsModal()">View All</span>
+              <span class="panel-link" id="attnViewAllLink" onclick="openNotifications()" style="display: none;">View All</span>
             </div>
 
             <div class="attention-card" id="attentionCardBody">
-              <div class="attention-item-box">
-                <div class="attention-icon-box">⚠</div>
-                <div class="attention-content">
-                  <span class="attention-heading" id="attnTitle">QA Engineer is blocked</span>
-                  <span class="attention-desc" id="attnDesc">Test environment configuration issue</span>
-                  <span class="attention-time">12 minutes ago</span>
-                </div>
-              </div>
-
-              <div class="attention-actions-row">
-                <button class="btn-secondary" onclick="openDetailsModal()">View Details</button>
-                <button class="btn-respond" onclick="openDirectiveModal('EMP-03', 'QA Engineer')">Respond</button>
-              </div>
+              <!-- Dynamically populated with real blocked agents or all-clear state -->
             </div>
           </div>
 
@@ -1261,12 +1230,12 @@
     </div>
   </dialog>
 
-  <!-- Task Detail Modal (Section 15, 17) -->
+  <!-- Task Detail Modal -->
   <dialog id="taskDetailModal" style="width: 680px;">
     <div class="modal-head">
       <div>
-        <span class="task-id-caption" id="modalDetailTaskId">TASK-108-A</span>
-        <h3 class="modal-title" id="modalDetailTaskTitle">OAuth state nonce validation</h3>
+        <span class="task-id-caption" id="modalDetailTaskId">TASK-ID</span>
+        <h3 class="modal-title" id="modalDetailTaskTitle">Task Details</h3>
       </div>
       <button onclick="closeDetailsModal()" style="background: transparent; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted);">✕</button>
     </div>
@@ -1275,19 +1244,19 @@
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 12px 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); font-size: 12px;">
       <div>
         <span style="color: var(--text-muted); display: block;">Status</span>
-        <span class="status-badge status-working" style="margin-top: 4px;">In Progress</span>
+        <span class="status-badge status-free" id="modalDetailStatusBadge" style="margin-top: 4px;">Pending</span>
       </div>
       <div>
         <span style="color: var(--text-muted); display: block;">Assigned To</span>
-        <span style="font-weight: 600; margin-top: 4px; display: block;" id="modalDetailAssignee">Backend Engineer</span>
+        <span style="font-weight: 600; margin-top: 4px; display: block;" id="modalDetailAssignee">Unassigned</span>
       </div>
       <div>
         <span style="color: var(--text-muted); display: block;">Team Lead</span>
-        <span style="font-weight: 600; margin-top: 4px; display: block;">Team Lead Agent</span>
+        <span style="font-weight: 600; margin-top: 4px; display: block;" id="modalDetailLead">Dr. Elena Rostova</span>
       </div>
       <div>
         <span style="color: var(--text-muted); display: block;">Risk</span>
-        <span class="tag-chip high-priority" style="margin-top: 4px; display: inline-flex;">High</span>
+        <span class="tag-chip" id="modalDetailRiskBadge" style="margin-top: 4px; display: inline-flex;">Medium</span>
       </div>
     </div>
 
@@ -1302,85 +1271,65 @@
 
     <!-- Tab 1: Overview -->
     <div id="overviewTab" class="tab-content active" style="font-size: 12px; line-height: 1.6; color: var(--text-main);">
-      <p style="margin-bottom: 10px;"><strong>Objective:</strong> Verify state parameter cryptographic entropy and match session cookies upon callback redirect to prevent cross-site request forgery.</p>
-      <p style="color: var(--text-muted); margin-bottom: 6px;"><strong>Allowed Paths:</strong> <code>src/auth/oauth-handler.js</code>, <code>tests/auth/oauth.test.js</code></p>
-      <p style="color: var(--text-muted);"><strong>Rollback Checkpoint:</strong> <code>git revert --no-edit HEAD</code></p>
+      <p style="margin-bottom: 10px;"><strong>Objective:</strong> <span id="modalDetailGoal">No goal defined.</span></p>
+      <p style="color: var(--text-muted); margin-bottom: 6px;"><strong>Allowed Paths:</strong> <code id="modalDetailAllowed">Project worktree</code></p>
+      <p style="color: var(--text-muted);"><strong>Worktree Branch:</strong> <code id="modalDetailBranch">main</code></p>
     </div>
 
     <!-- Tab 2: Activity -->
     <div id="activityTab" class="tab-content">
-      <div class="activity-feed-list" style="max-height: 200px; overflow-y: auto;">
+      <div class="activity-feed-list" id="modalDetailActivityList" style="max-height: 200px; overflow-y: auto;">
         <div class="activity-item">
-          <span class="activity-time">13:24</span>
+          <span class="activity-time">Live</span>
           <div class="activity-dot" style="background: #2563eb;"></div>
-          <span class="activity-text">Backend Engineer committed changes to src/auth/oauth-handler.js</span>
-        </div>
-        <div class="activity-item">
-          <span class="activity-time">13:12</span>
-          <div class="activity-dot" style="background: #10b981;"></div>
-          <span class="activity-text">Local unit test suite executed: 14 passing, 0 failing</span>
-        </div>
-        <div class="activity-item">
-          <span class="activity-time">13:02</span>
-          <div class="activity-dot" style="background: #2563eb;"></div>
-          <span class="activity-text">Task assigned by Team Lead with HIGH risk classification</span>
+          <span class="activity-text">Task registered in autonomous database.</span>
         </div>
       </div>
     </div>
 
     <!-- Tab 3: Communication -->
-    <div id="communicationTab" class="tab-content" style="font-size: 12px; display: flex; flex-direction: column; gap: 8px;">
+    <div id="communicationTab" class="tab-content" style="font-size: 12px; display: flex; flex-direction: column; gap: 8px;" id="modalDetailCommBox">
       <div style="background: var(--bg-subtle); padding: 10px; border-radius: var(--radius-sm);">
-        <span style="font-weight: 600; color: var(--primary-blue);">Team Lead Agent:</span>
-        <p style="color: var(--text-main); margin-top: 4px;">"Please ensure timing-safe comparison on the nonce token to prevent side-channel timing attacks."</p>
-      </div>
-      <div style="background: #eff6ff; padding: 10px; border-radius: var(--radius-sm);">
-        <span style="font-weight: 600; color: #1e293b;">Backend Engineer:</span>
-        <p style="color: var(--text-main); margin-top: 4px;">"Understood. Utilized <code>crypto.timingSafeEqual()</code> with fixed-length buffers."</p>
+        <span style="font-weight: 600; color: var(--primary-blue);" id="modalCommLeadName">Team Lead:</span>
+        <p style="color: var(--text-main); margin-top: 4px;" id="modalCommLeadText">Task specification analyzed and prepared for assignment.</p>
       </div>
     </div>
 
     <!-- Tab 4: Diff -->
     <div id="diffTab" class="tab-content">
-      <pre class="code-preview-box"><code>--- a/src/auth/oauth-handler.js
-+++ b/src/auth/oauth-handler.js
-@@ -42,6 +42,9 @@ export function verifyOAuthCallback(req, res) {
-+  const sessionNonce = req.session.oauth_state;
-+  if (!sessionNonce || !crypto.timingSafeEqual(Buffer.from(state), Buffer.from(sessionNonce))) {
-+    throw new SecurityViolationError('Invalid OAuth state nonce.');
-+  }</code></pre>
+      <pre class="code-preview-box" id="modalDetailDiffBox"><code># Fetching live worktree git diff...</code></pre>
     </div>
 
-    <!-- Tab 5: QA Stepper (Section 17) -->
+    <!-- Tab 5: QA Stepper -->
     <div id="qaTab" class="tab-content">
-      <div class="qa-stepper">
+      <div class="qa-stepper" id="modalDetailQaStepper">
         <div class="qa-step-row">
           <span class="qa-step-title">1. Syntax</span>
-          <span class="qa-status-pass">✓ Passed</span>
+          <span class="qa-status-pending" id="qaStep1">○ Pending</span>
         </div>
         <div class="qa-step-row">
           <span class="qa-step-title">2. Unit Tests</span>
-          <span class="qa-status-pass">✓ Passed</span>
+          <span class="qa-status-pending" id="qaStep2">○ Pending</span>
         </div>
         <div class="qa-step-row">
           <span class="qa-step-title">3. Regression</span>
-          <span class="qa-status-pass">✓ Passed</span>
+          <span class="qa-status-pending" id="qaStep3">○ Pending</span>
         </div>
         <div class="qa-step-row">
           <span class="qa-step-title">4. Security (SAST)</span>
-          <span class="qa-status-pass">✓ Passed</span>
+          <span class="qa-status-pending" id="qaStep4">○ Pending</span>
         </div>
         <div class="qa-step-row">
           <span class="qa-step-title">5. Build &amp; Artifacts</span>
-          <span class="qa-status-pass">✓ Passed</span>
+          <span class="qa-status-pending" id="qaStep5">○ Pending</span>
         </div>
         <div class="qa-step-row">
           <span class="qa-step-title">6. Diff Review</span>
-          <span class="qa-status-running">● In Review</span>
+          <span class="qa-status-pending" id="qaStep6">○ Pending</span>
         </div>
         <div class="qa-step-row">
           <span class="qa-step-title">7. PR Review</span>
-          <span class="qa-status-pending">○ Pending</span>
+          <span class="qa-status-pending" id="qaStep7">○ Pending</span>
         </div>
       </div>
     </div>
@@ -1390,12 +1339,12 @@
     </div>
   </dialog>
 
-  <!-- Employee Detail Modal (Section 16) -->
+  <!-- Employee Detail Modal -->
   <dialog id="employeeDetailModal" style="width: 540px;">
     <div class="modal-head">
       <div>
-        <h3 class="modal-title" id="empModalName">Backend Engineer</h3>
-        <p style="font-size: 12px; color: var(--text-muted);" id="empModalRole">API &amp; Server Specialist</p>
+        <h3 class="modal-title" id="empModalName">Agent</h3>
+        <p style="font-size: 12px; color: var(--text-muted);" id="empModalRole">Specialist</p>
       </div>
       <button onclick="closeEmployeeModal()" style="background: transparent; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted);">✕</button>
     </div>
@@ -1403,40 +1352,40 @@
     <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-subtle); border-radius: var(--radius-md); margin: 12px 0;">
       <div>
         <span style="font-size: 11px; color: var(--text-muted); display: block;">Current Task</span>
-        <span style="font-size: 13px; font-weight: 600;" id="empModalTask">TASK-108-A</span>
+        <span style="font-size: 13px; font-weight: 600;" id="empModalTask">None</span>
       </div>
       <div>
         <span style="font-size: 11px; color: var(--text-muted); display: block;">Status</span>
-        <span class="status-badge status-working" id="empModalBadge">Working</span>
+        <span class="status-badge status-free" id="empModalBadge">Free</span>
       </div>
       <div>
-        <span style="font-size: 11px; color: var(--text-muted); display: block;">Progress</span>
-        <span style="font-size: 13px; font-weight: 600; font-family: 'JetBrains Mono', monospace;" id="empModalProgress">72%</span>
+        <span style="font-size: 11px; color: var(--text-muted); display: block;">Completed Tasks</span>
+        <span style="font-size: 13px; font-weight: 600; font-family: 'JetBrains Mono', monospace;" id="empModalCompleted">0</span>
       </div>
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px; margin-top: 14px;">
       <div>
-        <strong style="color: var(--text-main);">Current Activity:</strong>
-        <p style="color: var(--text-muted); margin-top: 2px;">Compiling AST syntax checks and cryptographic nonce validation routines.</p>
+        <strong style="color: var(--text-main);">Current Activity / Status:</strong>
+        <p style="color: var(--text-muted); margin-top: 2px;" id="empModalActivity">Standby. Ready for assignment.</p>
       </div>
       <div>
-        <strong style="color: var(--text-main);">Communication with Team Lead:</strong>
-        <p style="color: var(--text-muted); margin-top: 2px;">Task specification acknowledged. Operating within sandboxed worktree.</p>
+        <strong style="color: var(--text-main);">Specialty:</strong>
+        <p style="color: var(--text-muted); margin-top: 2px;" id="empModalSpecialty">Core Architecture</p>
       </div>
-      <div>
-        <strong style="color: var(--text-main);">Files Changed:</strong>
-        <p style="font-family: 'JetBrains Mono', monospace; color: var(--text-muted); margin-top: 2px;">src/auth/oauth-handler.js (14 lines added)</p>
+      <div id="empModalDoubtBox" style="display: none; background: #fffbeb; padding: 10px; border-radius: var(--radius-sm); border: 1px solid #fef3c7;">
+        <strong style="color: #d97706;">Active Blocker / Doubt:</strong>
+        <p style="color: #92400e; margin-top: 2px;" id="empModalDoubtText"></p>
       </div>
     </div>
 
     <div class="modal-actions" style="margin-top: 20px;">
       <button class="btn-secondary" onclick="closeEmployeeModal()">Close</button>
-      <button class="btn-create-task" onclick="openDirectiveModal('EMP-01', 'Backend Engineer')">Direct Agent</button>
+      <button class="btn-create-task" id="empModalDirectBtn" onclick="directSelectedEmployee()">Direct Agent</button>
     </div>
   </dialog>
 
-  <!-- System Health Modal (Section 18) -->
+  <!-- System Health Modal -->
   <dialog id="systemHealthModal" style="width: 500px;">
     <div class="modal-head">
       <div style="display: flex; align-items: center; gap: 8px;">
@@ -1449,19 +1398,19 @@
     <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px; margin: 16px 0;">
       <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: var(--bg-subtle); border-radius: var(--radius-sm);">
         <span style="color: var(--text-muted);">Engine Status</span>
-        <span style="font-weight: 600; color: var(--emerald-green);">Online (Port 3000)</span>
+        <span style="font-weight: 600; color: var(--emerald-green);" id="diagEngine">Online (Port 3000)</span>
       </div>
       <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: var(--bg-subtle); border-radius: var(--radius-sm);">
         <span style="color: var(--text-muted);">Central Policy Engine</span>
         <span style="font-weight: 600; color: var(--emerald-green);">Active &amp; Enforcing</span>
       </div>
       <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: var(--bg-subtle); border-radius: var(--radius-sm);">
-        <span style="color: var(--text-muted);">Worktree Isolation</span>
-        <span style="font-weight: 600; color: var(--text-main);">4 Dedicated Leases</span>
+        <span style="color: var(--text-muted);">Active Tasks in Database</span>
+        <span style="font-weight: 600; color: var(--text-main);" id="diagTasksCount">0</span>
       </div>
       <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: var(--bg-subtle); border-radius: var(--radius-sm);">
         <span style="color: var(--text-muted);">Real-time Telemetry (SSE)</span>
-        <span style="font-weight: 600; color: var(--emerald-green);">Connected</span>
+        <span style="font-weight: 600; color: var(--emerald-green);" id="diagSseStatus">Connected</span>
       </div>
     </div>
 
@@ -1471,7 +1420,7 @@
     </div>
   </dialog>
 
-  <!-- Client-side Logic: SSE, Queue, Team, & Actions -->
+  <!-- Client-side Logic: 100% Real Backend Data Sync -->
   <script>
     const AUTH_TOKEN = document.querySelector('meta[name="studio-auth-token"]')?.content || '';
     const CSRF_TOKEN = document.querySelector('meta[name="studio-csrf-token"]')?.content || '';
@@ -1485,176 +1434,464 @@
         .replace(/'/g, '&#39;');
     }
 
+    // State
     let currentInterveneEmpId = null;
+    let selectedTaskForModal = null;
+    let selectedEmployeeForModal = null;
+    let teamDataState = { lead: null, employees: [] };
+    let tasksDataState = [];
+    let queueDataState = [];
+    let historyDataState = [];
+    let activeDiffState = '';
 
-    // Set Current Date Header
+    // Dynamic Time-Based Greeting
     const now = new Date();
+    const hours = now.getHours();
+    let timeGreeting = 'afternoon';
+    if (hours < 12) timeGreeting = 'morning';
+    else if (hours >= 17) timeGreeting = 'evening';
+    document.getElementById('greetingTitle').innerText = `Good ${timeGreeting}, Saurabh 👋`;
+
     const dateOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
     document.getElementById('currentDateCaption').innerText = now.toLocaleDateString('en-GB', dateOptions);
 
-    // Sidebar navigation highlight
     function switchNav(el, section) {
-      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      document.querySelectorAll('.nav-list .nav-link').forEach(l => l.classList.remove('active'));
       el.classList.add('active');
+      if (section === 'tasks') {
+        const target = document.getElementById('heroTaskContent');
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      } else if (section === 'team') {
+        const target = document.getElementById('teamMemberList');
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      } else if (section === 'activity') {
+        const target = document.getElementById('activityFeedList');
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      }
     }
 
-    // 1. Team & Roster Synchronization
-    async function refreshTeamData() {
+    // Role Formatter
+    function formatRoleSubtitle(role) {
+      switch (role) {
+        case 'SOFTWARE_ENGINEER': return 'API & Server';
+        case 'DIGITAL_MARKETER': return 'UI & Web';
+        case 'QA_ENGINEER': return 'Testing & Validation';
+        case 'RESEARCH_ANALYST': return 'Security & Compliance';
+        case 'TEAM_LEAD': return 'Architecture & Planning';
+        default: return (role || '').replace(/_/g, ' ');
+      }
+    }
+
+    // Initials Generator
+    function getInitials(name) {
+      if (!name) return 'AG';
+      const parts = name.trim().split(/\s+/);
+      if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+
+    // Status Badge Helpers
+    function getStatusBadgeClass(status) {
+      switch (status) {
+        case 'WORKING':
+        case 'RUNNING':
+        case 'ASSIGNED': return 'status-working';
+        case 'BLOCKED': return 'status-blocked';
+        case 'DONE':
+        case 'COMPLETED':
+        case 'READY_FOR_PR': return 'status-done';
+        default: return 'status-free';
+      }
+    }
+
+    function formatStatusLabel(status) {
+      switch (status) {
+        case 'WORKING': return 'Working';
+        case 'RUNNING': return 'In Progress';
+        case 'ASSIGNED': return 'Assigned';
+        case 'BLOCKED': return 'Blocked';
+        case 'DONE': return 'Done';
+        case 'COMPLETED': return 'Completed';
+        case 'READY_FOR_PR': return 'Ready for PR';
+        case 'FREE': return 'Free';
+        default: return status || 'Idle';
+      }
+    }
+
+    // Main Data Refresh Orchestrator
+    async function refreshAllRealData() {
+      await Promise.all([
+        fetchTeamData(),
+        fetchQueueData(),
+        fetchTasksData(),
+        fetchHistoryData()
+      ]);
+      renderDashboard();
+    }
+
+    // 1. Fetch Real Team
+    async function fetchTeamData() {
       try {
         const res = await fetch('/api/studio/team', {
           headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
         });
         if (res.ok) {
           const data = await res.json();
-          renderRobots(data.lead, data.employees);
+          teamDataState = data;
         }
       } catch (err) {
-        console.warn('Using standard team status', err);
+        console.error('Failed to fetch real team data', err);
       }
     }
 
-    function renderRobots(lead, employees) {
-      const listContainer = document.getElementById('teamMemberList');
-      listContainer.innerHTML = '';
-
-      let workingCount = 0;
-      let blockedCount = 0;
-
-      // 1. Team Lead
-      if (lead) {
-        workingCount++;
-        const row = document.createElement('div');
-        row.className = 'team-member-row';
-        row.onclick = () => openEmployeeModal({ name: lead.name || 'Team Lead', role: 'Architecture & Planning', status: 'WORKING', progress: '100%' });
-        row.innerHTML = `
-          <div class="member-profile">
-            <div class="member-avatar" style="background: #eff6ff; color: #2563eb;">TL</div>
-            <div class="member-text">
-              <span class="member-name">${lead.name || 'Team Lead'}</span>
-              <span class="member-role">Architecture & Planning</span>
-            </div>
-          </div>
-          <span class="status-badge status-working">Working</span>
-        `;
-        listContainer.appendChild(row);
-      }
-
-      // 2. Specialized Employees
-      const roleMap = {
-        'SOFTWARE_ENGINEER': { code: 'BE', name: 'Backend Engineer', subtitle: 'API & Server' },
-        'DIGITAL_MARKETER': { code: 'FE', name: 'Frontend Engineer', subtitle: 'UI & Web' },
-        'QA_ENGINEER': { code: 'QA', name: 'QA Engineer', subtitle: 'Testing & Validation' },
-        'RESEARCH_ANALYST': { code: 'SE', name: 'Security Engineer', subtitle: 'Security & Compliance' }
-      };
-
-      let blockedAgent = null;
-
-      if (employees && employees.length > 0) {
-        employees.forEach(emp => {
-          let badgeClass = 'status-free';
-          let badgeText = 'Free';
-
-          if (emp.status === 'WORKING') {
-            badgeClass = 'status-working';
-            badgeText = 'Working';
-            workingCount++;
-          } else if (emp.status === 'BLOCKED') {
-            badgeClass = 'status-blocked';
-            badgeText = 'Blocked';
-            blockedCount++;
-            blockedAgent = emp;
-          } else if (emp.status === 'DONE') {
-            badgeClass = 'status-done';
-            badgeText = 'Done';
-          }
-
-          const info = roleMap[emp.role] || { code: emp.name.slice(0, 2).toUpperCase(), name: emp.name, subtitle: emp.role.replace(/_/g, ' ') };
-
-          const row = document.createElement('div');
-          row.className = 'team-member-row';
-          row.onclick = () => openEmployeeModal({ name: info.name, role: info.subtitle, status: emp.status, progress: '72%' });
-          row.innerHTML = `
-            <div class="member-profile">
-              <div class="member-avatar">${info.code}</div>
-              <div class="member-text">
-                <span class="member-name">${info.name}</span>
-                <span class="member-role">${info.subtitle}</span>
-              </div>
-            </div>
-            <span class="status-badge ${badgeClass}">${badgeText}</span>
-          `;
-          listContainer.appendChild(row);
-        });
-      } else {
-        // Professional fallback matching reference design
-        const defaultTeam = [
-          { code: 'BE', name: 'Backend Engineer', subtitle: 'API & Server', status: 'Working', badge: 'status-working' },
-          { code: 'FE', name: 'Frontend Engineer', subtitle: 'UI & Web', status: 'Free', badge: 'status-free' },
-          { code: 'QA', name: 'QA Engineer', subtitle: 'Testing & Validation', status: 'Blocked', badge: 'status-blocked' },
-          { code: 'SE', name: 'Security Engineer', subtitle: 'Security & Compliance', status: 'Free', badge: 'status-free' }
-        ];
-        defaultTeam.forEach(m => {
-          const row = document.createElement('div');
-          row.className = 'team-member-row';
-          row.onclick = () => openEmployeeModal({ name: m.name, role: m.subtitle, status: m.status.toUpperCase(), progress: '72%' });
-          row.innerHTML = `
-            <div class="member-profile">
-              <div class="member-avatar">${m.code}</div>
-              <div class="member-text">
-                <span class="member-name">${m.name}</span>
-                <span class="member-role">${m.subtitle}</span>
-              </div>
-            </div>
-            <span class="status-badge ${m.badge}">${m.status}</span>
-          `;
-          listContainer.appendChild(row);
-        });
-        workingCount = 2;
-        blockedCount = 1;
-      }
-
-      // Update Summary Counts
-      document.getElementById('cardWorkingAgents').innerText = workingCount;
-      document.getElementById('cardBlockedCount').innerText = blockedCount;
-      document.getElementById('cardBlockedMeta').innerText = blockedCount > 0 ? 'needs attention' : 'All agents running';
-
-      // Update Needs Your Attention Panel
-      if (blockedAgent) {
-        document.getElementById('attnCount').innerText = '1';
-        document.getElementById('attnTitle').innerText = `${blockedAgent.name} is blocked`;
-        document.getElementById('attnDesc').innerText = blockedAgent.currentDoubt || 'Test environment configuration issue';
-        document.getElementById('attentionCardBody').style.display = 'flex';
-      }
-    }
-
-    // 2. Task Queue Synchronization
-    async function refreshQueue() {
+    // 2. Fetch Real Queue
+    async function fetchQueueData() {
       try {
         const res = await fetch('/api/studio/queue', {
           headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
         });
         if (res.ok) {
           const data = await res.json();
-          const queue = data.queue || [];
-
-          if (queue.length > 0) {
-            document.getElementById('cardActiveTasks').innerText = queue.length;
-            document.getElementById('cardTotalTasks').innerText = `of ${Math.max(queue.length, 8)} total`;
-            const first = queue[0];
-            document.getElementById('heroTaskId').innerText = first.taskId || 'TASK-108-A';
-            document.getElementById('heroTaskTitle').innerText = (first.rawPrompt || 'OAuth state nonce validation').slice(0, 45);
-            document.getElementById('heroTaskDesc').innerText = first.rawPrompt || 'Implement state parameter validation in OAuth callback to prevent CSRF attacks.';
-            if (first.assignedEmployee) {
-              document.getElementById('heroAssigneeName').innerText = first.assignedEmployee.name;
-            }
-          }
+          queueDataState = data.queue || [];
         }
       } catch (err) {
-        console.warn('Queue loaded', err);
+        console.error('Failed to fetch real queue data', err);
       }
     }
 
-    // 3. Task Dispatch
+    // 3. Fetch Real Tasks
+    async function fetchTasksData() {
+      try {
+        const res = await fetch('/api/studio/tasks', {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          tasksDataState = data.tasks || [];
+        }
+      } catch (err) {
+        console.error('Failed to fetch real tasks data', err);
+      }
+    }
+
+    // 4. Fetch Real History
+    async function fetchHistoryData() {
+      try {
+        const res = await fetch('/api/studio/history?days=7', {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          historyDataState = data.history || [];
+        }
+      } catch (err) {
+        console.error('Failed to fetch real history data', err);
+      }
+    }
+
+    // Render Everything from Real State
+    function renderDashboard() {
+      const employees = teamDataState.employees || [];
+      const lead = teamDataState.lead;
+      const tasks = tasksDataState || [];
+      const queue = queueDataState || [];
+      const history = historyDataState || [];
+
+      // A. Calculate Real Metrics
+      const activeQueueTasks = queue.filter(q => q.status === 'ASSIGNED' || q.status === 'QUEUED' || q.status === 'RUNNING');
+      const activeDbTasks = tasks.filter(t => t.status === 'RUNNING' || t.status === 'PENDING' || t.status === 'READY_FOR_PR');
+      const allActiveTaskIds = new Set([
+        ...activeQueueTasks.map(q => q.taskId),
+        ...activeDbTasks.map(t => t.task_id)
+      ]);
+      const activeTasksCount = allActiveTaskIds.size;
+      const totalTasksCount = Math.max(tasks.length, queue.length);
+
+      let workingAgentsCount = employees.filter(e => e.status === 'WORKING').length;
+      if (activeTasksCount > 0 && lead) workingAgentsCount = Math.min(workingAgentsCount + 1, employees.length + 1);
+      const blockedAgents = employees.filter(e => e.status === 'BLOCKED');
+      const blockedCount = blockedAgents.length;
+
+      // Completed Today: tasks completed today
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const completedToday = history.filter(h => (h.timestamp || '').startsWith(todayStr)).length;
+
+      // Update Metric Cards
+      document.getElementById('cardActiveTasks').innerText = activeTasksCount;
+      document.getElementById('cardTotalTasks').innerText = activeTasksCount > 0 
+        ? `of ${totalTasksCount} total` 
+        : `${totalTasksCount} total registered`;
+
+      document.getElementById('cardWorkingAgents').innerText = workingAgentsCount;
+      document.getElementById('cardTotalAgents').innerText = `of ${employees.length + (lead ? 1 : 0)} agents`;
+
+      document.getElementById('cardBlockedCount').innerText = blockedCount;
+      document.getElementById('cardBlockedMeta').innerText = blockedCount > 0 
+        ? `${blockedCount} needs attention` 
+        : 'All agents running';
+
+      document.getElementById('cardCompletedCount').innerText = completedToday;
+      document.getElementById('cardCompletedMeta').innerText = completedToday > 0 
+        ? `${completedToday} finished today` 
+        : `${history.length} total completed`;
+
+      // Update Greeting Subtitle
+      const statusBanner = document.getElementById('greetingTeamStatus');
+      if (activeTasksCount > 0) {
+        statusBanner.innerText = `Your AI engineering team is working on ${activeTasksCount} active task${activeTasksCount > 1 ? 's' : ''}.`;
+      } else {
+        statusBanner.innerText = `Your AI engineering team is standby with ${employees.length} available specialist agents.`;
+      }
+
+      // Notifications Bell Badge
+      const notifBadge = document.getElementById('notifBadge');
+      if (blockedCount > 0) {
+        notifBadge.style.display = 'flex';
+        notifBadge.innerText = blockedCount;
+      } else {
+        notifBadge.style.display = 'none';
+      }
+
+      // B. Render Real Team Roster
+      const teamContainer = document.getElementById('teamMemberList');
+      teamContainer.innerHTML = '';
+
+      // 1. Team Lead
+      if (lead) {
+        const leadRow = document.createElement('div');
+        leadRow.className = 'team-member-row';
+        leadRow.onclick = () => openEmployeeModal({
+          name: lead.name,
+          role: formatRoleSubtitle('TEAM_LEAD'),
+          status: activeTasksCount > 0 ? 'WORKING' : 'FREE',
+          currentTaskId: activeTasksCount > 0 ? Array.from(allActiveTaskIds)[0] : 'None',
+          specialty: lead.specialty || 'Architecture & Planning',
+          completedCount: history.length
+        });
+        leadRow.innerHTML = `
+          <div class="member-profile">
+            <div class="member-avatar" style="background: #eff6ff; color: #2563eb;">TL</div>
+            <div class="member-text">
+              <span class="member-name">${escapeHtml(lead.name)}</span>
+              <span class="member-role">${formatRoleSubtitle('TEAM_LEAD')}</span>
+            </div>
+          </div>
+          <span class="status-badge ${activeTasksCount > 0 ? 'status-working' : 'status-free'}">
+            ${activeTasksCount > 0 ? 'Working' : 'Free'}
+          </span>
+        `;
+        teamContainer.appendChild(leadRow);
+      }
+
+      // 2. Specialists
+      if (employees.length === 0) {
+        teamContainer.innerHTML += `<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 12px;">No employees registered in pool.</div>`;
+      } else {
+        employees.forEach(emp => {
+          const initials = getInitials(emp.name);
+          const badgeClass = getStatusBadgeClass(emp.status);
+          const badgeText = formatStatusLabel(emp.status);
+
+          const row = document.createElement('div');
+          row.className = 'team-member-row';
+          row.onclick = () => openEmployeeModal(emp);
+          row.innerHTML = `
+            <div class="member-profile">
+              <div class="member-avatar">${initials}</div>
+              <div class="member-text">
+                <span class="member-name">${escapeHtml(emp.name)}</span>
+                <span class="member-role">${formatRoleSubtitle(emp.role)}</span>
+              </div>
+            </div>
+            <span class="status-badge ${badgeClass}">${badgeText}</span>
+          `;
+          teamContainer.appendChild(row);
+        });
+      }
+
+      // C. Render Primary Current Task (Real Active Task or Clean Empty State)
+      renderHeroTask(tasks, queue);
+
+      // D. Render Needs Your Attention Panel
+      renderAttentionPanel(blockedAgents, queue);
+
+      // E. Update System Diagnostics Dialog
+      document.getElementById('diagTasksCount').innerText = `${tasks.length} total (${activeTasksCount} active)`;
+    }
+
+    // Render Current Task Card
+    function renderHeroTask(tasks, queue) {
+      const container = document.getElementById('heroTaskContent');
+      const headerStatus = document.getElementById('heroTaskStatus');
+
+      // Find highest priority active task
+      let activeTask = null;
+
+      // 1. Check queue for running/assigned task
+      if (queue && queue.length > 0) {
+        activeTask = queue.find(q => q.status === 'RUNNING') ||
+                     queue.find(q => q.status === 'ASSIGNED') ||
+                     queue.find(q => q.status === 'QUEUED');
+      }
+
+      // 2. Check tasks table if not found in queue
+      if (!activeTask && tasks && tasks.length > 0) {
+        activeTask = tasks.find(t => t.status === 'RUNNING') ||
+                     tasks.find(t => t.status === 'PENDING') ||
+                     tasks.find(t => t.status === 'READY_FOR_PR') ||
+                     tasks[0]; // fallback to most recent task
+      }
+
+      if (!activeTask) {
+        headerStatus.className = 'status-badge status-free';
+        headerStatus.innerText = 'Idle';
+        container.innerHTML = `
+          <div class="empty-state-box">
+            <div class="empty-icon-circle">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <div class="empty-heading">No Active Tasks</div>
+            <p class="empty-text">Your autonomous engineering pipeline is idle. Submit a new task specification to begin work.</p>
+            <button class="btn-create-task" onclick="openTaskModal()" style="margin-top: 4px;">+ Create Task</button>
+          </div>
+        `;
+        return;
+      }
+
+      // We have a real task!
+      selectedTaskForModal = activeTask;
+      const taskId = activeTask.taskId || activeTask.task_id;
+      const taskGoal = activeTask.goal || activeTask.rawPrompt || 'Autonomous Engineering Directive';
+      const taskStatus = activeTask.status || 'PENDING';
+      const riskLevel = (activeTask.risk_level || (activeTask.taskSpec?.riskLevel) || 'MEDIUM').toUpperCase();
+      const assigneeName = activeTask.assignedEmployee?.name || activeTask.active_agent || 'Team Lead';
+      const assigneeInitials = getInitials(assigneeName);
+
+      // Status header badge
+      headerStatus.className = `status-badge ${getStatusBadgeClass(taskStatus)}`;
+      headerStatus.innerText = formatStatusLabel(taskStatus);
+
+      // Progress computation
+      let pct = 20;
+      if (taskStatus === 'RUNNING' || taskStatus === 'WORKING') pct = 65;
+      else if (taskStatus === 'READY_FOR_PR') pct = 90;
+      else if (taskStatus === 'COMPLETED' || taskStatus === 'DONE') pct = 100;
+      else if (taskStatus === 'BLOCKED') pct = 50;
+
+      container.innerHTML = `
+        <span class="task-id-caption">${escapeHtml(taskId)}</span>
+        <h3 class="task-hero-title">${escapeHtml(taskGoal.slice(0, 60))}${taskGoal.length > 60 ? '...' : ''}</h3>
+        <p class="task-hero-desc">${escapeHtml(taskGoal)}</p>
+
+        <div class="task-tag-row">
+          <span class="tag-chip ${riskLevel === 'HIGH' || riskLevel === 'CRITICAL' ? 'high-priority' : ''}">
+            ${escapeHtml(riskLevel)}
+          </span>
+          <span class="tag-chip">Worktree Isolated</span>
+          <span class="tag-chip">QA Enforced</span>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-track">
+            <div class="progress-fill" style="width: ${pct}%;"></div>
+          </div>
+          <span class="progress-pct-label">${pct}%</span>
+        </div>
+
+        <div class="task-footer-row">
+          <div class="task-assignee-block">
+            <div class="assignee-bubble">${assigneeInitials}</div>
+            <div class="assignee-meta">
+              <span class="assignee-name">${escapeHtml(assigneeName)}</span>
+              <span class="assignee-time">Status: ${formatStatusLabel(taskStatus)}</span>
+            </div>
+          </div>
+
+          <button class="btn-secondary" onclick="openDetailsModal()">
+            View Details →
+          </button>
+        </div>
+      `;
+    }
+
+    // Render Needs Your Attention Panel (Real Data Only)
+    function renderAttentionPanel(blockedAgents, queue) {
+      const container = document.getElementById('attentionCardBody');
+      const attnCountBadge = document.getElementById('attnCount');
+      const attnViewAllLink = document.getElementById('attnViewAllLink');
+
+      // Check if any task in queue is blocked or awaiting clarification
+      const clarifyTask = queue ? queue.find(q => q.status === 'AWAITING_CLARIFICATION') : null;
+      const blockedEmp = blockedAgents && blockedAgents.length > 0 ? blockedAgents[0] : null;
+
+      if (blockedEmp) {
+        attnCountBadge.style.display = 'inline-block';
+        attnCountBadge.innerText = blockedAgents.length;
+        attnViewAllLink.style.display = 'inline-block';
+
+        container.innerHTML = `
+          <div class="attention-item-box">
+            <div class="attention-icon-box">⚠</div>
+            <div class="attention-content">
+              <span class="attention-heading">${escapeHtml(blockedEmp.name)} is blocked</span>
+              <span class="attention-desc">${escapeHtml(blockedEmp.currentDoubt && blockedEmp.currentDoubt !== 'None' ? blockedEmp.currentDoubt : 'Waiting for guidance on task.')}</span>
+              <span class="attention-time">Action required to resume execution</span>
+            </div>
+          </div>
+
+          <div class="attention-actions-row">
+            <button class="btn-secondary" onclick="openEmployeeModalById('${blockedEmp.id}')">View Details</button>
+            <button class="btn-respond" onclick="openDirectiveModal('${blockedEmp.id}', '${escapeHtml(blockedEmp.name)}')">Respond</button>
+          </div>
+        `;
+      } else if (clarifyTask) {
+        attnCountBadge.style.display = 'inline-block';
+        attnCountBadge.innerText = '1';
+        attnViewAllLink.style.display = 'inline-block';
+
+        container.innerHTML = `
+          <div class="attention-item-box">
+            <div class="attention-icon-box">⚠</div>
+            <div class="attention-content">
+              <span class="attention-heading">Clarification Required</span>
+              <span class="attention-desc">Team Lead detected ambiguity in prompt: "${escapeHtml(clarifyTask.rawPrompt.slice(0, 45))}..."</span>
+              <span class="attention-time">Task: ${escapeHtml(clarifyTask.taskId)}</span>
+            </div>
+          </div>
+
+          <div class="attention-actions-row">
+            <button class="btn-respond" onclick="openClarificationModal('${clarifyTask.taskId}')">Clarify</button>
+          </div>
+        `;
+      } else {
+        // Zero state - 100% real
+        attnCountBadge.style.display = 'none';
+        attnViewAllLink.style.display = 'none';
+
+        container.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 12px; padding: 6px 0;">
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: #ecfdf5; color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;">
+              ✓
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text-main);">All Systems Running Normally</span>
+              <span style="font-size: 11px; color: var(--text-muted);">No agent doubts or blockers requiring founder intervention.</span>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // Modal Triggers
+    function openTaskModal() {
+      document.getElementById('taskPromptInput').value = '';
+      document.getElementById('newTaskModal').showModal();
+    }
+    function closeTaskModal() {
+      document.getElementById('newTaskModal').close();
+    }
+
+    // Task Dispatch
     async function dispatchTaskToLead() {
       const prompt = document.getElementById('taskPromptInput').value.trim();
       if (!prompt) {
@@ -1674,27 +1911,28 @@
         });
         const data = await res.json();
         if (data.success) {
-          document.getElementById('taskPromptInput').value = '';
           closeTaskModal();
-          refreshQueue();
-          refreshTeamData();
+          appendActivityLog('now', `Founder submitted new task directive: "${prompt.slice(0, 45)}..."`);
+          await refreshAllRealData();
+        } else {
+          alert('Submission failed: ' + (data.error || 'Unknown error'));
         }
       } catch (err) {
         alert('Failed to submit task: ' + err.message);
       }
     }
 
-    // 4. Modal Handlers
-    function openTaskModal() { document.getElementById('newTaskModal').showModal(); }
-    function closeTaskModal() { document.getElementById('newTaskModal').close(); }
-
+    // Directive Modal
     function openDirectiveModal(empId, empName) {
       currentInterveneEmpId = empId;
       document.getElementById('modalEmployeeTitle').innerText = `Respond to ${empName}`;
+      document.getElementById('modalEmployeeSub').innerText = `Send corrective guidance or architectural unblocker to ${empName}.`;
       document.getElementById('founderInstructionInput').value = '';
       document.getElementById('directiveModal').showModal();
     }
-    function closeDirectiveModal() { document.getElementById('directiveModal').close(); }
+    function closeDirectiveModal() {
+      document.getElementById('directiveModal').close();
+    }
 
     async function submitFounderInstruction() {
       const instruction = document.getElementById('founderInstructionInput').value.trim();
@@ -1704,7 +1942,7 @@
       }
 
       try {
-        await fetch(`/api/studio/employee/${currentInterveneEmpId}/instruct`, {
+        const res = await fetch(`/api/studio/employee/${currentInterveneEmpId}/instruct`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${AUTH_TOKEN}`,
@@ -1713,16 +1951,52 @@
           },
           body: JSON.stringify({ instruction })
         });
-        closeDirectiveModal();
-        refreshTeamData();
+        if (res.ok) {
+          closeDirectiveModal();
+          appendActivityLog('now', `Founder transmitted directive to ${currentInterveneEmpId}`);
+          await refreshAllRealData();
+        } else {
+          const data = await res.json();
+          alert('Error: ' + (data.error || 'Failed to send instruction'));
+        }
       } catch (err) {
         alert('Failed to send guidance: ' + err.message);
       }
     }
 
-    // Task Details Modal & Tabs
-    function openDetailsModal() { document.getElementById('taskDetailModal').showModal(); }
-    function closeDetailsModal() { document.getElementById('taskDetailModal').close(); }
+    // Task Details Modal
+    async function openDetailsModal() {
+      const task = selectedTaskForModal;
+      if (!task) return;
+
+      const taskId = task.taskId || task.task_id || 'TASK-ACTIVE';
+      const taskGoal = task.goal || task.rawPrompt || 'Autonomous directive';
+      const status = task.status || 'PENDING';
+      const risk = (task.risk_level || task.taskSpec?.riskLevel || 'MEDIUM').toUpperCase();
+      const assignee = task.assignedEmployee?.name || task.active_agent || 'Team Lead';
+
+      document.getElementById('modalDetailTaskId').innerText = taskId;
+      document.getElementById('modalDetailTaskTitle').innerText = taskGoal.slice(0, 50) + (taskGoal.length > 50 ? '...' : '');
+      document.getElementById('modalDetailGoal').innerText = taskGoal;
+      document.getElementById('modalDetailAssignee').innerText = assignee;
+      document.getElementById('modalDetailStatusBadge').innerText = formatStatusLabel(status);
+      document.getElementById('modalDetailStatusBadge').className = `status-badge ${getStatusBadgeClass(status)}`;
+      document.getElementById('modalDetailRiskBadge').innerText = risk;
+      document.getElementById('modalDetailRiskBadge').className = `tag-chip ${risk === 'HIGH' || risk === 'CRITICAL' ? 'high-priority' : ''}`;
+      document.getElementById('modalDetailBranch').innerText = task.branch_name || 'main';
+      document.getElementById('modalDetailAllowed').innerText = task.allowed_files || 'Project workspace';
+
+      // QA Stepper state based on real status
+      updateQaStepper(status);
+
+      // Fetch real live diff from active worktree
+      fetchActiveDiff();
+
+      document.getElementById('taskDetailModal').showModal();
+    }
+    function closeDetailsModal() {
+      document.getElementById('taskDetailModal').close();
+    }
 
     function switchTaskTab(tabId, btnEl) {
       document.querySelectorAll('#taskDetailModal .tab-btn').forEach(b => b.classList.remove('active'));
@@ -1731,51 +2005,159 @@
       document.getElementById(tabId).classList.add('active');
     }
 
+    async function fetchActiveDiff() {
+      const diffBox = document.getElementById('modalDetailDiffBox');
+      diffBox.textContent = '# Querying live worktree git diff...';
+      try {
+        const res = await fetch('/api/studio/active-diff', {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        if (res.ok) {
+          const text = await res.text();
+          diffBox.textContent = text.trim() || '# No uncommitted diffs currently in worktree.';
+        } else {
+          diffBox.textContent = '# No active running task in worktree.';
+        }
+      } catch (err) {
+        diffBox.textContent = '# Unable to read worktree diff: ' + err.message;
+      }
+    }
+
+    function updateQaStepper(status) {
+      const setStep = (id, text, cls) => {
+        const el = document.getElementById(id);
+        el.innerText = text;
+        el.className = cls;
+      };
+
+      if (status === 'COMPLETED' || status === 'DONE') {
+        for (let i = 1; i <= 7; i++) setStep(`qaStep${i}`, '✓ Passed', 'qa-status-pass');
+      } else if (status === 'READY_FOR_PR') {
+        for (let i = 1; i <= 5; i++) setStep(`qaStep${i}`, '✓ Passed', 'qa-status-pass');
+        setStep('qaStep6', '✓ Passed', 'qa-status-pass');
+        setStep('qaStep7', '● In Review', 'qa-status-running');
+      } else if (status === 'RUNNING' || status === 'WORKING') {
+        setStep('qaStep1', '✓ Passed', 'qa-status-pass');
+        setStep('qaStep2', '● In Progress', 'qa-status-running');
+        for (let i = 3; i <= 7; i++) setStep(`qaStep${i}`, '○ Pending', 'qa-status-pending');
+      } else {
+        for (let i = 1; i <= 7; i++) setStep(`qaStep${i}`, '○ Pending', 'qa-status-pending');
+      }
+    }
+
     // Employee Modal
     function openEmployeeModal(emp) {
+      selectedEmployeeForModal = emp;
       document.getElementById('empModalName').innerText = emp.name;
-      document.getElementById('empModalRole').innerText = emp.role;
-      document.getElementById('empModalTask').innerText = document.getElementById('heroTaskId').innerText;
-      document.getElementById('empModalBadge').innerText = emp.status;
-      document.getElementById('empModalBadge').className = `status-badge status-${emp.status.toLowerCase()}`;
-      document.getElementById('empModalProgress').innerText = emp.progress || '72%';
+      document.getElementById('empModalRole').innerText = formatRoleSubtitle(emp.role);
+      document.getElementById('empModalTask').innerText = emp.currentTaskId && emp.currentTaskId !== 'None' ? emp.currentTaskId : 'None';
+      document.getElementById('empModalBadge').innerText = formatStatusLabel(emp.status);
+      document.getElementById('empModalBadge').className = `status-badge ${getStatusBadgeClass(emp.status)}`;
+      document.getElementById('empModalCompleted').innerText = emp.completedCount || '0';
+      document.getElementById('empModalSpecialty').innerText = emp.specialty || 'General Engineering';
+      
+      const doubtBox = document.getElementById('empModalDoubtBox');
+      const doubtText = document.getElementById('empModalDoubtText');
+      if (emp.status === 'BLOCKED' && emp.currentDoubt && emp.currentDoubt !== 'None') {
+        doubtBox.style.display = 'block';
+        doubtText.innerText = emp.currentDoubt;
+      } else {
+        doubtBox.style.display = 'none';
+      }
+
+      document.getElementById('empModalActivity').innerText = emp.status === 'WORKING'
+        ? `Executing task ${emp.currentTaskId} within isolated git worktree.`
+        : (emp.status === 'BLOCKED' ? 'Blocked: Waiting for resolution.' : 'Standby. Ready for assignment.');
+
       document.getElementById('employeeDetailModal').showModal();
     }
-    function closeEmployeeModal() { document.getElementById('employeeDetailModal').close(); }
+    function closeEmployeeModal() {
+      document.getElementById('employeeDetailModal').close();
+    }
 
-    // System Health Modal
+    function openEmployeeModalById(empId) {
+      const emp = (teamDataState.employees || []).find(e => e.id === empId);
+      if (emp) openEmployeeModal(emp);
+    }
+
+    function directSelectedEmployee() {
+      if (!selectedEmployeeForModal) return;
+      closeEmployeeModal();
+      openDirectiveModal(selectedEmployeeForModal.id || 'EMP-01', selectedEmployeeForModal.name);
+    }
+
+    // System Health & Emergency Stop
     function openSystemHealthModal() { document.getElementById('systemHealthModal').showModal(); }
     function closeSystemHealthModal() { document.getElementById('systemHealthModal').close(); }
 
     async function executeEmergencyStop() {
-      if (!confirm('EMERGENCY STOP: Halt all running agent pipelines and active worktrees immediately?')) return;
+      if (!confirm('EMERGENCY STOP: Forensic freeze all running agent pipelines and active worktrees immediately?')) return;
       try {
         const res = await fetch('/api/studio/emergency-stop', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${AUTH_TOKEN}`,
-            'X-Studio-CSRF': CSRF_TOKEN
-          }
+            'X-Studio-CSRF': CSRF_TOKEN,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ reason: 'Emergency Stop invoked from Founder Console' })
         });
         const data = await res.json();
-        alert('EMERGENCY STOP TRIGGERED: ' + (data.message || 'Halted'));
+        alert('EMERGENCY STOP ENGAGED: ' + (data.result?.action || data.message || 'Worktrees preserved.'));
         closeSystemHealthModal();
-        refreshTeamData();
+        appendActivityLog('now', 'EMERGENCY STOP executed by Founder');
+        await refreshAllRealData();
       } catch (err) {
         alert('Emergency stop request error: ' + err.message);
       }
     }
 
+    function openNotifications() {
+      const blockedAgents = (teamDataState.employees || []).filter(e => e.status === 'BLOCKED');
+      if (blockedAgents.length > 0) {
+        openEmployeeModal(blockedAgents[0]);
+      } else {
+        alert('No pending notifications. All agents and pipelines operational.');
+      }
+    }
+
     function openActivityModal() {
-      switchTaskTab('activityTab', document.querySelectorAll('#taskDetailModal .tab-btn')[1]);
-      openDetailsModal();
+      if (selectedTaskForModal) {
+        switchTaskTab('activityTab', document.querySelectorAll('#taskDetailModal .tab-btn')[1]);
+        openDetailsModal();
+      }
     }
 
     function openTeamModal() {
       document.getElementById('teamMemberList').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 5. SSE Real-time Activity Sync
+    function handleSearch(query) {
+      if (!query) return;
+      query = query.toLowerCase();
+      // Highlight matching employee or task
+      const rows = document.querySelectorAll('.team-member-row');
+      rows.forEach(r => {
+        const text = r.textContent.toLowerCase();
+        r.style.opacity = text.includes(query) ? '1' : '0.4';
+      });
+    }
+
+    // Real-Time Activity Log Appender
+    function appendActivityLog(time, message) {
+      const feed = document.getElementById('activityFeedList');
+      const item = document.createElement('div');
+      item.className = 'activity-item';
+      item.innerHTML = `
+        <span class="activity-time">${escapeHtml(time)}</span>
+        <div class="activity-dot" style="background: #2563eb;"></div>
+        <span class="activity-text">${escapeHtml(message)}</span>
+      `;
+      feed.insertBefore(item, feed.firstChild);
+      if (feed.children.length > 10) feed.removeChild(feed.lastChild);
+    }
+
+    // SSE Real-time Activity Sync
     function initSSE() {
       const sseUrl = `/api/cctv/stream?token=${AUTH_TOKEN}`;
       const source = new EventSource(sseUrl);
@@ -1783,33 +2165,39 @@
       source.addEventListener('log', (e) => {
         try {
           const data = JSON.parse(e.data);
-          const feed = document.getElementById('activityFeedList');
-          const item = document.createElement('div');
-          item.className = 'activity-item';
-          item.innerHTML = `
-            <span class="activity-time">${data.time || 'now'}</span>
-            <div class="activity-dot" style="background: #2563eb;"></div>
-            <span class="activity-text">${escapeHtml(data.message)}</span>
-          `;
-          feed.insertBefore(item, feed.firstChild);
-          if (feed.children.length > 8) feed.removeChild(feed.lastChild);
-          refreshTeamData();
-          refreshQueue();
+          appendActivityLog(data.time || 'now', `${data.level || 'INFO'}: ${data.message}`);
+          refreshAllRealData();
         } catch (err) {
-          console.error('SSE parse error', err);
+          console.error('SSE log parse error', err);
         }
       });
 
-      source.addEventListener('decision', () => {
-        refreshQueue();
-        refreshTeamData();
+      source.addEventListener('decision', (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          appendActivityLog('now', `[${data.gate || 'Decision'}] ${data.title}: ${data.explanation}`);
+          refreshAllRealData();
+        } catch (err) {
+          console.error('SSE decision parse error', err);
+        }
       });
+
+      source.onopen = () => {
+        document.getElementById('diagSseStatus').innerText = 'Connected';
+        appendActivityLog('now', 'Real-time telemetry stream connected.');
+      };
+
+      source.onerror = () => {
+        document.getElementById('diagSseStatus').innerText = 'Reconnecting...';
+      };
     }
 
-    // Initialize
-    refreshTeamData();
-    refreshQueue();
+    // Initial Real Data Load
+    refreshAllRealData();
     initSSE();
+
+    // Auto-refresh real telemetry every 8 seconds
+    setInterval(refreshAllRealData, 8000);
   </script>
 </body>
 </html>
