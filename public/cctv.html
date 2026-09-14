@@ -3,849 +3,1475 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sauronix AI • Founder CCTV Mission Control & Executive Office Cabins</title>
+  <title>Sauronix AI • Founder CCTV Mission Control</title>
   <meta name="studio-auth-token" content="">
   <meta name="studio-csrf-token" content="">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
     /* ==========================================================================
-       PRO MAX LUXURY EXECUTIVE DESIGN SYSTEM
-       Theme: Obsidian Glass, Polished Champagne Gold, & Cyber Titanium
+       CLEAN MINIMAL MODERN ENTERPRISE SAAS DESIGN SYSTEM
+       Inspiration: Linear / Vercel / GitHub / Notion
        ========================================================================== */
     :root {
-      --bg-primary: #05070d;
-      --bg-secondary: #090e18;
-      --surface-glass: rgba(13, 20, 36, 0.72);
-      --surface-card: rgba(16, 24, 44, 0.65);
-      --surface-hover: rgba(26, 38, 66, 0.85);
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-hover: #e2e8f0;
       
-      --gold-primary: #eab308;
-      --gold-glow: #fde047;
-      --gold-gradient: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%);
-      --titanium-border: rgba(148, 163, 184, 0.18);
-      --titanium-glow: rgba(56, 189, 248, 0.25);
+      --border-light: #e2e8f0;
+      --border-subtle: #cbd5e1;
       
-      --accent-cyan: #00f2fe;
-      --accent-violet: #8b5cf6;
-      --accent-emerald: #10b981;
-      --accent-rose: #f43f5e;
-      --accent-amber: #f59e0b;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-subtle: #94a3b8;
 
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
-      
-      --border-radius-xl: 18px;
-      --border-radius-lg: 12px;
-      --border-radius-md: 8px;
-      --border-radius-pill: 9999px;
+      --primary-blue: #2563eb;
+      --primary-blue-hover: #1d4ed8;
+      --primary-blue-light: #eff6ff;
+      --emerald-green: #10b981;
+      --emerald-light: #ecfdf5;
+      --amber-orange: #f59e0b;
+      --amber-light: #fffbeb;
+      --rose-red: #ef4444;
+      --rose-light: #fef2f2;
+      --purple-light: #f5f3ff;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-pill: 9999px;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.03);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.03);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+      font-size: 13px;
       -webkit-font-smoothing: antialiased;
     }
 
-    body {
-      background: radial-gradient(circle at 50% -10%, #0d1a33 0%, var(--bg-primary) 70%);
-      color: var(--text-main);
-      min-height: 100vh;
+    /* Left Sidebar */
+    .sidebar {
+      width: 220px;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-light);
       display: flex;
       flex-direction: column;
-      padding: 16px 24px;
-      gap: 16px;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* Subtle architectural grid pattern background */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ==========================================================================
-       1. EXECUTIVE PENTHOUSE TOP COMMAND BAR
-       ========================================================================== */
-    .top-command-bar {
-      position: relative;
-      z-index: 10;
-      display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 14px 24px;
-      background: rgba(10, 15, 28, 0.82);
-      border: 1px solid var(--titanium-border);
-      border-radius: var(--border-radius-xl);
-      backdrop-filter: blur(20px);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      padding: 20px 16px;
+      flex-shrink: 0;
     }
 
-    .brand-cluster {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .brand-crest {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      border: 1px solid rgba(234, 179, 8, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      box-shadow: 0 0 20px rgba(234, 179, 8, 0.25);
-    }
-
-    .brand-meta h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .brand-meta p {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.06em;
-      color: var(--accent-cyan);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .telemetry-status-pill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      border-radius: var(--border-radius-pill);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--accent-emerald);
-    }
-
-    .pulsing-beacon {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--accent-emerald);
-      box-shadow: 0 0 10px var(--accent-emerald);
-      animation: beaconGlow 2s infinite ease-in-out;
-    }
-    @keyframes beaconGlow {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.35; transform: scale(0.8); }
-    }
-
-    .quick-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .btn-lux {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--titanium-border);
-      color: var(--text-main);
-      padding: 8px 16px;
-      border-radius: var(--border-radius-md);
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .btn-lux:hover {
-      background: rgba(255, 255, 255, 0.09);
-      border-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-1px);
-    }
-    .btn-lux.freeze {
-      border-color: rgba(244, 63, 94, 0.35);
-      color: #fda4af;
-    }
-    .btn-lux.freeze:hover {
-      background: rgba(244, 63, 94, 0.15);
-      border-color: var(--accent-rose);
-      color: #fff;
-    }
-
-    /* ==========================================================================
-       2. MAIN OPERATIONS GRID LAYOUT
-       ========================================================================== */
-    .hq-layout-viewport {
-      position: relative;
-      z-index: 10;
-      display: grid;
-      grid-template-columns: 1fr 390px;
-      gap: 16px;
-      flex: 1;
-      min-height: 0;
-    }
-
-    .wings-column {
+    .sidebar-top {
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      min-height: 0;
+      gap: 24px;
     }
 
-    /* Department Section Title */
-    .wing-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 2px 4px;
-    }
-    .wing-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #e2e8f0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .wing-meta {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      color: var(--text-dim);
-    }
-
-    /* ==========================================================================
-       3. ARCHITECTURAL OFFICE CABIN SUITES (5 EXECUTIVE ROOMS)
-       ========================================================================== */
-    .cabins-floorplan {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-    }
-
-    .executive-cabin {
-      background: var(--surface-card);
-      border: 1px solid var(--titanium-border);
-      border-radius: var(--border-radius-lg);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .executive-cabin:hover {
-      transform: translateY(-2px);
-      border-color: rgba(56, 189, 248, 0.4);
-      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.65), 0 0 25px rgba(56, 189, 248, 0.12);
-    }
-
-    /* Cabin Interior Identification Brass Plate */
-    .cabin-plate {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .cabin-code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      background: rgba(0, 0, 0, 0.35);
-      padding: 2px 7px;
-      border-radius: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    .cabin-light {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent-emerald);
-      box-shadow: 0 0 10px var(--accent-emerald);
-    }
-
-    /* Specialist Profile inside Cabin */
-    .specialist-desk-cluster {
+    .brand-block {
       display: flex;
       align-items: center;
       gap: 12px;
+      padding-left: 4px;
     }
-    .specialist-portrait-slot {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.7);
-    }
-    .specialist-info { flex: 1; min-width: 0; }
-    .specialist-name {
-      font-size: 0.88rem;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: #fff;
-    }
-    .specialist-title {
-      font-size: 0.68rem;
-      color: var(--accent-cyan);
-      font-family: 'JetBrains Mono', monospace;
-      margin-top: 1px;
-    }
-    .specialist-legacy {
-      font-size: 0.65rem;
-      color: var(--gold-glow);
-      font-weight: 600;
-    }
-
-    /* Cabin Flow Status Badge */
-    .cabin-flow-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      align-self: flex-start;
-      padding: 3px 9px;
-      border-radius: 6px;
-      font-size: 0.68rem;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
-      letter-spacing: 0.04em;
-    }
-    .status-free {
-      background: rgba(16, 185, 129, 0.1);
-      color: var(--accent-emerald);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-    .status-working {
-      background: rgba(0, 242, 254, 0.12);
-      color: var(--accent-cyan);
-      border: 1px solid var(--accent-cyan);
-      animation: workingHUD 2s infinite ease-in-out;
-    }
-    .status-blocked {
-      background: rgba(245, 158, 11, 0.15);
-      color: var(--accent-amber);
-      border: 1px solid var(--accent-amber);
-      animation: alertBlink 1.4s infinite;
-    }
-    .status-done {
-      background: rgba(139, 92, 246, 0.15);
-      color: #c4b5fd;
-      border: 1px solid #c4b5fd;
-    }
-    @keyframes workingHUD {
-      0%, 100% { box-shadow: 0 0 6px rgba(0, 242, 254, 0.25); }
-      50% { box-shadow: 0 0 16px rgba(0, 242, 254, 0.55); }
-    }
-    @keyframes alertBlink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.45; }
-    }
-
-    /* Desk Interior Screen Monitor */
-    .desk-hud-monitor {
-      background: rgba(2, 6, 23, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: var(--border-radius-md);
-      padding: 8px 10px;
-      font-size: 0.72rem;
-      color: var(--text-dim);
-      min-height: 42px;
-      display: flex;
-      align-items: center;
-      line-height: 1.35;
-    }
-
-    /* Cabin Desk Controls */
-    .cabin-actions-bar {
-      display: flex;
-      gap: 7px;
-      margin-top: auto;
-    }
-    .btn-cabin {
-      flex: 1;
-      padding: 7px 10px;
-      border-radius: 6px;
-      font-size: 0.73rem;
-      font-weight: 600;
-      border: 1px solid var(--titanium-border);
-      background: rgba(255, 255, 255, 0.035);
-      color: var(--text-main);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      transition: all 0.18s ease;
-    }
-    .btn-cabin:hover {
-      background: rgba(0, 242, 254, 0.1);
-      border-color: var(--accent-cyan);
-      color: var(--accent-cyan);
-    }
-    .btn-cabin.pause {
-      border-color: rgba(245, 158, 11, 0.35);
-      color: var(--accent-amber);
-    }
-    .btn-cabin.pause:hover {
-      background: rgba(245, 158, 11, 0.12);
-      border-color: var(--accent-amber);
-    }
-
-    /* Cabin Intercom Speech Balloon */
-    .speech-balloon-hud {
-      position: absolute;
-      inset: 8px;
-      background: rgba(5, 7, 13, 0.96);
-      border: 1.5px solid var(--accent-cyan);
-      border-radius: 10px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      font-size: 0.76rem;
-      color: #f1f5f9;
-      z-index: 20;
-      box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
-      animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.96); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .balloon-body { line-height: 1.4; overflow-y: auto; max-height: 115px; }
-    .balloon-close {
-      align-self: flex-end;
-      font-size: 0.7rem;
-      color: var(--accent-cyan);
-      font-weight: 700;
-      cursor: pointer;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* ==========================================================================
-       4. OPERATIONS CONSOLE & MULTI-TASK QUEUE
-       ========================================================================== */
-    .operations-subfloor {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      flex: 1;
-      min-height: 0;
-    }
-
-    .console-module {
-      background: var(--surface-card);
-      border: 1px solid var(--titanium-border);
-      border-radius: var(--border-radius-lg);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      min-height: 0;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    }
-
-    .module-heading-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .module-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #f1f5f9;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Founder Executive Directive Pad */
-    .directive-memo-area {
-      width: 100%;
-      height: 75px;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid var(--titanium-border);
-      border-radius: var(--border-radius-md);
-      padding: 12px;
-      color: var(--text-main);
-      font-size: 0.82rem;
-      resize: none;
-      outline: none;
-      line-height: 1.4;
-      transition: all 0.2s;
-    }
-    .directive-memo-area:focus {
-      border-color: var(--accent-cyan);
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
-    }
-
-    .blueprint-drop-surface {
-      border: 1.5px dashed rgba(148, 163, 184, 0.25);
-      border-radius: var(--border-radius-md);
-      padding: 10px;
-      text-align: center;
-      background: rgba(255, 255, 255, 0.015);
-      cursor: pointer;
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s;
-    }
-    .blueprint-drop-surface:hover, .blueprint-drop-surface.dragover {
-      border-color: var(--accent-cyan);
-      background: rgba(0, 242, 254, 0.05);
-      color: var(--accent-cyan);
-    }
-
-    .blueprint-shelf { display: flex; gap: 8px; overflow-x: auto; padding-top: 4px; }
-    .shelf-item {
-      position: relative;
-      width: 44px; height: 44px;
-      border-radius: 6px;
-      overflow: hidden;
-      border: 1px solid var(--titanium-border);
-    }
-    .shelf-item img { width: 100%; height: 100%; object-fit: cover; }
-    .shelf-del {
-      position: absolute;
-      top: 1px; right: 1px;
-      background: rgba(0, 0, 0, 0.85);
-      color: var(--accent-rose);
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      cursor: pointer;
-    }
-
-    .btn-dispatch-exec {
-      background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: #0f172a;
       color: #ffffff;
-      border: none;
-      border-radius: var(--border-radius-md);
-      padding: 11px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      cursor: pointer;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);
-      transition: all 0.2s;
-    }
-    .btn-dispatch-exec:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.55);
-    }
-
-    /* Multi-Task Backlog Ledger */
-    .backlog-ledger-feed {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding-right: 4px;
-    }
-    .ledger-row {
-      background: rgba(0, 0, 0, 0.25);
-      border-left: 3px solid var(--accent-cyan);
-      border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
-      padding: 9px 12px;
-      font-size: 0.75rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .ledger-row.active {
-      border-left-color: var(--accent-emerald);
-      background: rgba(16, 185, 129, 0.06);
-    }
-    .ledger-row.waiting { border-left-color: var(--accent-amber); }
-    .ledger-data { display: flex; flex-direction: column; gap: 2px; }
-    .ledger-taskid { font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); }
-    .ledger-taskprompt { color: #cbd5e1; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    /* ==========================================================================
-       5. RIGHT OPERATIONS TOWER: AUDIT HISTORY & LIVE LOG
-       ========================================================================== */
-    .tower-column { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
-    .tower-tab-dock { display: flex; gap: 6px; background: rgba(0, 0, 0, 0.35); padding: 4px; border-radius: 8px; }
-    .tab-switch {
-      flex: 1;
-      padding: 7px;
-      border: none;
-      background: transparent;
-      color: var(--text-dim);
-      border-radius: 6px;
-      font-size: 0.72rem;
       font-weight: 700;
-      cursor: pointer;
+      font-size: 15px;
     }
-    .tab-switch.active {
-      background: rgba(30, 41, 59, 0.8);
-      color: var(--accent-cyan);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+    .brand-text h2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
     }
 
-    .audit-ledger-list {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding-right: 4px;
-    }
-    .audit-entry-card {
-      background: rgba(0, 0, 0, 0.25);
-      border: 1px solid var(--titanium-border);
-      border-radius: var(--border-radius-md);
-      padding: 9px 12px;
-      font-size: 0.73rem;
+    .nav-list {
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
-    .audit-entry-top { display: flex; justify-content: space-between; font-weight: 700; }
-    .audit-author { color: var(--accent-cyan); }
-    .audit-time { color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; }
-    .audit-desc { color: #e2e8f0; line-height: 1.35; }
-    .audit-verification-stamp {
-      align-self: flex-start;
-      font-size: 0.65rem;
-      padding: 2px 7px;
-      border-radius: 4px;
-      background: rgba(16, 185, 129, 0.12);
-      color: var(--accent-emerald);
-      font-family: 'JetBrains Mono', monospace;
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .nav-link:hover {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+    }
+    .nav-link.active {
+      background: #eff6ff;
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+    .nav-icon {
+      font-size: 14px;
+      opacity: 0.85;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .telemetry-console-view {
+    .sidebar-bottom {
+      border-top: 1px solid var(--border-light);
+      padding-top: 16px;
+    }
+
+    /* Main Container */
+    .main-wrapper {
       flex: 1;
-      background: #020617;
-      border: 1px solid var(--titanium-border);
-      border-radius: var(--border-radius-md);
-      padding: 10px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      color: #34d399;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      line-height: 1.45;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
     }
 
-    /* Direct Intervention Modal */
+    /* Top Bar */
+    .top-header {
+      height: 60px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      flex-shrink: 0;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      width: 360px;
+    }
+    .search-input-wrap input {
+      width: 100%;
+      height: 36px;
+      background: var(--bg-page);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 0 12px 0 36px;
+      font-size: 13px;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .search-input-wrap input:focus {
+      border-color: var(--primary-blue);
+      background: #fff;
+    }
+    .search-input-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-subtle);
+    }
+
+    .top-right-bar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .system-status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: var(--radius-md);
+      transition: background 0.15s ease;
+    }
+    .system-status-indicator:hover {
+      background: var(--bg-subtle);
+    }
+    .status-dot-green {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald-green);
+    }
+
+    .notification-bell-btn {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+    .notification-bell-btn:hover { background: var(--bg-subtle); }
+    .notif-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #ef4444;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+    }
+
+    .user-profile-widget {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: var(--radius-md);
+      transition: background 0.15s ease;
+    }
+    .user-profile-widget:hover { background: var(--bg-subtle); }
+    .user-avatar-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1e293b;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 12px;
+    }
+    .user-info-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .user-name-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+    .user-role-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .chevron-icon {
+      font-size: 10px;
+      color: var(--text-subtle);
+      margin-left: 2px;
+    }
+
+    /* Scrollable Workspace */
+    .dashboard-viewport {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Greeting & Main Header */
+    .greeting-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .date-caption {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .greeting-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+    .greeting-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .btn-create-task {
+      background: var(--primary-blue);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(37,99,235,0.2);
+      transition: background 0.15s ease;
+    }
+    .btn-create-task:hover { background: var(--primary-blue-hover); }
+
+    /* 4 Metric Summary Cards */
+    .summary-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .summary-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .summary-icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .summary-details {
+      display: flex;
+      flex-direction: column;
+    }
+    .summary-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .summary-number {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.2;
+      margin: 4px 0 2px;
+    }
+    .summary-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .summary-meta.trend-up {
+      color: var(--emerald-green);
+      font-weight: 600;
+    }
+
+    /* Two-Column Grid */
+    .dashboard-two-col {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 20px;
+    }
+
+    .col-left, .col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Card Panels */
+    .clean-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .panel-top-row {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .panel-heading {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-link {
+      font-size: 12px;
+      color: var(--primary-blue);
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .panel-link:hover { text-decoration: underline; }
+
+    /* Current Task Card */
+    .current-task-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .task-id-caption {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .task-hero-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.3;
+    }
+    .task-hero-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .task-tag-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tag-chip {
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+    }
+    .tag-chip.high-priority {
+      background: #fef2f2;
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tag-chip.high-priority::before {
+      content: '●';
+      font-size: 8px;
+    }
+
+    .progress-bar-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .progress-track {
+      flex: 1;
+      height: 6px;
+      background: var(--bg-subtle);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--primary-blue);
+      border-radius: var(--radius-pill);
+    }
+    .progress-pct-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .task-footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-light);
+    }
+    .task-assignee-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .assignee-bubble {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-light);
+    }
+    .assignee-meta {
+      display: flex;
+      flex-direction: column;
+    }
+    .assignee-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .assignee-time {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      border: 1px solid var(--border-light);
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    .btn-secondary:hover {
+      background: var(--bg-subtle);
+    }
+
+    .btn-danger {
+      background: #fff;
+      border: 1px solid #fecaca;
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 600;
+      color: #ef4444;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-danger:hover {
+      background: #fef2f2;
+      border-color: #ef4444;
+    }
+
+    /* Team List Rows */
+    .team-table-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .team-member-row {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-light);
+      transition: background 0.15s ease;
+      cursor: pointer;
+    }
+    .team-member-row:last-child { border-bottom: none; }
+    .team-member-row:hover { background: #fafbfc; }
+
+    .member-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .member-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      font-size: 11px;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-light);
+    }
+    .member-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .member-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .member-role {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Clean Subtle Status Badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .status-badge::before {
+      content: '●';
+      font-size: 8px;
+    }
+    .status-working {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+    .status-free {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+    .status-blocked {
+      background: #fffbeb;
+      color: #d97706;
+    }
+    .status-done {
+      background: #ecfdf5;
+      color: #059669;
+    }
+
+    /* Recent Activity Stream */
+    .activity-feed-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .activity-item {
+      padding: 10px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 12px;
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-time {
+      color: var(--text-subtle);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      width: 44px;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .activity-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .activity-text {
+      color: var(--text-main);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    /* Needs Your Attention Alert Area */
+    .attention-card {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .attention-item-box {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .attention-icon-box {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #fffbeb;
+      color: #d97706;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .attention-content {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .attention-heading {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .attention-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .attention-time {
+      font-size: 11px;
+      color: var(--text-subtle);
+      margin-top: 2px;
+    }
+    .attention-actions-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-light);
+    }
+    .btn-respond {
+      background: var(--primary-blue);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .btn-respond:hover { background: var(--primary-blue-hover); }
+
+    /* Footer Quote Bar */
+    .footer-quote-bar {
+      background: #fff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+    .quote-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .quote-icon {
+      font-size: 18px;
+      color: var(--primary-blue);
+      line-height: 1;
+    }
+    .quote-strong {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .brand-switch-pill {
+      width: 28px;
+      height: 14px;
+      background: #93c5fd;
+      border-radius: 999px;
+      position: relative;
+    }
+    .brand-switch-pill::after {
+      content: '';
+      position: absolute;
+      right: 2px;
+      top: 2px;
+      width: 10px;
+      height: 10px;
+      background: #2563eb;
+      border-radius: 50%;
+    }
+
+    /* Standard Enterprise Modals */
     dialog {
       margin: auto;
-      background: #090d1a;
-      border: 1.5px solid var(--accent-cyan);
-      border-radius: var(--border-radius-lg);
-      padding: 22px;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 24px;
       color: var(--text-main);
-      max-width: 480px;
-      width: 90vw;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 242, 254, 0.2);
+      width: 600px;
+      max-width: 92vw;
+      box-shadow: var(--shadow-lg);
     }
-    dialog::backdrop { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); }
+    dialog::backdrop { background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); }
     .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .modal-head h3 { font-size: 1.05rem; color: var(--accent-cyan); font-weight: 800; }
+    .modal-title { font-size: 15px; font-weight: 700; color: var(--text-main); }
     .modal-input {
       width: 100%;
-      height: 95px;
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid var(--titanium-border);
-      border-radius: var(--border-radius-md);
+      height: 90px;
+      background: var(--bg-page);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
       padding: 10px;
       color: var(--text-main);
-      font-size: 0.82rem;
-      resize: none;
+      font-size: 13px;
+      outline: none;
+      resize: vertical;
       margin: 12px 0;
     }
-    .modal-foot { display: flex; justify-content: flex-end; gap: 8px; }
+    .modal-input:focus { border-color: var(--primary-blue); background: #fff; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+    /* Task Detail Tabs */
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-light);
+      margin: 16px 0;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover { color: var(--text-main); }
+    .tab-btn.active {
+      color: var(--primary-blue);
+      border-bottom-color: var(--primary-blue);
+      font-weight: 600;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* QA Stepper */
+    .qa-stepper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .qa-step-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--bg-subtle);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+    }
+    .qa-step-title {
+      font-weight: 500;
+      color: var(--text-main);
+    }
+    .qa-status-pass { color: var(--emerald-green); font-weight: 700; }
+    .qa-status-running { color: var(--primary-blue); font-weight: 700; }
+    .qa-status-pending { color: var(--text-subtle); font-weight: 500; }
+
+    /* Monospace Diff/Code Box */
+    .code-preview-box {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-height: 220px;
+    }
+
+    @media (max-width: 1100px) {
+      .dashboard-two-col {
+        grid-template-columns: 1fr;
+      }
+      .summary-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- 1. EXECUTIVE PENTHOUSE COMMAND BAR -->
-  <header class="top-command-bar">
-    <div class="brand-cluster">
-      <div class="brand-crest">🏛️</div>
-      <div class="brand-meta">
-        <h1>SAURONIX AI • EXECUTIVE OPERATIONS HQ</h1>
-        <p>FLOOR 42 EXECUTIVE SUITE & SPECIALIST OPERATIONS WING</p>
+  <!-- 1. LEFT SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="brand-block">
+        <div class="brand-icon">A</div>
+        <div class="brand-text">
+          <h2>Sauronix AI</h2>
+          <p>Engineering Studio</p>
+        </div>
       </div>
+
+      <nav class="nav-list">
+        <a class="nav-link active" onclick="switchNav(this, 'home')">
+          <span class="nav-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          </span>
+          Home
+        </a>
+        <a class="nav-link" onclick="switchNav(this, 'tasks')">
+          <span class="nav-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          </span>
+          Tasks
+        </a>
+        <a class="nav-link" onclick="switchNav(this, 'team')">
+          <span class="nav-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </span>
+          Team
+        </a>
+        <a class="nav-link" onclick="switchNav(this, 'activity')">
+          <span class="nav-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </span>
+          Activity
+        </a>
+      </nav>
     </div>
 
-    <div class="telemetry-status-pill" id="hudEngineStatus">
-      <div class="pulsing-beacon"></div>
-      HQ ONLINE (PORT 3000)
+    <div class="sidebar-bottom">
+      <a class="nav-link" onclick="openSystemHealthModal()">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </span>
+        Settings
+      </a>
     </div>
+  </aside>
 
-    <div class="quick-actions">
-      <button class="btn-lux" onclick="toggleVoice()" id="voiceToggleBtn">
-        <span id="voiceIcon">🔊</span> Intercom: ON
-      </button>
-      <button class="btn-lux" onclick="refreshTeamData()">🔄 Scan Floor</button>
-      <button class="btn-lux freeze" onclick="triggerEmergencyStop()">🛑 Security Airlock</button>
-    </div>
-  </header>
-
-  <!-- 2. MAIN OPERATIONS GRID -->
-  <div class="hq-layout-viewport">
+  <!-- 2. MAIN CONTAINER -->
+  <div class="main-wrapper">
     
-    <!-- Left Column: Department Cabins & Founder Console -->
-    <main class="wings-column">
-      
-      <!-- Executive Cabins Section -->
-      <section>
-        <div class="wing-header-row">
-          <div class="wing-title">
-            <span>🚪 Executive Suites & Department Cabins</span>
+    <!-- Top Header Bar -->
+    <header class="top-header">
+      <div class="search-input-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="Search tasks, agents..." />
+      </div>
+
+      <div class="top-right-bar">
+        <div class="system-status-indicator" onclick="openSystemHealthModal()" title="View System Status">
+          <div class="status-dot-green"></div>
+          System Online
+        </div>
+
+        <button class="notification-bell-btn" onclick="openDetailsModal()" title="Notifications">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="notif-badge" id="notifBadge">2</span>
+        </button>
+
+        <div class="user-profile-widget" onclick="openSystemHealthModal()">
+          <div class="user-avatar-circle">SS</div>
+          <div class="user-info-text">
+            <span class="user-name-label">Saurabh Singh</span>
+            <span class="user-role-label">Founder</span>
           </div>
-          <div class="wing-meta" id="squadSummary">
-            1 Lead Commander • 4 Senior Specialists
+          <span class="chevron-icon">▾</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Scrollable Workspace -->
+    <main class="dashboard-viewport">
+      
+      <!-- Greeting Banner -->
+      <section class="greeting-banner">
+        <div>
+          <div class="date-caption" id="currentDateCaption">Sunday, 14 September 2026</div>
+          <h1 class="greeting-title">Good afternoon, Saurabh 👋</h1>
+          <p class="greeting-sub" id="greetingTeamStatus">Your AI engineering team is working on 3 tasks.</p>
+        </div>
+
+        <button class="btn-create-task" onclick="openTaskModal()">
+          <span>+ New Task</span>
+        </button>
+      </section>
+
+      <!-- 4 Summary Cards -->
+      <section class="summary-metrics-grid">
+        <div class="summary-card">
+          <div class="summary-icon-box" style="background: #eff6ff; color: #2563eb;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          </div>
+          <div class="summary-details">
+            <span class="summary-title">Active Tasks</span>
+            <span class="summary-number" id="cardActiveTasks">3</span>
+            <span class="summary-meta" id="cardTotalTasks">of 8 total</span>
           </div>
         </div>
 
-        <div class="cabins-floorplan" id="robotSquadContainer">
-          <!-- Dynamically populated with 5 office cabins by renderRobots() -->
+        <div class="summary-card">
+          <div class="summary-icon-box" style="background: #ecfdf5; color: #10b981;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <div class="summary-details">
+            <span class="summary-title">Working Agents</span>
+            <span class="summary-number" id="cardWorkingAgents">2</span>
+            <span class="summary-meta">of 5</span>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-icon-box" style="background: #fffbeb; color: #f59e0b;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </div>
+          <div class="summary-details">
+            <span class="summary-title">Blocked</span>
+            <span class="summary-number" id="cardBlockedCount">1</span>
+            <span class="summary-meta" id="cardBlockedMeta">needs attention</span>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-icon-box" style="background: #f5f3ff; color: #8b5cf6;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+          <div class="summary-details">
+            <span class="summary-title">Completed Today</span>
+            <span class="summary-number" id="cardCompletedCount">4</span>
+            <span class="summary-meta trend-up">↑ 2 vs yesterday</span>
+          </div>
         </div>
       </section>
 
-      <!-- Operations Subfloor: Founder Console & Multi-Task Queue -->
-      <div class="operations-subfloor">
+      <!-- Two-Column Grid -->
+      <section class="dashboard-two-col">
         
-        <!-- Task Dispatch Console -->
-        <section class="console-module">
-          <div class="module-heading-bar">
-            <h2 class="module-title">⚡ Founder Directive Console</h2>
-            <span style="font-size: 0.7rem; color: var(--accent-cyan); font-family: 'JetBrains Mono', monospace;">Direct Line to Cabin 101</span>
-          </div>
+        <!-- Left Column -->
+        <div class="col-left">
+          
+          <!-- Current Task Focus Card -->
+          <div class="clean-panel">
+            <div class="panel-top-row">
+              <span class="panel-heading">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Current Task
+              </span>
+              <span class="status-badge status-working" id="heroTaskStatus">In Progress</span>
+            </div>
 
-          <textarea id="taskPromptInput" class="directive-memo-area" placeholder="Draft directive memo for Chief Coordinator Dr. Elena Rostova (e.g. 'Build Stripe payment webhook router' or 'Audit landing page conversion architecture')..."></textarea>
+            <div class="current-task-body">
+              <span class="task-id-caption" id="heroTaskId">TASK-108-A</span>
+              <h3 class="task-hero-title" id="heroTaskTitle">OAuth state nonce validation</h3>
+              <p class="task-hero-desc" id="heroTaskDesc">Implement state parameter validation in OAuth callback to prevent CSRF attacks.</p>
 
-          <div class="blueprint-drop-surface" id="imageDropZone" onclick="document.getElementById('imageFileInput').click()">
-            <span>📎 Drop architectural blueprints, mockups, or click to attach</span>
-            <input type="file" id="imageFileInput" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
-          </div>
+              <div class="task-tag-row">
+                <span class="tag-chip high-priority" id="heroTaskPriority">High</span>
+                <span class="tag-chip">Backend</span>
+                <span class="tag-chip">Security</span>
+              </div>
 
-          <div class="blueprint-shelf" id="thumbnailBar"></div>
+              <div class="progress-bar-container">
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: 72%;"></div>
+                </div>
+                <span class="progress-pct-label">72%</span>
+              </div>
 
-          <button class="btn-dispatch-exec" onclick="dispatchTaskToLead()">
-            <span>🚀 Transmit Directive to Cabin 101</span>
-          </button>
-        </section>
+              <div class="task-footer-row">
+                <div class="task-assignee-block">
+                  <div class="assignee-bubble" id="heroAssigneeAvatar">BE</div>
+                  <div class="assignee-meta">
+                    <span class="assignee-name" id="heroAssigneeName">Backend Engineer</span>
+                    <span class="assignee-time">Working for 1h 24m</span>
+                  </div>
+                </div>
 
-        <!-- Live Queue Board -->
-        <section class="console-module">
-          <div class="module-heading-bar">
-            <h2 class="module-title">📋 Operations Backlog & Queue</h2>
-            <span id="queueCountBadge" style="font-size: 0.7rem; color: var(--accent-amber); font-family: 'JetBrains Mono', monospace;">0 Tasks Pending</span>
-          </div>
-
-          <div class="backlog-ledger-feed" id="queueListContainer">
-            <div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">
-              Executive backlog clear. Transmit directives to queue them sequentially!
+                <button class="btn-secondary" onclick="openDetailsModal()">
+                  View Details →
+                </button>
+              </div>
             </div>
           </div>
-        </section>
 
-      </div>
-    </main>
+          <!-- Recent Activity Stream -->
+          <div class="clean-panel">
+            <div class="panel-top-row">
+              <span class="panel-heading">Recent Activity</span>
+              <span class="panel-link" onclick="openActivityModal()">View All</span>
+            </div>
 
-    <!-- Right Column: Audit Records & Live Telemetry Feed -->
-    <aside class="tower-column">
-      <section class="console-module" style="flex: 1;">
-        <div class="tower-tab-dock">
-          <button class="tab-switch active" id="tabHistoryBtn" onclick="switchSideTab('history')">📅 7-Day Office Audit</button>
-          <button class="tab-switch" id="tabTerminalBtn" onclick="switchSideTab('terminal')">📟 Operations Stream</button>
+            <div class="activity-feed-list" id="activityFeedList">
+              <div class="activity-item">
+                <span class="activity-time">13:24</span>
+                <div class="activity-dot" style="background: #2563eb;"></div>
+                <span class="activity-text">Backend Engineer committed changes to TASK-108-A</span>
+              </div>
+              <div class="activity-item">
+                <span class="activity-time">13:18</span>
+                <div class="activity-dot" style="background: #8b5cf6;"></div>
+                <span class="activity-text">QA Engineer started regression tests for TASK-107</span>
+              </div>
+              <div class="activity-item">
+                <span class="activity-time">13:05</span>
+                <div class="activity-dot" style="background: #10b981;"></div>
+                <span class="activity-text">Team Lead created task specification for TASK-109</span>
+              </div>
+              <div class="activity-item">
+                <span class="activity-time">12:42</span>
+                <div class="activity-dot" style="background: #f59e0b;"></div>
+                <span class="activity-text">Security Engineer marked TASK-106 as blocked</span>
+              </div>
+              <div class="activity-item">
+                <span class="activity-time">12:15</span>
+                <div class="activity-dot" style="background: #94a3b8;"></div>
+                <span class="activity-text">Frontend Engineer is now free</span>
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        <!-- 1-Week Audit Ledger -->
-        <div class="audit-ledger-list" id="historyTabContent">
-          <div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">
-            Loading 7-day completed task audit...
+        <!-- Right Column -->
+        <div class="col-right">
+          
+          <!-- Team List Table -->
+          <div class="clean-panel">
+            <div class="panel-top-row">
+              <span class="panel-heading">Team</span>
+              <span class="panel-link" onclick="openTeamModal()">View All</span>
+            </div>
+
+            <div class="team-table-list" id="teamMemberList">
+              <!-- Dynamically populated by renderRobots() -->
+            </div>
+          </div>
+
+          <!-- Needs Your Attention Alert Area -->
+          <div class="clean-panel">
+            <div class="panel-top-row">
+              <span class="panel-heading">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                Needs Your Attention
+                <span style="background: #ef4444; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 4px;" id="attnCount">1</span>
+              </span>
+              <span class="panel-link" onclick="openDetailsModal()">View All</span>
+            </div>
+
+            <div class="attention-card" id="attentionCardBody">
+              <div class="attention-item-box">
+                <div class="attention-icon-box">⚠</div>
+                <div class="attention-content">
+                  <span class="attention-heading" id="attnTitle">QA Engineer is blocked</span>
+                  <span class="attention-desc" id="attnDesc">Test environment configuration issue</span>
+                  <span class="attention-time">12 minutes ago</span>
+                </div>
+              </div>
+
+              <div class="attention-actions-row">
+                <button class="btn-secondary" onclick="openDetailsModal()">View Details</button>
+                <button class="btn-respond" onclick="openDirectiveModal('EMP-03', 'QA Engineer')">Respond</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Bottom Minimal Quote Banner -->
+      <footer class="footer-quote-bar">
+        <div class="quote-left">
+          <span class="quote-icon">“</span>
+          <div>
+            <span class="quote-strong">Building faster, better, together.</span>
+            <span style="margin-left: 6px;">Your autonomous engineering team</span>
           </div>
         </div>
-
-        <!-- Operations Stream Log -->
-        <div class="telemetry-console-view" id="terminalTabContent" style="display: none;">
-[HQ Stream]: Initializing secure CCTV telemetry link...
+        <div class="brand-pill">
+          <span>Sauronix AI</span>
+          <div class="brand-switch-pill"></div>
         </div>
-      </section>
-    </aside>
+      </footer>
 
+    </main>
   </div>
 
-  <!-- Direct Intervention Dialog -->
-  <dialog id="directiveModal">
+  <!-- Create New Task Modal -->
+  <dialog id="newTaskModal">
     <div class="modal-head">
-      <h3 id="modalEmployeeTitle">Intervene & Direct Specialist</h3>
-      <button onclick="closeDirectiveModal()" style="background: transparent; border: none; color: var(--text-dim); font-size: 1.1rem; cursor: pointer;">✕</button>
+      <h3 class="modal-title">+ Create New Task</h3>
+      <button onclick="closeTaskModal()" style="background: transparent; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted);">✕</button>
     </div>
-    <p style="font-size: 0.75rem; color: var(--text-dim);" id="modalEmployeeSub">Specialist cabin worktree is frozen. Provide corrective directive to resume.</p>
-    
-    <textarea id="founderInstructionInput" class="modal-input" placeholder="Type corrective directive (e.g. 'Use async iteration instead of recursive promises')..."></textarea>
+    <p style="font-size: 12px; color: var(--text-muted);">Specify requirements for the Team Lead to analyze, contract, and assign.</p>
 
-    <div class="modal-foot">
-      <button class="btn-lux" onclick="closeDirectiveModal()">Cancel</button>
-      <button class="btn-dispatch-exec" style="padding: 8px 16px;" onclick="submitFounderInstruction()">🚀 Resume Worktree</button>
+    <textarea id="taskPromptInput" class="modal-input" placeholder="e.g. 'Implement state parameter validation in OAuth callback to prevent CSRF attacks.'"></textarea>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeTaskModal()">Cancel</button>
+      <button class="btn-create-task" onclick="dispatchTaskToLead()">Submit Task</button>
     </div>
   </dialog>
 
-  <!-- Client-side Logic: SSE, Audio Speech, Queue, & Actions -->
+  <!-- Respond / Intervention Modal Dialog -->
+  <dialog id="directiveModal">
+    <div class="modal-head">
+      <h3 class="modal-title" id="modalEmployeeTitle">Respond to Agent</h3>
+      <button onclick="closeDirectiveModal()" style="background: transparent; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted);">✕</button>
+    </div>
+    <p style="font-size: 12px; color: var(--text-muted);" id="modalEmployeeSub">Agent is waiting for instructions. Provide corrective guidance.</p>
+    
+    <textarea id="founderInstructionInput" class="modal-input" placeholder="Input directives or resolution steps..."></textarea>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeDirectiveModal()">Cancel</button>
+      <button class="btn-create-task" onclick="submitFounderInstruction()">Send Guidance</button>
+    </div>
+  </dialog>
+
+  <!-- Task Detail Modal (Section 15, 17) -->
+  <dialog id="taskDetailModal" style="width: 680px;">
+    <div class="modal-head">
+      <div>
+        <span class="task-id-caption" id="modalDetailTaskId">TASK-108-A</span>
+        <h3 class="modal-title" id="modalDetailTaskTitle">OAuth state nonce validation</h3>
+      </div>
+      <button onclick="closeDetailsModal()" style="background: transparent; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted);">✕</button>
+    </div>
+
+    <!-- Meta details -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 12px 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); font-size: 12px;">
+      <div>
+        <span style="color: var(--text-muted); display: block;">Status</span>
+        <span class="status-badge status-working" style="margin-top: 4px;">In Progress</span>
+      </div>
+      <div>
+        <span style="color: var(--text-muted); display: block;">Assigned To</span>
+        <span style="font-weight: 600; margin-top: 4px; display: block;" id="modalDetailAssignee">Backend Engineer</span>
+      </div>
+      <div>
+        <span style="color: var(--text-muted); display: block;">Team Lead</span>
+        <span style="font-weight: 600; margin-top: 4px; display: block;">Team Lead Agent</span>
+      </div>
+      <div>
+        <span style="color: var(--text-muted); display: block;">Risk</span>
+        <span class="tag-chip high-priority" style="margin-top: 4px; display: inline-flex;">High</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTaskTab('overviewTab', this)">Overview</button>
+      <button class="tab-btn" onclick="switchTaskTab('activityTab', this)">Activity</button>
+      <button class="tab-btn" onclick="switchTaskTab('communicationTab', this)">Communication</button>
+      <button class="tab-btn" onclick="switchTaskTab('diffTab', this)">Diff</button>
+      <button class="tab-btn" onclick="switchTaskTab('qaTab', this)">QA</button>
+    </div>
+
+    <!-- Tab 1: Overview -->
+    <div id="overviewTab" class="tab-content active" style="font-size: 12px; line-height: 1.6; color: var(--text-main);">
+      <p style="margin-bottom: 10px;"><strong>Objective:</strong> Verify state parameter cryptographic entropy and match session cookies upon callback redirect to prevent cross-site request forgery.</p>
+      <p style="color: var(--text-muted); margin-bottom: 6px;"><strong>Allowed Paths:</strong> <code>src/auth/oauth-handler.js</code>, <code>tests/auth/oauth.test.js</code></p>
+      <p style="color: var(--text-muted);"><strong>Rollback Checkpoint:</strong> <code>git revert --no-edit HEAD</code></p>
+    </div>
+
+    <!-- Tab 2: Activity -->
+    <div id="activityTab" class="tab-content">
+      <div class="activity-feed-list" style="max-height: 200px; overflow-y: auto;">
+        <div class="activity-item">
+          <span class="activity-time">13:24</span>
+          <div class="activity-dot" style="background: #2563eb;"></div>
+          <span class="activity-text">Backend Engineer committed changes to src/auth/oauth-handler.js</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-time">13:12</span>
+          <div class="activity-dot" style="background: #10b981;"></div>
+          <span class="activity-text">Local unit test suite executed: 14 passing, 0 failing</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-time">13:02</span>
+          <div class="activity-dot" style="background: #2563eb;"></div>
+          <span class="activity-text">Task assigned by Team Lead with HIGH risk classification</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Communication -->
+    <div id="communicationTab" class="tab-content" style="font-size: 12px; display: flex; flex-direction: column; gap: 8px;">
+      <div style="background: var(--bg-subtle); padding: 10px; border-radius: var(--radius-sm);">
+        <span style="font-weight: 600; color: var(--primary-blue);">Team Lead Agent:</span>
+        <p style="color: var(--text-main); margin-top: 4px;">"Please ensure timing-safe comparison on the nonce token to prevent side-channel timing attacks."</p>
+      </div>
+      <div style="background: #eff6ff; padding: 10px; border-radius: var(--radius-sm);">
+        <span style="font-weight: 600; color: #1e293b;">Backend Engineer:</span>
+        <p style="color: var(--text-main); margin-top: 4px;">"Understood. Utilized <code>crypto.timingSafeEqual()</code> with fixed-length buffers."</p>
+      </div>
+    </div>
+
+    <!-- Tab 4: Diff -->
+    <div id="diffTab" class="tab-content">
+      <pre class="code-preview-box"><code>--- a/src/auth/oauth-handler.js
++++ b/src/auth/oauth-handler.js
+@@ -42,6 +42,9 @@ export function verifyOAuthCallback(req, res) {
++  const sessionNonce = req.session.oauth_state;
++  if (!sessionNonce || !crypto.timingSafeEqual(Buffer.from(state), Buffer.from(sessionNonce))) {
++    throw new SecurityViolationError('Invalid OAuth state nonce.');
++  }</code></pre>
+    </div>
+
+    <!-- Tab 5: QA Stepper (Section 17) -->
+    <div id="qaTab" class="tab-content">
+      <div class="qa-stepper">
+        <div class="qa-step-row">
+          <span class="qa-step-title">1. Syntax</span>
+          <span class="qa-status-pass">✓ Passed</span>
+        </div>
+        <div class="qa-step-row">
+          <span class="qa-step-title">2. Unit Tests</span>
+          <span class="qa-status-pass">✓ Passed</span>
+        </div>
+        <div class="qa-step-row">
+          <span class="qa-step-title">3. Regression</span>
+          <span class="qa-status-pass">✓ Passed</span>
+        </div>
+        <div class="qa-step-row">
+          <span class="qa-step-title">4. Security (SAST)</span>
+          <span class="qa-status-pass">✓ Passed</span>
+        </div>
+        <div class="qa-step-row">
+          <span class="qa-step-title">5. Build &amp; Artifacts</span>
+          <span class="qa-status-pass">✓ Passed</span>
+        </div>
+        <div class="qa-step-row">
+          <span class="qa-step-title">6. Diff Review</span>
+          <span class="qa-status-running">● In Review</span>
+        </div>
+        <div class="qa-step-row">
+          <span class="qa-step-title">7. PR Review</span>
+          <span class="qa-status-pending">○ Pending</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top: 20px;">
+      <button class="btn-secondary" onclick="closeDetailsModal()">Close</button>
+    </div>
+  </dialog>
+
+  <!-- Employee Detail Modal (Section 16) -->
+  <dialog id="employeeDetailModal" style="width: 540px;">
+    <div class="modal-head">
+      <div>
+        <h3 class="modal-title" id="empModalName">Backend Engineer</h3>
+        <p style="font-size: 12px; color: var(--text-muted);" id="empModalRole">API &amp; Server Specialist</p>
+      </div>
+      <button onclick="closeEmployeeModal()" style="background: transparent; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted);">✕</button>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-subtle); border-radius: var(--radius-md); margin: 12px 0;">
+      <div>
+        <span style="font-size: 11px; color: var(--text-muted); display: block;">Current Task</span>
+        <span style="font-size: 13px; font-weight: 600;" id="empModalTask">TASK-108-A</span>
+      </div>
+      <div>
+        <span style="font-size: 11px; color: var(--text-muted); display: block;">Status</span>
+        <span class="status-badge status-working" id="empModalBadge">Working</span>
+      </div>
+      <div>
+        <span style="font-size: 11px; color: var(--text-muted); display: block;">Progress</span>
+        <span style="font-size: 13px; font-weight: 600; font-family: 'JetBrains Mono', monospace;" id="empModalProgress">72%</span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px; margin-top: 14px;">
+      <div>
+        <strong style="color: var(--text-main);">Current Activity:</strong>
+        <p style="color: var(--text-muted); margin-top: 2px;">Compiling AST syntax checks and cryptographic nonce validation routines.</p>
+      </div>
+      <div>
+        <strong style="color: var(--text-main);">Communication with Team Lead:</strong>
+        <p style="color: var(--text-muted); margin-top: 2px;">Task specification acknowledged. Operating within sandboxed worktree.</p>
+      </div>
+      <div>
+        <strong style="color: var(--text-main);">Files Changed:</strong>
+        <p style="font-family: 'JetBrains Mono', monospace; color: var(--text-muted); margin-top: 2px;">src/auth/oauth-handler.js (14 lines added)</p>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top: 20px;">
+      <button class="btn-secondary" onclick="closeEmployeeModal()">Close</button>
+      <button class="btn-create-task" onclick="openDirectiveModal('EMP-01', 'Backend Engineer')">Direct Agent</button>
+    </div>
+  </dialog>
+
+  <!-- System Health Modal (Section 18) -->
+  <dialog id="systemHealthModal" style="width: 500px;">
+    <div class="modal-head">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div class="status-dot-green"></div>
+        <h3 class="modal-title">System Status &amp; Diagnostics</h3>
+      </div>
+      <button onclick="closeSystemHealthModal()" style="background: transparent; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted);">✕</button>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px; margin: 16px 0;">
+      <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: var(--bg-subtle); border-radius: var(--radius-sm);">
+        <span style="color: var(--text-muted);">Engine Status</span>
+        <span style="font-weight: 600; color: var(--emerald-green);">Online (Port 3000)</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: var(--bg-subtle); border-radius: var(--radius-sm);">
+        <span style="color: var(--text-muted);">Central Policy Engine</span>
+        <span style="font-weight: 600; color: var(--emerald-green);">Active &amp; Enforcing</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: var(--bg-subtle); border-radius: var(--radius-sm);">
+        <span style="color: var(--text-muted);">Worktree Isolation</span>
+        <span style="font-weight: 600; color: var(--text-main);">4 Dedicated Leases</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: var(--bg-subtle); border-radius: var(--radius-sm);">
+        <span style="color: var(--text-muted);">Real-time Telemetry (SSE)</span>
+        <span style="font-weight: 600; color: var(--emerald-green);">Connected</span>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top: 20px; justify-content: space-between;">
+      <button class="btn-danger" onclick="executeEmergencyStop()">Emergency Stop</button>
+      <button class="btn-secondary" onclick="closeSystemHealthModal()">Done</button>
+    </div>
+  </dialog>
+
+  <!-- Client-side Logic: SSE, Queue, Team, & Actions -->
   <script>
     const AUTH_TOKEN = document.querySelector('meta[name="studio-auth-token"]')?.content || '';
     const CSRF_TOKEN = document.querySelector('meta[name="studio-csrf-token"]')?.content || '';
@@ -859,197 +1485,221 @@
         .replace(/'/g, '&#39;');
     }
 
-    let voiceEnabled = true;
     let currentInterveneEmpId = null;
-    let imageAttachments = [];
-    let activeSpeechBubbleTimeout = null;
 
-    // 1. Voice Synthesis Engine
-    function speakText(text, pitch = 1.0, rate = 1.0) {
-      if (!voiceEnabled || !('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel();
+    // Set Current Date Header
+    const now = new Date();
+    const dateOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    document.getElementById('currentDateCaption').innerText = now.toLocaleDateString('en-GB', dateOptions);
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.pitch = pitch;
-      utterance.rate = rate;
-
-      const voices = window.speechSynthesis.getVoices();
-      const femaleVoice = voices.find(v => (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Samantha') || v.name.includes('Google UK English Female')));
-      if (femaleVoice) utterance.voice = femaleVoice;
-
-      window.speechSynthesis.speak(utterance);
+    // Sidebar navigation highlight
+    function switchNav(el, section) {
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      el.classList.add('active');
     }
 
-    function toggleVoice() {
-      voiceEnabled = !voiceEnabled;
-      const btn = document.getElementById('voiceToggleBtn');
-      btn.innerHTML = voiceEnabled ? '<span>🔊</span> Intercom: ON' : '<span>🔇</span> Intercom: MUTED';
-      if (!voiceEnabled) window.speechSynthesis.cancel();
-    }
-
-    // 2. Fetch Team & Render Executive Cabins
+    // 1. Team & Roster Synchronization
     async function refreshTeamData() {
       try {
         const res = await fetch('/api/studio/team', {
           headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
         });
-        const data = await res.json();
-        renderRobots(data.lead, data.employees);
+        if (res.ok) {
+          const data = await res.json();
+          renderRobots(data.lead, data.employees);
+        }
       } catch (err) {
-        console.error('Failed to load team data', err);
+        console.warn('Using standard team status', err);
       }
     }
 
     function renderRobots(lead, employees) {
-      const container = document.getElementById('robotSquadContainer');
-      container.innerHTML = '';
+      const listContainer = document.getElementById('teamMemberList');
+      listContainer.innerHTML = '';
 
-      // 1. Render Cabin 101 - Executive Suite (Lead)
+      let workingCount = 0;
+      let blockedCount = 0;
+
+      // 1. Team Lead
       if (lead) {
-        const leadCard = document.createElement('div');
-        leadCard.className = 'executive-cabin';
-        leadCard.style.borderColor = 'rgba(234, 179, 8, 0.4)';
-        leadCard.innerHTML = `
-          <div class="cabin-plate">
-            <span class="cabin-code" style="color: #fde047; border-color: rgba(234, 179, 8, 0.3);">CABIN 101 • EXECUTIVE SUITE</span>
-            <span class="cabin-light" style="background: var(--gold-primary); box-shadow: 0 0 10px var(--gold-primary);"></span>
-          </div>
-          <div class="specialist-desk-cluster">
-            <div class="specialist-portrait-slot" style="border-color: var(--gold-primary);">
-              👑
-            </div>
-            <div class="specialist-info">
-              <div class="specialist-name">${lead.name}</div>
-              <div class="specialist-title">Chief Engineering Coordinator</div>
-              <div class="specialist-legacy">50+ Yrs Exp • Female Commander</div>
+        workingCount++;
+        const row = document.createElement('div');
+        row.className = 'team-member-row';
+        row.onclick = () => openEmployeeModal({ name: lead.name || 'Team Lead', role: 'Architecture & Planning', status: 'WORKING', progress: '100%' });
+        row.innerHTML = `
+          <div class="member-profile">
+            <div class="member-avatar" style="background: #eff6ff; color: #2563eb;">TL</div>
+            <div class="member-text">
+              <span class="member-name">${lead.name || 'Team Lead'}</span>
+              <span class="member-role">Architecture & Planning</span>
             </div>
           </div>
-          <div class="cabin-flow-badge status-working">⚡ SQUAD COORDINATION</div>
-          <div class="desk-hud-monitor">Executive leadership desk: Orchestrating multi-agent task queue and QA reviews.</div>
-          <div class="cabin-actions-bar">
-            <button class="btn-cabin" onclick="askWorker('LEAD-01')">🎙️ Intercom Line</button>
-          </div>
-          <div id="bubble-LEAD-01" class="speech-balloon-hud" style="display: none;"></div>
+          <span class="status-badge status-working">Working</span>
         `;
-        container.appendChild(leadCard);
+        listContainer.appendChild(row);
       }
 
-      // 2. Render Specialist Department Cabins
-      const cabinMap = {
-        'EMP-01': { no: 'CABIN 102', wing: 'SOFTWARE ARCHITECTURE LAB', icon: '💻' },
-        'EMP-02': { no: 'CABIN 103', wing: 'GROWTH STRATEGY SUITE', icon: '📈' },
-        'EMP-03': { no: 'CABIN 104', wing: 'QA VERIFICATION VAULT', icon: '🛡️' },
-        'EMP-04': { no: 'CABIN 105', wing: 'INTELLIGENCE OBSERVATORY', icon: '🔭' }
+      // 2. Specialized Employees
+      const roleMap = {
+        'SOFTWARE_ENGINEER': { code: 'BE', name: 'Backend Engineer', subtitle: 'API & Server' },
+        'DIGITAL_MARKETER': { code: 'FE', name: 'Frontend Engineer', subtitle: 'UI & Web' },
+        'QA_ENGINEER': { code: 'QA', name: 'QA Engineer', subtitle: 'Testing & Validation' },
+        'RESEARCH_ANALYST': { code: 'SE', name: 'Security Engineer', subtitle: 'Security & Compliance' }
       };
 
-      employees.forEach((emp, index) => {
-        const card = document.createElement('div');
-        card.className = 'executive-cabin';
-        const cabinInfo = cabinMap[emp.id] || { no: `CABIN ${102 + index}`, wing: emp.role.replace(/_/g, ' '), icon: '🏢' };
+      let blockedAgent = null;
 
-        let statusClass = 'status-free';
-        let statusText = '🟢 IN CABIN / STANDBY';
-        let lampColor = 'var(--accent-emerald)';
+      if (employees && employees.length > 0) {
+        employees.forEach(emp => {
+          let badgeClass = 'status-free';
+          let badgeText = 'Free';
 
-        if (emp.status === 'WORKING') {
-          statusClass = 'status-working';
-          statusText = `⚡ ACTIVE WORKTREE [${emp.currentTaskId || 'TASK'}]`;
-          lampColor = 'var(--accent-cyan)';
-        } else if (emp.status === 'BLOCKED') {
-          statusClass = 'status-blocked';
-          statusText = '⚠️ AIRLOCK / DIRECTIVE';
-          lampColor = 'var(--accent-amber)';
-        } else if (emp.status === 'DONE') {
-          statusClass = 'status-done';
-          statusText = '✔ REVIEW / PR READY';
-          lampColor = '#c4b5fd';
-        }
+          if (emp.status === 'WORKING') {
+            badgeClass = 'status-working';
+            badgeText = 'Working';
+            workingCount++;
+          } else if (emp.status === 'BLOCKED') {
+            badgeClass = 'status-blocked';
+            badgeText = 'Blocked';
+            blockedCount++;
+            blockedAgent = emp;
+          } else if (emp.status === 'DONE') {
+            badgeClass = 'status-done';
+            badgeText = 'Done';
+          }
 
-        card.innerHTML = `
-          <div class="cabin-plate">
-            <span class="cabin-code">${cabinInfo.no} • ${cabinInfo.wing}</span>
-            <span class="cabin-light" style="background: ${lampColor}; box-shadow: 0 0 8px ${lampColor};"></span>
-          </div>
-          <div class="specialist-desk-cluster">
-            <div class="specialist-portrait-slot" style="border-color: ${emp.hologramColor || 'var(--accent-cyan)'};">
-              ${emp.avatar ? emp.avatar.replace('🤖', '') : cabinInfo.icon}
+          const info = roleMap[emp.role] || { code: emp.name.slice(0, 2).toUpperCase(), name: emp.name, subtitle: emp.role.replace(/_/g, ' ') };
+
+          const row = document.createElement('div');
+          row.className = 'team-member-row';
+          row.onclick = () => openEmployeeModal({ name: info.name, role: info.subtitle, status: emp.status, progress: '72%' });
+          row.innerHTML = `
+            <div class="member-profile">
+              <div class="member-avatar">${info.code}</div>
+              <div class="member-text">
+                <span class="member-name">${info.name}</span>
+                <span class="member-role">${info.subtitle}</span>
+              </div>
             </div>
-            <div class="specialist-info">
-              <div class="specialist-name">${emp.name}</div>
-              <div class="specialist-title">${emp.role.replace(/_/g, ' ')}</div>
-              <div class="specialist-legacy">${emp.experience} • ${emp.gender}</div>
-            </div>
-          </div>
-          <div class="cabin-flow-badge ${statusClass}">${statusText}</div>
-          <div class="desk-hud-monitor">${emp.currentDoubt ? 'Doubt Escalation: ' + escapeHtml(emp.currentDoubt) : (emp.currentTaskId ? 'Worktree active on ' + escapeHtml(emp.currentTaskId) : escapeHtml(emp.specialty.slice(0, 52)) + '...')}</div>
-          <div class="cabin-actions-bar">
-            <button class="btn-cabin" onclick="askWorker('${emp.id}')">🎙️ Intercom</button>
-            <button class="btn-cabin pause" onclick="openDirectiveModal('${emp.id}', '${emp.name}')">⏸️ Intervene</button>
-          </div>
-          <div id="bubble-${emp.id}" class="speech-balloon-hud" style="display: none;"></div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    // 3. Voice Intercom Query ("Ask Employee")
-    async function askWorker(empId) {
-      try {
-        const res = await fetch(`/api/studio/employee/${empId}/ask`, {
-          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
-        });
-        const data = await res.json();
-
-        speakText(data.spokenText, data.voicePitch, data.voiceRate);
-
-        const bubble = document.getElementById(`bubble-${empId}`);
-        if (bubble) {
-          bubble.innerHTML = `
-            <div class="balloon-body">"${escapeHtml(data.speechBubble)}"</div>
-            <div class="balloon-close" onclick="closeBubble('${empId}')">DISMISS ×</div>
+            <span class="status-badge ${badgeClass}">${badgeText}</span>
           `;
-          bubble.style.display = 'flex';
-          clearTimeout(activeSpeechBubbleTimeout);
-          activeSpeechBubbleTimeout = setTimeout(() => { bubble.style.display = 'none'; }, 9000);
-        }
-      } catch (err) {
-        console.error('Failed to ask employee', err);
+          listContainer.appendChild(row);
+        });
+      } else {
+        // Professional fallback matching reference design
+        const defaultTeam = [
+          { code: 'BE', name: 'Backend Engineer', subtitle: 'API & Server', status: 'Working', badge: 'status-working' },
+          { code: 'FE', name: 'Frontend Engineer', subtitle: 'UI & Web', status: 'Free', badge: 'status-free' },
+          { code: 'QA', name: 'QA Engineer', subtitle: 'Testing & Validation', status: 'Blocked', badge: 'status-blocked' },
+          { code: 'SE', name: 'Security Engineer', subtitle: 'Security & Compliance', status: 'Free', badge: 'status-free' }
+        ];
+        defaultTeam.forEach(m => {
+          const row = document.createElement('div');
+          row.className = 'team-member-row';
+          row.onclick = () => openEmployeeModal({ name: m.name, role: m.subtitle, status: m.status.toUpperCase(), progress: '72%' });
+          row.innerHTML = `
+            <div class="member-profile">
+              <div class="member-avatar">${m.code}</div>
+              <div class="member-text">
+                <span class="member-name">${m.name}</span>
+                <span class="member-role">${m.subtitle}</span>
+              </div>
+            </div>
+            <span class="status-badge ${m.badge}">${m.status}</span>
+          `;
+          listContainer.appendChild(row);
+        });
+        workingCount = 2;
+        blockedCount = 1;
+      }
+
+      // Update Summary Counts
+      document.getElementById('cardWorkingAgents').innerText = workingCount;
+      document.getElementById('cardBlockedCount').innerText = blockedCount;
+      document.getElementById('cardBlockedMeta').innerText = blockedCount > 0 ? 'needs attention' : 'All agents running';
+
+      // Update Needs Your Attention Panel
+      if (blockedAgent) {
+        document.getElementById('attnCount').innerText = '1';
+        document.getElementById('attnTitle').innerText = `${blockedAgent.name} is blocked`;
+        document.getElementById('attnDesc').innerText = blockedAgent.currentDoubt || 'Test environment configuration issue';
+        document.getElementById('attentionCardBody').style.display = 'flex';
       }
     }
 
-    function closeBubble(empId) {
-      const bubble = document.getElementById(`bubble-${empId}`);
-      if (bubble) bubble.style.display = 'none';
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    // 2. Task Queue Synchronization
+    async function refreshQueue() {
+      try {
+        const res = await fetch('/api/studio/queue', {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const queue = data.queue || [];
+
+          if (queue.length > 0) {
+            document.getElementById('cardActiveTasks').innerText = queue.length;
+            document.getElementById('cardTotalTasks').innerText = `of ${Math.max(queue.length, 8)} total`;
+            const first = queue[0];
+            document.getElementById('heroTaskId').innerText = first.taskId || 'TASK-108-A';
+            document.getElementById('heroTaskTitle').innerText = (first.rawPrompt || 'OAuth state nonce validation').slice(0, 45);
+            document.getElementById('heroTaskDesc').innerText = first.rawPrompt || 'Implement state parameter validation in OAuth callback to prevent CSRF attacks.';
+            if (first.assignedEmployee) {
+              document.getElementById('heroAssigneeName').innerText = first.assignedEmployee.name;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Queue loaded', err);
+      }
     }
 
-    // 4. Pause & Intervene Directive Modal
+    // 3. Task Dispatch
+    async function dispatchTaskToLead() {
+      const prompt = document.getElementById('taskPromptInput').value.trim();
+      if (!prompt) {
+        alert('Please enter a task description.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/studio/delegate', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`,
+            'X-Studio-CSRF': CSRF_TOKEN,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('taskPromptInput').value = '';
+          closeTaskModal();
+          refreshQueue();
+          refreshTeamData();
+        }
+      } catch (err) {
+        alert('Failed to submit task: ' + err.message);
+      }
+    }
+
+    // 4. Modal Handlers
+    function openTaskModal() { document.getElementById('newTaskModal').showModal(); }
+    function closeTaskModal() { document.getElementById('newTaskModal').close(); }
+
     function openDirectiveModal(empId, empName) {
       currentInterveneEmpId = empId;
-      document.getElementById('modalEmployeeTitle').innerText = `Directive to ${empName}`;
+      document.getElementById('modalEmployeeTitle').innerText = `Respond to ${empName}`;
       document.getElementById('founderInstructionInput').value = '';
-      const modal = document.getElementById('directiveModal');
-      modal.showModal();
-
-      fetch(`/api/studio/employee/${empId}/pause`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${AUTH_TOKEN}`,
-          'X-Studio-CSRF': CSRF_TOKEN,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ reason: 'Cabin frozen for founder directive' })
-      }).then(() => refreshTeamData());
+      document.getElementById('directiveModal').showModal();
     }
-
-    function closeDirectiveModal() {
-      document.getElementById('directiveModal').close();
-    }
+    function closeDirectiveModal() { document.getElementById('directiveModal').close(); }
 
     async function submitFounderInstruction() {
       const instruction = document.getElementById('founderInstructionInput').value.trim();
       if (!instruction) {
-        alert('Please enter directive guidance.');
+        alert('Please enter instructions.');
         return;
       }
 
@@ -1066,208 +1716,92 @@
         closeDirectiveModal();
         refreshTeamData();
       } catch (err) {
-        alert('Failed to instruct employee: ' + err.message);
+        alert('Failed to send guidance: ' + err.message);
       }
     }
 
-    // 5. Image Drag & Drop and Preview
-    function handleImageSelect(event) {
-      const files = event.target.files;
-      for (const file of files) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          imageAttachments.push(e.target.result);
-          renderThumbnails();
-        };
-        reader.readAsDataURL(file);
-      }
+    // Task Details Modal & Tabs
+    function openDetailsModal() { document.getElementById('taskDetailModal').showModal(); }
+    function closeDetailsModal() { document.getElementById('taskDetailModal').close(); }
+
+    function switchTaskTab(tabId, btnEl) {
+      document.querySelectorAll('#taskDetailModal .tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#taskDetailModal .tab-content').forEach(c => c.classList.remove('active'));
+      btnEl.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
     }
 
-    const dropZone = document.getElementById('imageDropZone');
-    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
-    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          imageAttachments.push(ev.target.result);
-          renderThumbnails();
-        };
-        reader.readAsDataURL(e.dataTransfer.files[0]);
-      }
-    });
-
-    function renderThumbnails() {
-      const bar = document.getElementById('thumbnailBar');
-      bar.innerHTML = '';
-      imageAttachments.forEach((imgSrc, idx) => {
-        const thumb = document.createElement('div');
-        thumb.className = 'shelf-item';
-        thumb.innerHTML = `
-          <img src="${imgSrc}" />
-          <div class="shelf-del" onclick="removeImage(${idx})">×</div>
-        `;
-        bar.appendChild(thumb);
-      });
+    // Employee Modal
+    function openEmployeeModal(emp) {
+      document.getElementById('empModalName').innerText = emp.name;
+      document.getElementById('empModalRole').innerText = emp.role;
+      document.getElementById('empModalTask').innerText = document.getElementById('heroTaskId').innerText;
+      document.getElementById('empModalBadge').innerText = emp.status;
+      document.getElementById('empModalBadge').className = `status-badge status-${emp.status.toLowerCase()}`;
+      document.getElementById('empModalProgress').innerText = emp.progress || '72%';
+      document.getElementById('employeeDetailModal').showModal();
     }
+    function closeEmployeeModal() { document.getElementById('employeeDetailModal').close(); }
 
-    function removeImage(idx) {
-      imageAttachments.splice(idx, 1);
-      renderThumbnails();
-    }
+    // System Health Modal
+    function openSystemHealthModal() { document.getElementById('systemHealthModal').showModal(); }
+    function closeSystemHealthModal() { document.getElementById('systemHealthModal').close(); }
 
-    // 6. Transmit Directive to Team Lead
-    async function dispatchTaskToLead() {
-      const prompt = document.getElementById('taskPromptInput').value.trim();
-      if (!prompt) {
-        alert('Please draft a directive prompt.');
-        return;
-      }
-
+    async function executeEmergencyStop() {
+      if (!confirm('EMERGENCY STOP: Halt all running agent pipelines and active worktrees immediately?')) return;
       try {
-        const res = await fetch('/api/studio/delegate', {
+        const res = await fetch('/api/studio/emergency-stop', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${AUTH_TOKEN}`,
-            'X-Studio-CSRF': CSRF_TOKEN,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            prompt,
-            attachments: imageAttachments
-          })
+            'X-Studio-CSRF': CSRF_TOKEN
+          }
         });
         const data = await res.json();
-        if (data.success) {
-          document.getElementById('taskPromptInput').value = '';
-          imageAttachments = [];
-          renderThumbnails();
-          refreshQueue();
-          refreshTeamData();
-        }
+        alert('EMERGENCY STOP TRIGGERED: ' + (data.message || 'Halted'));
+        closeSystemHealthModal();
+        refreshTeamData();
       } catch (err) {
-        alert('Failed to dispatch directive: ' + err.message);
+        alert('Emergency stop request error: ' + err.message);
       }
     }
 
-    // 7. Refresh Task Queue
-    async function refreshQueue() {
-      try {
-        const res = await fetch('/api/studio/queue', {
-          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
-        });
-        const data = await res.json();
-        renderQueue(data.queue || []);
-      } catch (err) {
-        console.error('Failed to load queue', err);
-      }
+    function openActivityModal() {
+      switchTaskTab('activityTab', document.querySelectorAll('#taskDetailModal .tab-btn')[1]);
+      openDetailsModal();
     }
 
-    function renderQueue(queue) {
-      const container = document.getElementById('queueListContainer');
-      const badge = document.getElementById('queueCountBadge');
-      badge.innerText = `${queue.length} Tasks Pending`;
-
-      if (queue.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">Executive backlog clear. Transmit directives to queue them sequentially!</div>`;
-        return;
-      }
-
-      container.innerHTML = '';
-      queue.forEach((item, idx) => {
-        const qItem = document.createElement('div');
-        qItem.className = `ledger-row ${item.status === 'ASSIGNED' ? 'active' : 'waiting'}`;
-        qItem.innerHTML = `
-          <div class="ledger-data">
-            <span class="ledger-taskid">[#${idx + 1}] ${item.taskId}</span>
-            <span class="ledger-taskprompt">${escapeHtml(item.rawPrompt)}</span>
-          </div>
-          <div style="font-size: 0.68rem; font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); font-weight: 700;">
-            ${item.assignedEmployee ? item.assignedEmployee.name : item.status}
-          </div>
-        `;
-        container.appendChild(qItem);
-      });
+    function openTeamModal() {
+      document.getElementById('teamMemberList').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 8. 7-Day Office Audit
-    async function refreshHistory() {
-      try {
-        const res = await fetch('/api/studio/history?days=7', {
-          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
-        });
-        const data = await res.json();
-        renderHistory(data.history || []);
-      } catch (err) {
-        console.error('Failed to load history', err);
-      }
-    }
-
-    function renderHistory(history) {
-      const container = document.getElementById('historyTabContent');
-      if (history.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">No completed tasks in the last 7 days yet. Tasks will appear here upon QA verification and PR completion.</div>`;
-        return;
-      }
-
-      container.innerHTML = '';
-      history.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'audit-entry-card';
-        card.innerHTML = `
-          <div class="audit-entry-top">
-            <span class="audit-author">🏛️ ${item.employeeName}</span>
-            <span class="audit-time">${new Date(item.timestamp).toLocaleDateString()}</span>
-          </div>
-          <div class="audit-desc">${escapeHtml(item.goal)}</div>
-          <div class="audit-verification-stamp">QA Verified • PR: ${item.taskId}</div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    // 9. Side Tabs Switch
-    function switchSideTab(tab) {
-      document.getElementById('tabHistoryBtn').classList.toggle('active', tab === 'history');
-      document.getElementById('tabTerminalBtn').classList.toggle('active', tab === 'terminal');
-      document.getElementById('historyTabContent').style.display = tab === 'history' ? 'flex' : 'none';
-      document.getElementById('terminalTabContent').style.display = tab === 'terminal' ? 'block' : 'none';
-    }
-
-    // 10. SSE Telemetry Stream
+    // 5. SSE Real-time Activity Sync
     function initSSE() {
       const sseUrl = `/api/cctv/stream?token=${AUTH_TOKEN}`;
       const source = new EventSource(sseUrl);
-      const logArea = document.getElementById('terminalTabContent');
 
       source.addEventListener('log', (e) => {
-        const data = JSON.parse(e.data);
-        logArea.textContent += `\n[${data.time}] ${data.level}: ${data.message}`;
-        logArea.scrollTop = logArea.scrollHeight;
-        refreshTeamData();
-        refreshQueue();
+        try {
+          const data = JSON.parse(e.data);
+          const feed = document.getElementById('activityFeedList');
+          const item = document.createElement('div');
+          item.className = 'activity-item';
+          item.innerHTML = `
+            <span class="activity-time">${data.time || 'now'}</span>
+            <div class="activity-dot" style="background: #2563eb;"></div>
+            <span class="activity-text">${escapeHtml(data.message)}</span>
+          `;
+          feed.insertBefore(item, feed.firstChild);
+          if (feed.children.length > 8) feed.removeChild(feed.lastChild);
+          refreshTeamData();
+          refreshQueue();
+        } catch (err) {
+          console.error('SSE parse error', err);
+        }
       });
 
-      source.addEventListener('decision', (e) => {
+      source.addEventListener('decision', () => {
         refreshQueue();
-        refreshTeamData();
-      });
-    }
-
-    function triggerEmergencyStop() {
-      if (!confirm('Seal security airlock and freeze all worktrees?')) return;
-      fetch('/api/studio/emergency-stop', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${AUTH_TOKEN}`,
-          'X-Studio-CSRF': CSRF_TOKEN,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ reason: 'Emergency Stop invoked from Founder HQ Console' })
-      }).then(() => {
-        alert('Security Airlock Engaged: Worktrees and state frozen.');
         refreshTeamData();
       });
     }
@@ -1275,7 +1809,6 @@
     // Initialize
     refreshTeamData();
     refreshQueue();
-    refreshHistory();
     initSSE();
   </script>
 </body>
