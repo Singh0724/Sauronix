@@ -1931,7 +1931,10 @@
       renderAttentionPanel(blockedAgents, queue);
 
       // E. Update System Diagnostics Dialog
-      document.getElementById('diagTasksCount').inn    // Render Specialist Cabin / Active Engineering Workstation
+      document.getElementById('diagTasksCount').innerText = `${tasks.length} total (${activeTasksCount} active)`;
+    }
+
+    // Render Specialist Cabin / Active Engineering Workstation
     function renderHeroTask(tasks, queue) {
       const container = document.getElementById('heroTaskContent');
       const headerStatus = document.getElementById('heroTaskStatus');

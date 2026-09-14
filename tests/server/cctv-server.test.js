@@ -36,11 +36,17 @@ test('CctvServer: Authenticated endpoints, CSRF protection, and emergency stop',
   const baseUrl = `http://127.0.0.1:${testPort}`;
 
   try {
-    // 1. Static HTML serves without auth
+    // 1. Static HTML serves without auth and has valid frontend JavaScript
     const htmlRes = await fetch(`${baseUrl}/`);
     assert.equal(htmlRes.status, 200);
     const htmlText = await htmlRes.text();
     assert.match(htmlText, /Founder CCTV Mission Control/);
+
+    const scriptMatch = htmlText.match(/<script>([\s\S]*?)<\/script>/i);
+    assert.ok(scriptMatch, 'script tag must exist in cctv.html');
+    assert.doesNotThrow(() => {
+      new Function(scriptMatch[1]);
+    }, 'cctv.html script must not contain syntax errors');
 
     // 2. Unauthenticated API request rejected with 401
     const unauthRes = await fetch(`${baseUrl}/api/studio/tasks`);
