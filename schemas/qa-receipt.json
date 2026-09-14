@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QAReceipt",
+  "type": "object",
+  "required": [
+    "task_id",
+    "timestamp",
+    "stage_results",
+    "all_passed",
+    "diff_risk_score",
+    "mutation_testing_verified"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "pattern": "^TASK-[0-9]{3,6}$"
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "stage_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage_index", "stage_name", "passed", "duration_ms"],
+        "properties": {
+          "stage_index": { "type": "integer" },
+          "stage_name": { "type": "string" },
+          "passed": { "type": "boolean" },
+          "duration_ms": { "type": "number" },
+          "details": { "type": "string" }
+        }
+      }
+    },
+    "all_passed": {
+      "type": "boolean"
+    },
+    "diff_risk_score": {
+      "type": "number"
+    },
+    "mutation_testing_verified": {
+      "type": "boolean"
+    },
+    "failure_classification": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "SYNTAX_ERROR",
+        "ASSERTION_FAILURE",
+        "TIMEOUT_DEADLOCK",
+        "DEPENDENCY_ERROR",
+        "SECURITY_VIOLATION",
+        "VACUOUS_TEST"
+      ]
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HardenedTaskSpec",
+  "type": "object",
+  "required": [
+    "task_id",
+    "goal",
+    "risk_level",
+    "allowed_files",
+    "forbidden_files",
+    "acceptance_criteria",
+    "test_plan",
+    "rollback_plan",
+    "security_impact",
+    "human_approval_required"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "pattern": "^TASK-[0-9]{3,6}$"
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 20
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+    },
+    "allowed_files": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "forbidden_files": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "verification_command", "expected_exit_code"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "verification_command": { "type": "string" },
+          "expected_exit_code": { "type": "integer", "default": 0 }
+        }
+      },
+      "minItems": 1
+    },
+    "test_plan": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "rollback_plan": {
+      "type": "string",
+      "minLength": 20
+    },
+    "security_impact": {
+      "type": "string",
+      "enum": ["NONE", "MINIMAL", "AUTHENTICATION", "AUTHORIZATION", "DATA_RETENTION"]
+    },
+    "human_approval_required": {
+      "type": "boolean"
+    }
+  }
+}
