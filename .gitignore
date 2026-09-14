@@ -1,0 +1,32 @@
+# Operating System & IDE Artifacts
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Node Dependencies & Logs
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Git Worktrees (Isolated task environments)
+.worktrees/
+
+# SQLite Database Files (WAL & Shared Memory, Local databases)
+db/*.sqlite-wal
+db/*.sqlite-shm
+*.sqlite-wal
+*.sqlite-shm
+backups/
+
+# Transient Test / Scratch Artifacts
+.agents/artifacts/temp/
+test-scratch/
+
+# Secrets & Environment Configurations
+.env*
+!*.env.example
+*.pem
+*.key
+credentials.json
