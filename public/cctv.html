@@ -3,240 +3,395 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Founder Cyber-Office Robot Control Hub | Autonomous AI Studio v5.0</title>
+  <title>Sauronix AI • Founder CCTV Mission Control & Executive Office Cabins</title>
   <meta name="studio-auth-token" content="">
   <meta name="studio-csrf-token" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #060913;
-      --bg-card: rgba(13, 19, 36, 0.75);
-      --border: rgba(30, 41, 59, 0.8);
-      --border-glow: rgba(59, 130, 246, 0.4);
-      --primary: #3b82f6;
-      --cyan: #06b6d4;
-      --pink: #ec4899;
-      --emerald: #10b981;
-      --amber: #f59e0b;
-      --danger: #ef4444;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --floor-bg: #070a13;
+      --floor-grid: rgba(30, 41, 59, 0.35);
+      --cabin-glass: rgba(15, 23, 42, 0.72);
+      --cabin-border: rgba(51, 65, 85, 0.6);
+      --cabin-border-glow: rgba(56, 189, 248, 0.4);
+      --wood-trim: #78350f;
+      --brass-gold: #f59e0b;
+      --executive-blue: #0284c7;
+      --emerald-led: #10b981;
+      --amber-led: #f59e0b;
+      --danger-led: #ef4444;
+      --desk-pad: rgba(2, 6, 23, 0.85);
+      --text-main: #f8fafc;
+      --text-dim: #94a3b8;
+      --text-brass: #fde68a;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+
     body {
-      background: radial-gradient(circle at 50% 0%, #0d1527 0%, var(--bg) 70%);
-      color: var(--text);
+      background-color: var(--floor-bg);
+      background-image: 
+        radial-gradient(circle at 50% -20%, #0f1f3d 0%, transparent 60%),
+        linear-gradient(var(--floor-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--floor-grid) 1px, transparent 1px);
+      background-size: 100% 100%, 48px 48px, 48px 48px;
+      color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding: 16px 20px;
+      padding: 16px 24px;
       gap: 16px;
       overflow-x: hidden;
     }
 
-    /* Top Command Bar */
-    .top-bar {
+    /* Executive Penthouse Header */
+    .penthouse-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 14px 22px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      padding: 14px 24px;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.85) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 14px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
-    .brand { display: flex; align-items: center; gap: 14px; }
-    .brand-logo { font-size: 1.8rem; filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.6)); }
-    .brand h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
-    .brand p { font-size: 0.75rem; color: var(--cyan); font-family: monospace; }
-    
-    .status-badge {
+    .corp-brand { display: flex; align-items: center; gap: 16px; }
+    .corp-emblem {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1.5px solid var(--brass-gold);
+      border-radius: 10px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
+      font-size: 1.6rem;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+    }
+    .corp-title h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .corp-title p {
+      font-size: 0.72rem;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.04em;
+    }
+
+    .headquarters-telemetry {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .room-beacon {
+      display: flex;
+      align-items: center;
+      gap: 9px;
       padding: 6px 14px;
-      background: rgba(16, 185, 129, 0.1);
+      background: rgba(16, 185, 129, 0.08);
       border: 1px solid rgba(16, 185, 129, 0.3);
       border-radius: 20px;
-      font-size: 0.75rem;
+      font-size: 0.73rem;
       font-weight: 700;
-      color: var(--emerald);
-      letter-spacing: 0.05em;
+      color: var(--emerald-led);
+      font-family: 'JetBrains Mono', monospace;
     }
-    .pulse-dot {
+    .beacon-light {
       width: 8px; height: 8px;
       border-radius: 50%;
-      background: var(--emerald);
-      box-shadow: 0 0 10px var(--emerald);
-      animation: pulse 1.8s infinite;
+      background: var(--emerald-led);
+      box-shadow: 0 0 10px var(--emerald-led);
+      animation: beacon-pulse 2s infinite;
     }
-    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+    @keyframes beacon-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.85); } }
 
-    .top-actions { display: flex; align-items: center; gap: 12px; }
-    .btn-icon {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 8px 14px;
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .btn-executive {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      color: var(--text-main);
+      padding: 8px 15px;
       border-radius: 8px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       transition: all 0.2s;
     }
-    .btn-icon:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--cyan); }
+    .btn-executive:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: #38bdf8;
+      transform: translateY(-1px);
+    }
+    .btn-freeze {
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    .btn-freeze:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: var(--danger-led);
+    }
 
-    /* Main Dashboard Grid */
-    .dashboard-layout {
+    /* Main Floor Layout */
+    .hq-floor-layout {
       display: grid;
       grid-template-columns: 1fr 390px;
-      gap: 16px;
+      gap: 18px;
       flex: 1;
       min-height: 0;
     }
 
-    .main-viewport { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+    .wings-container {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-height: 0;
+    }
 
-    /* Robot Squad Grid */
-    .section-title {
-      font-size: 0.8rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--cyan);
+    /* Floor Plan Section Headers */
+    .floor-section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 4px;
+      padding: 2px 4px;
+      margin-bottom: 8px;
     }
-    .robot-squad-grid {
+    .section-tag {
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+
+    /* Cabins Grid */
+    .cabins-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 14px;
     }
 
-    .robot-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
+    /* Architectural Executive Cabin Card */
+    .office-cabin {
+      background: var(--cabin-glass);
+      border: 1px solid var(--cabin-border);
       border-radius: 12px;
-      padding: 14px;
+      padding: 15px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       position: relative;
       overflow: hidden;
-      backdrop-filter: blur(10px);
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .robot-card:hover {
+    .office-cabin:hover {
       transform: translateY(-2px);
-      border-color: var(--border-glow);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    }
-    .robot-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--card-accent, var(--primary));
-      box-shadow: 0 0 12px var(--card-accent, var(--primary));
+      border-color: var(--cabin-border-glow);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.15);
     }
 
-    .robot-header { display: flex; align-items: center; gap: 10px; }
-    .robot-avatar {
-      width: 44px; height: 44px;
+    /* Cabin Door Nameplate Header */
+    .cabin-doorplate {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+    }
+    .cabin-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      padding: 2px 6px;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 4px;
+    }
+    .cabin-lamp {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--emerald-led);
+      box-shadow: 0 0 8px var(--emerald-led);
+    }
+
+    /* Cabin Interior & Occupant */
+    .occupant-suite {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .occupant-avatar-frame {
+      width: 46px; height: 46px;
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+      border: 1.5px solid rgba(148, 163, 184, 0.25);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+      font-size: 1.5rem;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7);
+      position: relative;
     }
-    .robot-info { flex: 1; min-width: 0; }
-    .robot-name { font-size: 0.85rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .robot-role { font-size: 0.7rem; color: var(--text-muted); font-family: monospace; }
-    .robot-exp { font-size: 0.65rem; color: var(--amber); font-weight: 600; }
+    .occupant-details { flex: 1; min-width: 0; }
+    .occupant-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #ffffff;
+    }
+    .occupant-post {
+      font-size: 0.68rem;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 1px;
+    }
+    .occupant-tenure {
+      font-size: 0.65rem;
+      color: var(--text-brass);
+      font-weight: 600;
+    }
 
-    .robot-status-pill {
+    /* Cabin Status Indicator */
+    .cabin-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       align-self: flex-start;
-      padding: 3px 8px;
-      border-radius: 12px;
+      padding: 3px 9px;
+      border-radius: 6px;
       font-size: 0.68rem;
       font-weight: 800;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.04em;
     }
-    .status-free { background: rgba(16, 185, 129, 0.15); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.4); }
-    .status-working { background: rgba(6, 182, 212, 0.2); color: var(--cyan); border: 1px solid var(--cyan); animation: working-glow 2s infinite; }
-    .status-blocked { background: rgba(245, 158, 11, 0.2); color: var(--amber); border: 1px solid var(--amber); animation: blink 1.2s infinite; }
-    .status-done { background: rgba(147, 51, 234, 0.2); color: #c084fc; border: 1px solid #c084fc; }
-
-    @keyframes working-glow { 0%, 100% { box-shadow: 0 0 5px rgba(6, 182, 212, 0.3); } 50% { box-shadow: 0 0 15px rgba(6, 182, 212, 0.6); } }
-
-    .robot-task-snippet {
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 6px;
-      padding: 6px 8px;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      min-height: 38px;
-      display: flex;
-      align-items: center;
+    .status-free {
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--emerald-led);
+      border: 1px solid rgba(16, 185, 129, 0.35);
     }
+    .status-working {
+      background: rgba(56, 189, 248, 0.18);
+      color: #38bdf8;
+      border: 1px solid #38bdf8;
+      animation: working-hud 2s infinite;
+    }
+    .status-blocked {
+      background: rgba(245, 158, 11, 0.18);
+      color: var(--amber-led);
+      border: 1px solid var(--amber-led);
+      animation: alert-blink 1.2s infinite;
+    }
+    .status-done {
+      background: rgba(168, 85, 247, 0.18);
+      color: #c084fc;
+      border: 1px solid #c084fc;
+    }
+    @keyframes working-hud { 0%, 100% { box-shadow: 0 0 6px rgba(56, 189, 248, 0.3); } 50% { box-shadow: 0 0 16px rgba(56, 189, 248, 0.6); } }
+    @keyframes alert-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    .robot-actions { display: flex; gap: 6px; margin-top: auto; }
-    .btn-card {
-      flex: 1;
-      padding: 6px 8px;
-      border-radius: 6px;
+    /* Workstation Interior Screen Display */
+    .desk-monitor-screen {
+      background: rgba(2, 6, 23, 0.7);
+      border: 1px solid rgba(30, 41, 59, 0.7);
+      border-radius: 7px;
+      padding: 8px 10px;
       font-size: 0.72rem;
+      color: var(--text-dim);
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      line-height: 1.35;
+    }
+
+    /* Cabin Desk Action Controls */
+    .cabin-controls {
+      display: flex;
+      gap: 7px;
+      margin-top: auto;
+    }
+    .btn-intercom {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 0.74rem;
       font-weight: 700;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
       cursor: pointer;
-      transition: all 0.15s;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 5px;
+      transition: all 0.18s;
     }
-    .btn-card:hover { background: rgba(255, 255, 255, 0.12); border-color: var(--cyan); }
-    .btn-card.pause { border-color: rgba(245, 158, 11, 0.4); color: var(--amber); }
-    .btn-card.pause:hover { background: rgba(245, 158, 11, 0.2); }
+    .btn-intercom:hover {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+    .btn-intervene {
+      border-color: rgba(245, 158, 11, 0.35);
+      color: var(--amber-led);
+    }
+    .btn-intervene:hover {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: var(--amber-led);
+    }
 
-    /* Speech Bubble Visual Overlay */
-    .speech-bubble {
+    /* Intercom Holographic Speech Display */
+    .cabin-speech-hologram {
       position: absolute;
       inset: 8px;
-      background: rgba(6, 9, 19, 0.95);
-      border: 1px solid var(--cyan);
+      background: rgba(7, 10, 19, 0.96);
+      border: 1.5px solid #38bdf8;
       border-radius: 10px;
-      padding: 10px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      font-size: 0.74rem;
-      color: #e2e8f0;
-      z-index: 10;
-      box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
-      animation: bubble-fade 0.2s ease-out;
+      font-size: 0.76rem;
+      color: #f1f5f9;
+      z-index: 20;
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.35);
+      animation: holo-pop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    @keyframes bubble-fade { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-    .speech-text { line-height: 1.35; overflow-y: auto; max-height: 110px; }
-    .speech-close { align-self: flex-end; font-size: 0.7rem; color: var(--cyan); cursor: pointer; text-decoration: underline; }
+    @keyframes holo-pop { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+    .holo-text { line-height: 1.4; overflow-y: auto; max-height: 115px; }
+    .holo-dismiss {
+      align-self: flex-end;
+      font-size: 0.7rem;
+      color: #38bdf8;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+    }
 
-    /* Bottom Row: Dispatch Box & Task Queue */
-    .bottom-grid {
+    /* Operations Floor: Founder Desk & Queue Board */
+    .operations-floor {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
@@ -244,65 +399,92 @@
       min-height: 0;
     }
 
-    .panel {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
+    .desk-console {
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(2, 6, 23, 0.9) 100%);
+      border: 1px solid rgba(51, 65, 85, 0.6);
       border-radius: 12px;
       padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 12px;
       min-height: 0;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
-    .panel-header { display: flex; justify-content: space-between; align-items: center; }
 
-    /* Dispatch Box */
-    .dispatch-input {
+    .console-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .console-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    /* Executive Memo Dispatch Pad */
+    .directive-pad {
       width: 100%;
       height: 75px;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(51, 65, 85, 0.8);
       border-radius: 8px;
-      padding: 10px;
-      color: var(--text);
-      font-size: 0.8rem;
+      padding: 12px;
+      color: var(--text-main);
+      font-size: 0.82rem;
       resize: none;
       outline: none;
-      transition: border-color 0.2s;
+      line-height: 1.4;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .dispatch-input:focus { border-color: var(--cyan); box-shadow: 0 0 10px rgba(6, 182, 212, 0.2); }
+    .directive-pad:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    }
 
-    .drop-zone {
-      border: 1px dashed var(--border);
+    .attachment-drop-slot {
+      border: 1.5px dashed rgba(71, 85, 105, 0.7);
       border-radius: 8px;
-      padding: 8px;
+      padding: 10px;
       text-align: center;
-      background: rgba(255, 255, 255, 0.01);
+      background: rgba(255, 255, 255, 0.015);
       cursor: pointer;
-      transition: all 0.2s;
       font-size: 0.75rem;
-      color: var(--text-muted);
+      color: var(--text-dim);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
+      transition: all 0.2s;
     }
-    .drop-zone:hover, .drop-zone.dragover { border-color: var(--cyan); background: rgba(6, 182, 212, 0.05); color: var(--cyan); }
-    .thumbnail-bar { display: flex; gap: 8px; overflow-x: auto; padding-top: 4px; }
-    .thumb-item {
+    .attachment-drop-slot:hover, .attachment-drop-slot.dragover {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.06);
+      color: #38bdf8;
+    }
+
+    .thumbnail-dock { display: flex; gap: 8px; overflow-x: auto; padding-top: 4px; }
+    .thumbnail-thumb {
       position: relative;
       width: 44px; height: 44px;
       border-radius: 6px;
       overflow: hidden;
-      border: 1px solid var(--border);
+      border: 1px solid rgba(148, 163, 184, 0.3);
     }
-    .thumb-item img { width: 100%; height: 100%; object-fit: cover; }
-    .thumb-remove {
+    .thumbnail-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .thumbnail-del {
       position: absolute;
       top: 1px; right: 1px;
-      background: rgba(0,0,0,0.8);
-      color: var(--danger);
+      background: rgba(0, 0, 0, 0.85);
+      color: var(--danger-led);
       width: 14px; height: 14px;
       border-radius: 50%;
       display: flex;
@@ -312,9 +494,9 @@
       cursor: pointer;
     }
 
-    .btn-dispatch {
-      background: linear-gradient(135deg, #2563eb, #06b6d4);
-      color: #fff;
+    .btn-dispatch-directive {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
       border: none;
       border-radius: 8px;
       padding: 10px;
@@ -325,13 +507,16 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);
       transition: all 0.2s;
     }
-    .btn-dispatch:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5); }
+    .btn-dispatch-directive:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(2, 132, 199, 0.55);
+    }
 
-    /* Task Queue Board */
-    .queue-list {
+    /* Multi-Task Backlog Board */
+    .queue-ledger {
       flex: 1;
       overflow-y: auto;
       display: flex;
@@ -339,39 +524,43 @@
       gap: 8px;
       padding-right: 4px;
     }
-    .queue-item {
-      background: rgba(0, 0, 0, 0.25);
-      border-left: 3px solid var(--cyan);
+    .ledger-entry {
+      background: rgba(0, 0, 0, 0.3);
+      border-left: 3px solid #38bdf8;
       border-radius: 0 8px 8px 0;
-      padding: 8px 10px;
+      padding: 9px 12px;
       font-size: 0.75rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .queue-item.active { border-left-color: var(--emerald); background: rgba(16, 185, 129, 0.05); }
-    .queue-item.waiting { border-left-color: var(--amber); }
-    .queue-meta { display: flex; flex-direction: column; gap: 2px; }
-    .queue-id { font-weight: 800; font-family: monospace; color: var(--cyan); }
-    .queue-prompt { color: #cbd5e1; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ledger-entry.active { border-left-color: var(--emerald-led); background: rgba(16, 185, 129, 0.07); }
+    .ledger-entry.waiting { border-left-color: var(--amber-led); }
+    .ledger-meta { display: flex; flex-direction: column; gap: 2px; }
+    .ledger-id { font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #38bdf8; }
+    .ledger-desc { color: #cbd5e1; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* Side Bar: 1-Week History & Live Feed */
-    .side-bar { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
-    .tab-bar { display: flex; gap: 6px; background: rgba(0,0,0,0.3); padding: 4px; border-radius: 8px; }
-    .tab-btn {
+    /* Right Operations Tower: 1-Week Audit & Live Feed */
+    .operations-tower { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+    .tower-tabs { display: flex; gap: 6px; background: rgba(0, 0, 0, 0.35); padding: 4px; border-radius: 8px; }
+    .tab-trigger {
       flex: 1;
-      padding: 6px;
+      padding: 7px;
       border: none;
       background: transparent;
-      color: var(--text-muted);
+      color: var(--text-dim);
       border-radius: 6px;
       font-size: 0.72rem;
       font-weight: 700;
       cursor: pointer;
     }
-    .tab-btn.active { background: var(--bg-card); color: var(--cyan); border: 1px solid var(--border); }
+    .tab-trigger.active {
+      background: rgba(30, 41, 59, 0.8);
+      color: #38bdf8;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
 
-    .history-list {
+    .audit-records-list {
       flex: 1;
       overflow-y: auto;
       display: flex;
@@ -379,152 +568,158 @@
       gap: 8px;
       padding-right: 4px;
     }
-    .history-card {
-      background: rgba(0,0,0,0.25);
-      border: 1px solid var(--border);
+    .audit-card {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(51, 65, 85, 0.6);
       border-radius: 8px;
-      padding: 8px 10px;
-      font-size: 0.72rem;
+      padding: 9px 12px;
+      font-size: 0.73rem;
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
-    .history-top { display: flex; justify-content: space-between; font-weight: 700; }
-    .history-author { color: var(--cyan); }
-    .history-time { color: var(--text-muted); font-family: monospace; font-size: 0.65rem; }
-    .history-goal { color: #e2e8f0; }
-    .history-badge {
+    .audit-top { display: flex; justify-content: space-between; font-weight: 700; }
+    .audit-specialist { color: #38bdf8; }
+    .audit-date { color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; }
+    .audit-mission { color: #e2e8f0; line-height: 1.3; }
+    .audit-seal {
       align-self: flex-start;
       font-size: 0.65rem;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 4px;
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--emerald);
-      font-family: monospace;
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--emerald-led);
+      font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Directive Dialog Modal */
+    .telemetry-stream {
+      flex: 1;
+      background: #020617;
+      border: 1px solid rgba(51, 65, 85, 0.7);
+      border-radius: 8px;
+      padding: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #34d399;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      line-height: 1.45;
+    }
+
+    /* Founder Directive Intervention Dialog */
     dialog {
       margin: auto;
       background: #090d1a;
-      border: 1px solid var(--cyan);
+      border: 1.5px solid #38bdf8;
       border-radius: 12px;
-      padding: 20px;
-      color: var(--text);
+      padding: 22px;
+      color: var(--text-main);
       max-width: 480px;
       width: 90vw;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(6, 182, 212, 0.25);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(56, 189, 248, 0.25);
     }
-    dialog::backdrop { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); }
+    dialog::backdrop { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); }
     .dialog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .dialog-header h3 { font-size: 1rem; color: var(--cyan); }
-    .dialog-input {
+    .dialog-header h3 { font-size: 1.05rem; color: #38bdf8; font-weight: 800; }
+    .dialog-textarea {
       width: 100%;
-      height: 90px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border);
+      height: 95px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.3);
       border-radius: 8px;
       padding: 10px;
-      color: var(--text);
+      color: var(--text-main);
       font-size: 0.82rem;
       resize: none;
       margin: 12px 0;
     }
     .dialog-footer { display: flex; justify-content: flex-end; gap: 8px; }
-
-    /* Live CCTV Logs */
-    .terminal-feed {
-      flex: 1;
-      background: #000;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px;
-      font-family: monospace;
-      font-size: 0.72rem;
-      color: #34d399;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      line-height: 1.4;
-    }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation & Control Bar -->
-  <header class="top-bar">
-    <div class="brand">
-      <div class="brand-logo">🤖</div>
-      <div>
-        <h1>Founder CCTV Mission Control • Cyber-Office Robot Hub</h1>
-        <p>Autonomous AI Enterprise Studio v5.0 • 5-Member Veteran Squad</p>
+  <!-- Executive Penthouse Header -->
+  <header class="penthouse-header">
+    <div class="corp-brand">
+      <div class="corp-emblem">🏛️</div>
+      <div class="corp-title">
+        <h1>Sauronix AI • Virtual Corporate HQ</h1>
+        <p>FLOOR 42 EXECUTIVE SUITE & SPECIALIST OPERATIONS WING</p>
       </div>
     </div>
 
-    <div class="status-badge" id="hudEngineStatus">
-      <div class="pulse-dot"></div>
-      ENGINE ONLINE (PORT 3000)
+    <div class="headquarters-telemetry">
+      <div class="room-beacon" id="hudEngineStatus">
+        <div class="beacon-light"></div>
+        HQ OPERATIONS ONLINE (PORT 3000)
+      </div>
     </div>
 
-    <div class="top-actions">
-      <button class="btn-icon" onclick="toggleVoice()" id="voiceToggleBtn">
-        <span id="voiceIcon">🔊</span> Voice Intercom: ON
+    <div class="header-actions">
+      <button class="btn-executive" onclick="toggleVoice()" id="voiceToggleBtn">
+        <span id="voiceIcon">🔊</span> Intercom Audio: ON
       </button>
-      <button class="btn-icon" onclick="refreshTeamData()">🔄 Refresh</button>
-      <button class="btn-icon" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.4);" onclick="triggerEmergencyStop()">🛑 Stop & Freeze</button>
+      <button class="btn-executive" onclick="refreshTeamData()">🔄 Floor Scan</button>
+      <button class="btn-executive btn-freeze" onclick="triggerEmergencyStop()">🛑 Security Airlock</button>
     </div>
   </header>
 
-  <div class="dashboard-layout">
+  <!-- Main Floor Plan Layout -->
+  <div class="hq-floor-layout">
     
-    <!-- Left: Robot Workforce + Dispatch + Queue -->
-    <main class="main-viewport">
+    <!-- Left: Department Wings & Founder Console -->
+    <main class="wings-container">
       
-      <!-- 5-Member Robot Workforce Section -->
+      <!-- Executive Cabins Section -->
       <section>
-        <div class="section-title">
-          <span>👑 Robot Specialist Squad (50+ Years Experience Each)</span>
-          <span id="squadSummary" style="font-family: monospace; font-size: 0.72rem; color: var(--text-muted);">4 Active Workers • 1 Commander</span>
+        <div class="floor-section-header">
+          <div class="section-tag">
+            <span>🚪 Executive Suites & Department Cabins</span>
+          </div>
+          <div class="section-meta" id="squadSummary">
+            1 Lead Commander • 4 Senior Specialists
+          </div>
         </div>
 
-        <div class="robot-squad-grid" id="robotSquadContainer">
-          <!-- Dynamically Rendered by renderRobots() -->
+        <div class="cabins-grid" id="robotSquadContainer">
+          <!-- Dynamically populated with office cabins by renderRobots() -->
         </div>
       </section>
 
-      <!-- Bottom Grid: Dispatch Box + Task Queue -->
-      <div class="bottom-grid">
+      <!-- Operations Floor: Founder Desk & Multi-Task Backlog -->
+      <div class="operations-floor">
         
-        <!-- Task Dispatcher -->
-        <section class="panel">
-          <div class="panel-header">
-            <h2 class="section-title" style="margin: 0;">⚡ Assign Task to Team Lead</h2>
-            <span style="font-size: 0.7rem; color: var(--cyan); font-family: monospace;">Dr. Elena Rostova</span>
+        <!-- Task Dispatch Console -->
+        <section class="desk-console">
+          <div class="console-header">
+            <h2 class="console-title">⚡ Founder Directive Console</h2>
+            <span style="font-size: 0.7rem; color: #38bdf8; font-family: 'JetBrains Mono', monospace;">Direct Line to Cabin 101</span>
           </div>
 
-          <textarea id="taskPromptInput" class="dispatch-input" placeholder="Type instructions or directives for the Team Lead (e.g. 'Build Stripe payment webhook router' or 'Optimize landing page SEO')..."></textarea>
+          <textarea id="taskPromptInput" class="directive-pad" placeholder="Draft directive memo for Chief Coordinator Dr. Elena Rostova (e.g. 'Build Stripe payment webhook router' or 'Audit landing page conversion architecture')..."></textarea>
 
-          <div class="drop-zone" id="imageDropZone" onclick="document.getElementById('imageFileInput').click()">
-            <span>📎 Drag & Drop UI mockups, screenshots, or click to attach</span>
+          <div class="attachment-drop-slot" id="imageDropZone" onclick="document.getElementById('imageFileInput').click()">
+            <span>📎 Drop architectural blueprints, mockups, or click to attach</span>
             <input type="file" id="imageFileInput" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
           </div>
 
-          <div class="thumbnail-bar" id="thumbnailBar"></div>
+          <div class="thumbnail-dock" id="thumbnailBar"></div>
 
-          <button class="btn-dispatch" onclick="dispatchTaskToLead()">
-            <span>🚀 Dispatch to Team Lead</span>
+          <button class="btn-dispatch-directive" onclick="dispatchTaskToLead()">
+            <span>🚀 Transmit Directive to Cabin 101</span>
           </button>
         </section>
 
         <!-- Live Queue Board -->
-        <section class="panel">
-          <div class="panel-header">
-            <h2 class="section-title" style="margin: 0;">📋 Multi-Task Backlog & Queue</h2>
-            <span id="queueCountBadge" style="font-size: 0.7rem; color: var(--amber); font-family: monospace;">0 In Queue</span>
+        <section class="desk-console">
+          <div class="console-header">
+            <h2 class="console-title">📋 Operations Backlog & Queue</h2>
+            <span id="queueCountBadge" style="font-size: 0.7rem; color: var(--amber-led); font-family: 'JetBrains Mono', monospace;">0 Tasks Pending</span>
           </div>
 
-          <div class="queue-list" id="queueListContainer">
-            <div style="color: var(--text-muted); font-size: 0.75rem; text-align: center; padding-top: 20px;">
-              Queue is clear. Dispatch tasks to queue them sequentially!
+          <div class="queue-ledger" id="queueListContainer">
+            <div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">
+              Executive backlog clear. Transmit directives to queue them sequentially!
             </div>
           </div>
         </section>
@@ -532,43 +727,43 @@
       </div>
     </main>
 
-    <!-- Right Sidebar: 1-Week History & Live CCTV Telemetry -->
-    <aside class="side-bar">
-      <section class="panel" style="flex: 1;">
-        <div class="tab-bar">
-          <button class="tab-btn active" id="tabHistoryBtn" onclick="switchSideTab('history')">📅 1-Week Work History</button>
-          <button class="tab-btn" id="tabTerminalBtn" onclick="switchSideTab('terminal')">📟 Live CCTV Log</button>
+    <!-- Right: Audit Records & Live Telemetry Feed -->
+    <aside class="operations-tower">
+      <section class="desk-console" style="flex: 1;">
+        <div class="tower-tabs">
+          <button class="tab-trigger active" id="tabHistoryBtn" onclick="switchSideTab('history')">📅 7-Day Office Audit</button>
+          <button class="tab-trigger" id="tabTerminalBtn" onclick="switchSideTab('terminal')">📟 Operations Stream</button>
         </div>
 
-        <!-- Tab 1: 1-Week Work History -->
-        <div class="history-list" id="historyTabContent">
-          <div style="color: var(--text-muted); font-size: 0.75rem; text-align: center; padding-top: 20px;">
+        <!-- 1-Week Audit Ledger -->
+        <div class="audit-records-list" id="historyTabContent">
+          <div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">
             Loading 7-day completed task audit...
           </div>
         </div>
 
-        <!-- Tab 2: Terminal Logs -->
-        <div class="terminal-feed" id="terminalTabContent" style="display: none;">
-[System]: Connecting to Authenticated CCTV Event Stream...
+        <!-- Operations Stream Log -->
+        <div class="telemetry-stream" id="terminalTabContent" style="display: none;">
+[HQ Stream]: Initializing secure CCTV telemetry link...
         </div>
       </section>
     </aside>
 
   </div>
 
-  <!-- Direct Intervention Modal Dialog -->
+  <!-- Direct Intervention Dialog -->
   <dialog id="directiveModal">
     <div class="dialog-header">
-      <h3 id="modalEmployeeTitle">Direct Instruction to Worker</h3>
-      <button onclick="closeDirectiveModal()" style="background: transparent; border: none; color: var(--text-muted); font-size: 1rem; cursor: pointer;">✕</button>
+      <h3 id="modalEmployeeTitle">Intervene & Direct Specialist</h3>
+      <button onclick="closeDirectiveModal()" style="background: transparent; border: none; color: var(--text-dim); font-size: 1.1rem; cursor: pointer;">✕</button>
     </div>
-    <p style="font-size: 0.75rem; color: var(--text-muted);" id="modalEmployeeSub">Provide corrective instructions. The specialist's worktree is frozen and will resume with your direction.</p>
+    <p style="font-size: 0.75rem; color: var(--text-dim);" id="modalEmployeeSub">Specialist cabin worktree is frozen. Provide corrective directive to resume.</p>
     
-    <textarea id="founderInstructionInput" class="dialog-input" placeholder="Type corrective guidance (e.g. 'Use async iteration instead of recursive promises')..."></textarea>
+    <textarea id="founderInstructionInput" class="dialog-textarea" placeholder="Type corrective directive (e.g. 'Use async iteration instead of recursive promises')..."></textarea>
 
     <div class="dialog-footer">
-      <button class="btn-icon" onclick="closeDirectiveModal()">Cancel</button>
-      <button class="btn-dispatch" style="padding: 8px 16px;" onclick="submitFounderInstruction()">🚀 Resume Worker</button>
+      <button class="btn-executive" onclick="closeDirectiveModal()">Cancel</button>
+      <button class="btn-dispatch-directive" style="padding: 8px 16px;" onclick="submitFounderInstruction()">🚀 Resume Worktree</button>
     </div>
   </dialog>
 
@@ -577,8 +772,6 @@
     const AUTH_TOKEN = document.querySelector('meta[name="studio-auth-token"]')?.content || '';
     const CSRF_TOKEN = document.querySelector('meta[name="studio-csrf-token"]')?.content || '';
 
-    // Escape untrusted strings before any innerHTML insertion (task prompts,
-    // employee doubts, goals, and speech text all originate from user input).
     function escapeHtml(value) {
       return String(value ?? '')
         .replace(/&/g, '&amp;')
@@ -602,7 +795,6 @@
       utterance.pitch = pitch;
       utterance.rate = rate;
 
-      // Prefer a natural English female voice if available
       const voices = window.speechSynthesis.getVoices();
       const femaleVoice = voices.find(v => (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Samantha') || v.name.includes('Google UK English Female')));
       if (femaleVoice) utterance.voice = femaleVoice;
@@ -613,11 +805,11 @@
     function toggleVoice() {
       voiceEnabled = !voiceEnabled;
       const btn = document.getElementById('voiceToggleBtn');
-      btn.innerHTML = voiceEnabled ? '<span>🔊</span> Voice Intercom: ON' : '<span>🔇</span> Voice Intercom: MUTED';
+      btn.innerHTML = voiceEnabled ? '<span>🔊</span> Intercom Audio: ON' : '<span>🔇</span> Intercom Audio: MUTED';
       if (!voiceEnabled) window.speechSynthesis.cancel();
     }
 
-    // 2. Fetch Team & Render Robot Cards
+    // 2. Fetch Team & Render Executive Cabins
     async function refreshTeamData() {
       try {
         const res = await fetch('/api/studio/team', {
@@ -634,65 +826,89 @@
       const container = document.getElementById('robotSquadContainer');
       container.innerHTML = '';
 
-      // 1. Render Team Lead
+      // 1. Render Cabin 101 - Executive Suite (Lead)
       if (lead) {
         const leadCard = document.createElement('div');
-        leadCard.className = 'robot-card';
-        leadCard.style.setProperty('--card-accent', '#f59e0b');
+        leadCard.className = 'office-cabin';
+        leadCard.style.borderColor = 'rgba(245, 158, 11, 0.4)';
         leadCard.innerHTML = `
-          <div class="robot-header">
-            <div class="robot-avatar">👑</div>
-            <div class="robot-info">
-              <div class="robot-name">${lead.name}</div>
-              <div class="robot-role">Commander (Lead)</div>
-              <div class="robot-exp">50+ Yrs Exp • Female</div>
+          <div class="cabin-doorplate">
+            <span class="cabin-number">CABIN 101 • EXECUTIVE SUITE</span>
+            <span class="cabin-lamp" style="background: var(--brass-gold); box-shadow: 0 0 10px var(--brass-gold);"></span>
+          </div>
+          <div class="occupant-suite">
+            <div class="occupant-avatar-frame" style="border-color: var(--brass-gold);">
+              👑
+            </div>
+            <div class="occupant-details">
+              <div class="occupant-name">${lead.name}</div>
+              <div class="occupant-post">Chief Engineering Coordinator</div>
+              <div class="occupant-tenure">50+ Yrs Exp • Female Commander</div>
             </div>
           </div>
-          <div class="robot-status-pill status-working">⚡ COORDINATING SQUAD</div>
-          <div class="robot-task-snippet">Orchestrating multi-task queue, prompt contracts, and QA reviews.</div>
-          <div class="robot-actions">
-            <button class="btn-card" onclick="askWorker('LEAD-01')">🎙️ Ask Status</button>
+          <div class="cabin-status-badge status-working">⚡ SQUAD COORDINATION</div>
+          <div class="desk-monitor-screen">Active leadership desk: Orchestrating multi-agent task queue and QA reviews.</div>
+          <div class="cabin-controls">
+            <button class="btn-intercom" onclick="askWorker('LEAD-01')">🎙️ Intercom Line</button>
           </div>
-          <div id="bubble-LEAD-01" class="speech-bubble" style="display: none;"></div>
+          <div id="bubble-LEAD-01" class="cabin-speech-hologram" style="display: none;"></div>
         `;
         container.appendChild(leadCard);
       }
 
-      // 2. Render 4 Specialist Employees
-      employees.forEach(emp => {
+      // 2. Render Specialist Department Cabins
+      const cabinMap = {
+        'EMP-01': { no: 'CABIN 102', wing: 'SOFTWARE ARCHITECTURE LAB', icon: '💻' },
+        'EMP-02': { no: 'CABIN 103', wing: 'GROWTH STRATEGY SUITE', icon: '📈' },
+        'EMP-03': { no: 'CABIN 104', wing: 'QA VERIFICATION VAULT', icon: '🛡️' },
+        'EMP-04': { no: 'CABIN 105', wing: 'INTELLIGENCE OBSERVATORY', icon: '🔭' }
+      };
+
+      employees.forEach((emp, index) => {
         const card = document.createElement('div');
-        card.className = 'robot-card';
-        card.style.setProperty('--card-accent', emp.hologramColor || '#06b6d4');
+        card.className = 'office-cabin';
+        const cabinInfo = cabinMap[emp.id] || { no: `CABIN ${102 + index}`, wing: emp.role.replace(/_/g, ' '), icon: '🏢' };
 
         let statusClass = 'status-free';
-        let statusText = '🟢 FREE / STANDBY';
+        let statusText = '🟢 IN CABIN / STANDBY';
+        let lampColor = 'var(--emerald-led)';
+
         if (emp.status === 'WORKING') {
           statusClass = 'status-working';
-          statusText = `⚡ WORKING [${emp.currentTaskId || 'TASK'}]`;
+          statusText = `⚡ ACTIVE WORKTREE [${emp.currentTaskId || 'TASK'}]`;
+          lampColor = '#38bdf8';
         } else if (emp.status === 'BLOCKED') {
           statusClass = 'status-blocked';
-          statusText = '⚠️ PAUSED / DIRECTIVE';
+          statusText = '⚠️ AIRLOCK / DIRECTIVE';
+          lampColor = 'var(--amber-led)';
         } else if (emp.status === 'DONE') {
           statusClass = 'status-done';
-          statusText = '✔ DONE / PR READY';
+          statusText = '✔ REVIEW / PR READY';
+          lampColor = '#c084fc';
         }
 
         card.innerHTML = `
-          <div class="robot-header">
-            <div class="robot-avatar">${emp.avatar || '🤖'}</div>
-            <div class="robot-info">
-              <div class="robot-name">${emp.name}</div>
-              <div class="robot-role">${emp.role.replace(/_/g, ' ')}</div>
-              <div class="robot-exp">${emp.experience} • ${emp.gender}</div>
+          <div class="cabin-doorplate">
+            <span class="cabin-number">${cabinInfo.no} • ${cabinInfo.wing}</span>
+            <span class="cabin-lamp" style="background: ${lampColor}; box-shadow: 0 0 8px ${lampColor};"></span>
+          </div>
+          <div class="occupant-suite">
+            <div class="occupant-avatar-frame" style="border-color: ${emp.hologramColor || '#38bdf8'};">
+              ${emp.avatar ? emp.avatar.replace('🤖', '') : cabinInfo.icon}
+            </div>
+            <div class="occupant-details">
+              <div class="occupant-name">${emp.name}</div>
+              <div class="occupant-post">${emp.role.replace(/_/g, ' ')}</div>
+              <div class="occupant-tenure">${emp.experience} • ${emp.gender}</div>
             </div>
           </div>
-          <div class="robot-status-pill ${statusClass}">${statusText}</div>
-          <div class="robot-task-snippet">${emp.currentDoubt ? 'Blocker: ' + escapeHtml(emp.currentDoubt) : (emp.currentTaskId ? 'Task ' + escapeHtml(emp.currentTaskId) + ' in progress' : escapeHtml(emp.specialty.slice(0, 50)) + '...')}</div>
-          <div class="robot-actions">
-            <button class="btn-card" onclick="askWorker('${emp.id}')">🎙️ Ask</button>
-            <button class="btn-card pause" onclick="openDirectiveModal('${emp.id}', '${emp.name}')">⏸️ Pause</button>
+          <div class="cabin-status-badge ${statusClass}">${statusText}</div>
+          <div class="desk-monitor-screen">${emp.currentDoubt ? 'Doubt Escalation: ' + escapeHtml(emp.currentDoubt) : (emp.currentTaskId ? 'Worktree active on ' + escapeHtml(emp.currentTaskId) : escapeHtml(emp.specialty.slice(0, 52)) + '...')}</div>
+          <div class="cabin-controls">
+            <button class="btn-intercom" onclick="askWorker('${emp.id}')">🎙️ Intercom</button>
+            <button class="btn-intercom btn-intervene" onclick="openDirectiveModal('${emp.id}', '${emp.name}')">⏸️ Intervene</button>
           </div>
-          <div id="bubble-${emp.id}" class="speech-bubble" style="display: none;"></div>
+          <div id="bubble-${emp.id}" class="cabin-speech-hologram" style="display: none;"></div>
         `;
         container.appendChild(card);
       });
@@ -706,15 +922,13 @@
         });
         const data = await res.json();
 
-        // 1. Speak aloud
         speakText(data.spokenText, data.voicePitch, data.voiceRate);
 
-        // 2. Show speech bubble on card
         const bubble = document.getElementById(`bubble-${empId}`);
         if (bubble) {
           bubble.innerHTML = `
-            <div class="speech-text">"${escapeHtml(data.speechBubble)}"</div>
-            <div class="speech-close" onclick="closeBubble('${empId}')">Close ×</div>
+            <div class="holo-text">"${escapeHtml(data.speechBubble)}"</div>
+            <div class="holo-dismiss" onclick="closeBubble('${empId}')">DISMISS ×</div>
           `;
           bubble.style.display = 'flex';
           clearTimeout(activeSpeechBubbleTimeout);
@@ -734,12 +948,11 @@
     // 4. Pause & Intervene Directive Modal
     function openDirectiveModal(empId, empName) {
       currentInterveneEmpId = empId;
-      document.getElementById('modalEmployeeTitle').innerText = `Direct Instruction to ${empName}`;
+      document.getElementById('modalEmployeeTitle').innerText = `Directive to ${empName}`;
       document.getElementById('founderInstructionInput').value = '';
       const modal = document.getElementById('directiveModal');
       modal.showModal();
 
-      // Send pause to server immediately
       fetch(`/api/studio/employee/${empId}/pause`, {
         method: 'POST',
         headers: {
@@ -747,7 +960,7 @@
           'X-Studio-CSRF': CSRF_TOKEN,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ reason: 'Paused for founder inspection' })
+        body: JSON.stringify({ reason: 'Cabin frozen for founder directive' })
       }).then(() => refreshTeamData());
     }
 
@@ -758,7 +971,7 @@
     async function submitFounderInstruction() {
       const instruction = document.getElementById('founderInstructionInput').value.trim();
       if (!instruction) {
-        alert('Please enter instructions for the specialist.');
+        alert('Please enter directive guidance.');
         return;
       }
 
@@ -813,10 +1026,10 @@
       bar.innerHTML = '';
       imageAttachments.forEach((imgSrc, idx) => {
         const thumb = document.createElement('div');
-        thumb.className = 'thumb-item';
+        thumb.className = 'thumbnail-thumb';
         thumb.innerHTML = `
           <img src="${imgSrc}" />
-          <div class="thumb-remove" onclick="removeImage(${idx})">×</div>
+          <div class="thumbnail-del" onclick="removeImage(${idx})">×</div>
         `;
         bar.appendChild(thumb);
       });
@@ -827,11 +1040,11 @@
       renderThumbnails();
     }
 
-    // 6. Dispatch Task to Team Lead Queue
+    // 6. Transmit Directive to Team Lead
     async function dispatchTaskToLead() {
       const prompt = document.getElementById('taskPromptInput').value.trim();
       if (!prompt) {
-        alert('Please enter a task prompt.');
+        alert('Please draft a directive prompt.');
         return;
       }
 
@@ -857,7 +1070,7 @@
           refreshTeamData();
         }
       } catch (err) {
-        alert('Failed to dispatch task: ' + err.message);
+        alert('Failed to dispatch directive: ' + err.message);
       }
     }
 
@@ -877,23 +1090,23 @@
     function renderQueue(queue) {
       const container = document.getElementById('queueListContainer');
       const badge = document.getElementById('queueCountBadge');
-      badge.innerText = `${queue.length} In Queue`;
+      badge.innerText = `${queue.length} Tasks Pending`;
 
       if (queue.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.75rem; text-align: center; padding-top: 20px;">Queue is clear. Dispatch tasks to queue them sequentially!</div>`;
+        container.innerHTML = `<div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">Executive backlog clear. Transmit directives to queue them sequentially!</div>`;
         return;
       }
 
       container.innerHTML = '';
       queue.forEach((item, idx) => {
         const qItem = document.createElement('div');
-        qItem.className = `queue-item ${item.status === 'ASSIGNED' ? 'active' : 'waiting'}`;
+        qItem.className = `ledger-entry ${item.status === 'ASSIGNED' ? 'active' : 'waiting'}`;
         qItem.innerHTML = `
-          <div class="queue-meta">
-            <span class="queue-id">[#${idx + 1}] ${item.taskId}</span>
-            <span class="queue-prompt">${escapeHtml(item.rawPrompt)}</span>
+          <div class="ledger-meta">
+            <span class="ledger-id">[#${idx + 1}] ${item.taskId}</span>
+            <span class="ledger-desc">${escapeHtml(item.rawPrompt)}</span>
           </div>
-          <div style="font-size: 0.68rem; font-family: monospace; color: var(--cyan); font-weight: 700;">
+          <div style="font-size: 0.68rem; font-family: 'JetBrains Mono', monospace; color: #38bdf8; font-weight: 700;">
             ${item.assignedEmployee ? item.assignedEmployee.name : item.status}
           </div>
         `;
@@ -901,7 +1114,7 @@
       });
     }
 
-    // 8. 1-Week Work History
+    // 8. 7-Day Office Audit
     async function refreshHistory() {
       try {
         const res = await fetch('/api/studio/history?days=7', {
@@ -917,21 +1130,21 @@
     function renderHistory(history) {
       const container = document.getElementById('historyTabContent');
       if (history.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.75rem; text-align: center; padding-top: 20px;">No completed tasks in the last 7 days yet. Tasks will appear here upon QA and PR completion.</div>`;
+        container.innerHTML = `<div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">No completed tasks in the last 7 days yet. Tasks will appear here upon QA verification and PR completion.</div>`;
         return;
       }
 
       container.innerHTML = '';
       history.forEach(item => {
         const card = document.createElement('div');
-        card.className = 'history-card';
+        card.className = 'audit-card';
         card.innerHTML = `
-          <div class="history-top">
-            <span class="history-author">🤖 ${item.employeeName}</span>
-            <span class="history-time">${new Date(item.timestamp).toLocaleDateString()}</span>
+          <div class="audit-top">
+            <span class="audit-specialist">🏛️ ${item.employeeName}</span>
+            <span class="audit-date">${new Date(item.timestamp).toLocaleDateString()}</span>
           </div>
-          <div class="history-goal">${escapeHtml(item.goal)}</div>
-          <div class="history-badge">PR: ${item.taskId} • 11-Stage QA Pass</div>
+          <div class="audit-mission">${escapeHtml(item.goal)}</div>
+          <div class="audit-seal">QA Verified • PR: ${item.taskId}</div>
         `;
         container.appendChild(card);
       });
@@ -966,7 +1179,7 @@
     }
 
     function triggerEmergencyStop() {
-      if (!confirm('Execute Emergency Stop and freeze all worktrees?')) return;
+      if (!confirm('Seal security airlock and freeze all worktrees?')) return;
       fetch('/api/studio/emergency-stop', {
         method: 'POST',
         headers: {
@@ -974,9 +1187,9 @@
           'X-Studio-CSRF': CSRF_TOKEN,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ reason: 'Emergency Stop invoked from Robot Cyber-Dashboard' })
+        body: JSON.stringify({ reason: 'Emergency Stop invoked from Founder HQ Console' })
       }).then(() => {
-        alert('Emergency Stop Executed: Forensic state frozen.');
+        alert('Security Airlock Engaged: Worktrees and state frozen.');
         refreshTeamData();
       });
     }
