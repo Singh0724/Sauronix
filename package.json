@@ -8,7 +8,7 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "test": "node --test tests/**/*.test.js",
+    "test": "node --test --test-concurrency=1 tests/**/*.test.js",
     "test:watch": "node --test --watch tests/**/*.test.js",
     "backup": "node src/storage/backup-manager.js backup",
     "restore-drill": "node src/storage/backup-manager.js drill"

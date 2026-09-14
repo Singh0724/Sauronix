@@ -97,14 +97,10 @@ export class LayeredQARunner {
     // Stage 6: Security & SAST Secret Scanning
     const t6 = Date.now();
     let secretLeakDetected = false;
-    for (const line of diffText.split('\n')) {
-      if (line.startsWith('+') && !line.startsWith('+++')) {
-        for (const pattern of SECRET_PATTERNS) {
-          if (pattern.test(line)) {
-            secretLeakDetected = true;
-            break;
-          }
-        }
+    for (const pattern of SECRET_PATTERNS) {
+      if (pattern.test(diffText)) {
+        secretLeakDetected = true;
+        break;
       }
     }
     if (secretLeakDetected) {
