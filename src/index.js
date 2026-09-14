@@ -41,3 +41,7 @@ export { CentralPolicyEngine, WHITELISTED_COMMAND_BINARIES, DEFAULT_BUDGET_POLIC
 
 // Studio CLI & Founder Suite
 export { StudioCli } from './cli/studio-cli.js';
+
+// Hierarchical Team Lead & Employee Coordination Engine
+export { EmployeePool, EMPLOYEE_STATUS, EMPLOYEE_ROLES } from './coordination/employee-pool.js';
+export { TeamLead } from './coordination/team-lead.js';

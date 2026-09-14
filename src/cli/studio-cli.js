@@ -14,6 +14,8 @@ import { DynamicRiskEngine } from '../risk/risk-engine.js';
 import { CentralPolicyEngine } from '../policy/policy-engine.js';
 import { PrGenerator } from '../git/pr-generator.js';
 import { SingleAgentPipeline } from '../orchestrator/single-agent-loop.js';
+import { EmployeePool } from '../coordination/employee-pool.js';
+import { TeamLead } from '../coordination/team-lead.js';
 
 const REPO_ROOT = resolve(process.cwd());
 
@@ -65,6 +67,12 @@ export class StudioCli {
     this.riskEngine = new DynamicRiskEngine();
     this.policyEngine = new CentralPolicyEngine({ riskEngine: this.riskEngine });
     this.prGenerator = new PrGenerator({ stateMachine: this.stateMachine });
+    this.employeePool = options.employeePool || new EmployeePool();
+    this.teamLead = options.teamLead || new TeamLead({
+      employeePool: this.employeePool,
+      prGenerator: this.prGenerator,
+      knowledgePromoter: this.knowledgePromoter
+    });
   }
 
   /**
@@ -236,6 +244,50 @@ export class StudioCli {
       founderToken
     });
   }
+
+  /**
+   * Get real-time status table of all specialist employees.
+   * @returns {object[]}
+   */
+  teamStatus() {
+    return this.employeePool.getPoolStatus();
+  }
+
+  /**
+   * Submit a raw founder prompt to Team Lead for analysis, refinement,
+   * and automatic specialist employee assignment.
+   *
+   * @param {object} params
+   * @param {string} params.taskId
+   * @param {string} params.rawPrompt
+   * @param {string[]} [params.suggestedFiles]
+   * @returns {object}
+   */
+  delegate({ taskId, rawPrompt, suggestedFiles }) {
+    const refinement = this.teamLead.analyzeAndRefineTask({
+      taskId,
+      rawPrompt,
+      suggestedFiles
+    });
+
+    if (refinement.needsClarification) {
+      return {
+        needsClarification: true,
+        question: refinement.clarificationQuestion,
+        options: refinement.options
+      };
+    }
+
+    const assignment = this.teamLead.assignTask({
+      taskSpec: refinement.taskSpec
+    });
+
+    return {
+      needsClarification: false,
+      taskSpec: refinement.taskSpec,
+      assignedEmployee: assignment.assignedEmployee
+    };
+  }
 }
 
 // CLI Execution Handler
@@ -254,6 +306,32 @@ if (import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`) {
         console.table(stats.recentTransitions);
         console.log('\nQuota & Token Telemetry:');
         console.table(stats.quotaStats);
+        break;
+      }
+      case 'team': {
+        const team = cli.teamStatus();
+        console.log('\n=== AUTONOMOUS STUDIO SPECIALIST EMPLOYEES ===\n');
+        console.table(team);
+        break;
+      }
+      case 'delegate': {
+        if (!arg1 || !arg2) throw new Error('Usage: npm run studio delegate <TASK_ID> "<RAW_PROMPT>"');
+        const res = cli.delegate({ taskId: arg1, rawPrompt: arg2 });
+        if (res.needsClarification) {
+          console.log('\n⚠️  TEAM LEAD REQUIRES FOUNDER CLARIFICATION:');
+          console.log(`Question: ${res.question}`);
+          if (res.options) {
+            console.log('Options:');
+            res.options.forEach((opt, idx) => console.log(`  [${idx + 1}] ${opt}`));
+          }
+        } else {
+          console.log(`\n✔ Task ${arg1} analyzed, refined, and assigned by Team Lead!`);
+          console.log(`Assigned Specialist: ${res.assignedEmployee.name} (${res.assignedEmployee.id})`);
+          console.log(`Role: ${res.assignedEmployee.role}`);
+          console.log(`Employee Status: ${res.assignedEmployee.status}`);
+          console.log(`Refined Goal: ${res.taskSpec.goal}`);
+          console.log(`Allowed Files: ${res.taskSpec.allowed_files.join(', ')}`);
+        }
         break;
       }
       case 'replay': {
@@ -301,6 +379,8 @@ Autonomous AI Enterprise Studio v5.0 CLI
 
 Commands:
   npm run studio status             Display studio backlog, tasks & quota telemetry
+  npm run studio team               Display specialist employee status (FREE, WORKING, DONE, BLOCKED)
+  npm run studio delegate <ID> "..." Delegate raw prompt to Team Lead for refinement & assignment
   npm run studio run <spec.json>    Execute task contract end-to-end through control plane
   npm run studio replay <TASK_ID>   Replay deterministic forensic trace from flight recorder
   npm run studio create-spec <ID>   Scaffold a new validated task-spec contract

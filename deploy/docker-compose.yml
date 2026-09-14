@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  studio-control-plane:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: studio-control-plane
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - STUDIO_AUTH_TOKEN=${STUDIO_AUTH_TOKEN:-founder-root-secret-5.0}
+      - STUDIO_CSRF_TOKEN=${STUDIO_CSRF_TOKEN:-csrf-secret-5.0}
+      - NODE_ENV=production
+    volumes:
+      - ../db:/app/db
+      - ../backups:/app/backups
+      - ../.agents:/app/.agents
+
+  cloudflare-tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflare-tunnel
+    restart: unless-stopped
+    depends_on:
+      - studio-control-plane
+    # If CLOUDFLARE_TUNNEL_TOKEN is set, it connects to your persistent named tunnel
+    # Otherwise, it runs a free quick tunnel (https://*.trycloudflare.com)
+    command: >
+      tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    environment:
+      - TUNNEL_METRICS=0.0.0.0:2000
