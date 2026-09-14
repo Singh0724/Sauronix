@@ -23,7 +23,8 @@ db/*.sqlite-shm
 backups/
 
 # Transient Test / Scratch Artifacts
-.agents/artifacts/temp/
+.agents/artifacts/
+.agents/reports/
 test-scratch/
 
 # Secrets & Environment Configurations

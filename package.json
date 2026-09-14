@@ -11,6 +11,8 @@
     "test": "node --test --test-concurrency=1 tests/**/*.test.js",
     "test:watch": "node --test --watch tests/**/*.test.js",
     "cctv": "node src/server/cctv-server.js",
+    "studio": "node src/cli/studio-cli.js",
+    "task": "node src/cli/studio-cli.js run",
     "backup": "node src/storage/backup-manager.js backup",
     "restore-drill": "node src/storage/backup-manager.js drill"
   },

@@ -38,3 +38,6 @@ export { PrGenerator } from './git/pr-generator.js';
 export { AdaptiveQuotaManager, DEFAULT_PROVIDER_QUOTAS } from './quota/quota-manager.js';
 export { HybridExecutionRouter, ENVIRONMENTS, PROVIDER_ROTATIONS } from './execution/hybrid-router.js';
 export { CentralPolicyEngine, WHITELISTED_COMMAND_BINARIES, DEFAULT_BUDGET_POLICY } from './policy/policy-engine.js';
+
+// Studio CLI & Founder Suite
+export { StudioCli } from './cli/studio-cli.js';

@@ -21,7 +21,7 @@ export class FlightRecorder {
    */
   constructor({ studioDb, artifactBaseDir }) {
     this.studioDb = studioDb;
-    this.artifactBaseDir = resolve(artifactBaseDir);
+    this.artifactBaseDir = resolve(artifactBaseDir || resolve(process.cwd(), '.agents/artifacts'));
 
     this.stmtInsertEvent = this.studioDb.prepare(`
       INSERT INTO flight_recorder_events (

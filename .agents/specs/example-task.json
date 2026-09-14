@@ -1,0 +1,26 @@
+{
+  "task_id": "TASK-DEMO-01",
+  "goal": "Verify package description and security metadata",
+  "risk_level": "LOW",
+  "allowed_files": [
+    "package.json"
+  ],
+  "forbidden_files": [
+    ".env*",
+    "config/secrets*"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "CRIT-1",
+      "description": "Ensure package.json remains valid JSON",
+      "verification_command": "node -e \"JSON.parse(require('fs').readFileSync('package.json'))\"",
+      "expected_exit_code": 0
+    }
+  ],
+  "test_plan": [
+    "Verify package.json parse validation"
+  ],
+  "rollback_plan": "git checkout main && git branch -D agent/task-demo-01",
+  "security_impact": "NONE",
+  "human_approval_required": false
+}
