@@ -120,13 +120,23 @@ export class CctvServer {
     const pathname = url.pathname;
     const method = req.method;
 
-    // Public / static route: Serve CCTV HTML
+    // Public / static route: Serve CCTV HTML with server-injected session tokens.
+    // Tokens are NOT hard-coded in the HTML source; they are injected per-request
+    // via meta tags (replacing the previous in-page credential constants).
     if (method === 'GET' && (pathname === '/' || pathname === '/cctv.html' || pathname === '/index.html')) {
       if (!existsSync(CCTV_HTML_PATH)) {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         return res.end('CCTV dashboard HTML not found');
       }
-      const html = readFileSync(CCTV_HTML_PATH, 'utf-8');
+      const html = readFileSync(CCTV_HTML_PATH, 'utf-8')
+        .replace(
+          '<meta name="studio-auth-token" content="">',
+          `<meta name="studio-auth-token" content="${this.authToken}">`
+        )
+        .replace(
+          '<meta name="studio-csrf-token" content="">',
+          `<meta name="studio-csrf-token" content="${this.csrfToken}">`
+        );
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       return res.end(html);
     }

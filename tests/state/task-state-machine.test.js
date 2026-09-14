@@ -62,6 +62,27 @@ test('TaskStateMachine: Full happy path transition lifecycle', () => {
   db.close();
 });
 
+test('TaskStateMachine: RUNNING to PAUSED is legal for graceful quota pause', () => {
+  const db = new StudioDatabase(':memory:');
+  const sm = new TaskStateMachine(db);
+
+  sm.registerTask({
+    task_id: 'TASK-PAUSE-01',
+    goal: 'Overnight quota exhaustion graceful pause regression',
+    risk_level: 'LOW'
+  });
+
+  sm.transition({ taskId: 'TASK-PAUSE-01', toStatus: TASK_STATUS.RUNNING, triggerReason: 'Started', actor: 'SCHEDULER' });
+  const paused = sm.transition({ taskId: 'TASK-PAUSE-01', toStatus: TASK_STATUS.PAUSED, triggerReason: 'Cloud quota ceiling', actor: 'SCHEDULER' });
+  assert.equal(paused.status, TASK_STATUS.PAUSED);
+
+  // And PAUSED can resume to RUNNING
+  const resumed = sm.transition({ taskId: 'TASK-PAUSE-01', toStatus: TASK_STATUS.RUNNING, triggerReason: 'Quota window reset', actor: 'SCHEDULER' });
+  assert.equal(resumed.status, TASK_STATUS.RUNNING);
+
+  db.close();
+});
+
 test('TaskStateMachine: Rejects illegal state transition with descriptive error', () => {
   const db = new StudioDatabase(':memory:');
   const sm = new TaskStateMachine(db);

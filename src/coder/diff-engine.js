@@ -84,7 +84,9 @@ export class DiffEngine {
       totalLinesDeleted += searchLines;
       totalLinesAdded += replaceLines;
 
-      patchedContent = patchedContent.replace(search, replace);
+      // Replacer function avoids `$&`/`$1`/`$\u0060` being interpreted as
+      // regex substitution patterns inside authored replacement text.
+      patchedContent = patchedContent.replace(search, () => replace);
     }
 
     // Chesterton's Fence Law:

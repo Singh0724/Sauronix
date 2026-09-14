@@ -71,6 +71,30 @@ test('EmployeePool: state transitions (FREE -> WORKING -> BLOCKED -> DONE -> FRE
   assert.equal(pool.getEmployee(emp.id).currentDoubt, null);
 });
 
+test('EmployeePool: partial state updates preserve fields not explicitly provided', () => {
+  const pool = new EmployeePool();
+
+  // WORKING with taskId, then explicit null doubt (e.g. instructWorker) must
+  // clear the doubt but PRESERVE currentTaskId
+  pool.setEmployeeState('EMP-01', EMPLOYEE_STATUS.WORKING, { taskId: 'TASK-200', doubt: null });
+  assert.equal(pool.getEmployee('EMP-01').currentTaskId, 'TASK-200');
+  assert.equal(pool.getEmployee('EMP-01').currentDoubt, null);
+
+  // Omitting taskId entirely must keep the current assignment
+  pool.setEmployeeState('EMP-01', EMPLOYEE_STATUS.BLOCKED, { doubt: 'Stuck on schema' });
+  assert.equal(pool.getEmployee('EMP-01').currentTaskId, 'TASK-200');
+  assert.equal(pool.getEmployee('EMP-01').currentDoubt, 'Stuck on schema');
+
+  // DONE must preserve the task id so askWorker can announce it
+  pool.setEmployeeState('EMP-01', EMPLOYEE_STATUS.DONE);
+  assert.equal(pool.getEmployee('EMP-01').currentTaskId, 'TASK-200');
+
+  // Only FREE clears the assignment
+  pool.setEmployeeState('EMP-01', EMPLOYEE_STATUS.FREE);
+  assert.equal(pool.getEmployee('EMP-01').currentTaskId, null);
+  assert.equal(pool.getEmployee('EMP-01').currentDoubt, null);
+});
+
 test('EmployeePool: throws on invalid status or nonexistent employee', () => {
   const pool = new EmployeePool();
 

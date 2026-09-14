@@ -60,6 +60,27 @@ const x = 2;
   rmSync(TEST_SCRATCH, { recursive: true, force: true });
 });
 
+test('DiffEngine: replacement text containing $-patterns is preserved literally', () => {
+  mkdirSync(TEST_SCRATCH, { recursive: true });
+  const sampleFile = resolve(TEST_SCRATCH, 'pricing.js');
+  writeFileSync(sampleFile, `const PRICE = '';
+`, 'utf-8');
+
+  const diffText = `<<<<<<< SEARCH
+const PRICE = '';
+=======
+const PRICE = '$& $1 $\` $\' $$';
+>>>>>>> REPLACE`;
+
+  const result = DiffEngine.applyPatch(sampleFile, diffText);
+  assert.equal(result.success, true);
+
+  const updated = readFileSync(sampleFile, 'utf-8');
+  assert.equal(updated.includes("const PRICE = '$& $1 $` $' $$';"), true);
+
+  rmSync(TEST_SCRATCH, { recursive: true, force: true });
+});
+
 test('DiffEngine: Chesterton\'s Fence rejects excessive line deletion', () => {
   mkdirSync(TEST_SCRATCH, { recursive: true });
   const sampleFile = resolve(TEST_SCRATCH, 'guarded.js');

@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Founder Cyber-Office Robot Control Hub | Autonomous AI Studio v5.0</title>
+  <meta name="studio-auth-token" content="">
+  <meta name="studio-csrf-token" content="">
   <style>
     :root {
       --bg: #060913;
@@ -572,8 +574,19 @@
 
   <!-- Client-side Logic: SSE, Audio Speech, Queue, & Actions -->
   <script>
-    const AUTH_TOKEN = 'founder_secure_vault_token_2026';
-    const CSRF_TOKEN = 'csrf_founder_guard_token_2026';
+    const AUTH_TOKEN = document.querySelector('meta[name="studio-auth-token"]')?.content || '';
+    const CSRF_TOKEN = document.querySelector('meta[name="studio-csrf-token"]')?.content || '';
+
+    // Escape untrusted strings before any innerHTML insertion (task prompts,
+    // employee doubts, goals, and speech text all originate from user input).
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
 
     let voiceEnabled = true;
     let currentInterveneEmpId = null;
@@ -674,7 +687,7 @@
             </div>
           </div>
           <div class="robot-status-pill ${statusClass}">${statusText}</div>
-          <div class="robot-task-snippet">${emp.currentDoubt ? 'Blocker: ' + emp.currentDoubt : (emp.currentTaskId ? 'Task ' + emp.currentTaskId + ' in progress' : emp.specialty.slice(0, 50) + '...')}</div>
+          <div class="robot-task-snippet">${emp.currentDoubt ? 'Blocker: ' + escapeHtml(emp.currentDoubt) : (emp.currentTaskId ? 'Task ' + escapeHtml(emp.currentTaskId) + ' in progress' : escapeHtml(emp.specialty.slice(0, 50)) + '...')}</div>
           <div class="robot-actions">
             <button class="btn-card" onclick="askWorker('${emp.id}')">🎙️ Ask</button>
             <button class="btn-card pause" onclick="openDirectiveModal('${emp.id}', '${emp.name}')">⏸️ Pause</button>
@@ -700,7 +713,7 @@
         const bubble = document.getElementById(`bubble-${empId}`);
         if (bubble) {
           bubble.innerHTML = `
-            <div class="speech-text">"${data.speechBubble}"</div>
+            <div class="speech-text">"${escapeHtml(data.speechBubble)}"</div>
             <div class="speech-close" onclick="closeBubble('${empId}')">Close ×</div>
           `;
           bubble.style.display = 'flex';
@@ -878,7 +891,7 @@
         qItem.innerHTML = `
           <div class="queue-meta">
             <span class="queue-id">[#${idx + 1}] ${item.taskId}</span>
-            <span class="queue-prompt">${item.rawPrompt}</span>
+            <span class="queue-prompt">${escapeHtml(item.rawPrompt)}</span>
           </div>
           <div style="font-size: 0.68rem; font-family: monospace; color: var(--cyan); font-weight: 700;">
             ${item.assignedEmployee ? item.assignedEmployee.name : item.status}
@@ -917,7 +930,7 @@
             <span class="history-author">🤖 ${item.employeeName}</span>
             <span class="history-time">${new Date(item.timestamp).toLocaleDateString()}</span>
           </div>
-          <div class="history-goal">${item.goal}</div>
+          <div class="history-goal">${escapeHtml(item.goal)}</div>
           <div class="history-badge">PR: ${item.taskId} • 11-Stage QA Pass</div>
         `;
         container.appendChild(card);
