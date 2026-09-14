@@ -1,4 +1,4 @@
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { resolve, dirname } from 'node:path';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 
@@ -41,7 +41,7 @@ export class WorktreeManager {
     // Check if branch exists; if not create with -b, if yes checkout
     let branchExists = false;
     try {
-      execSync(`git show-ref --verify --quiet refs/heads/${branchName}`, {
+      execFileSync('git', ['show-ref', '--verify', '--quiet', `refs/heads/${branchName}`], {
         cwd: this.repoRoot,
         stdio: 'ignore'
       });
@@ -50,11 +50,14 @@ export class WorktreeManager {
       branchExists = false;
     }
 
-    const branchArg = branchExists ? branchName : `-b ${branchName} main`;
-    const cmd = `git worktree add "${worktreePath}" ${branchArg}`;
+    // execFileSync with argv array prevents shell metacharacter injection
+    // via untrusted taskId / branchName values.
+    const worktreeArgs = branchExists
+      ? ['worktree', 'add', worktreePath, branchName]
+      : ['worktree', 'add', worktreePath, '-b', branchName, 'main'];
 
     try {
-      execSync(cmd, { cwd: this.repoRoot, encoding: 'utf-8', stdio: 'pipe' });
+      execFileSync('git', worktreeArgs, { cwd: this.repoRoot, encoding: 'utf-8', stdio: 'pipe' });
       this.activeLock = taskId;
       return { worktreePath, branch: branchName };
     } catch (err) {
@@ -77,13 +80,13 @@ export class WorktreeManager {
     try {
       // Mark untracked files as intent-to-add so git diff includes them
       try {
-        execSync('git add -N .', { cwd: worktreePath, stdio: 'ignore' });
+        execFileSync('git', ['add', '-N', '.'], { cwd: worktreePath, stdio: 'ignore' });
       } catch {
         // ignore if worktree has no changes
       }
 
-      const unstaged = execSync('git diff', { cwd: worktreePath, encoding: 'utf-8' });
-      const staged = execSync('git diff --cached', { cwd: worktreePath, encoding: 'utf-8' });
+      const unstaged = execFileSync('git', ['diff'], { cwd: worktreePath, encoding: 'utf-8' });
+      const staged = execFileSync('git', ['diff', '--cached'], { cwd: worktreePath, encoding: 'utf-8' });
       return (staged + '\n' + unstaged).trim();
     } catch (err) {
       return `[Error capturing diff: ${err.message}]`;
@@ -118,13 +121,13 @@ export class WorktreeManager {
 
     if (existsSync(worktreePath)) {
       try {
-        execSync(`git worktree remove --force "${worktreePath}"`, {
+        execFileSync('git', ['worktree', 'remove', '--force', worktreePath], {
           cwd: this.repoRoot,
           stdio: 'pipe'
         });
       } catch (err) {
         // Fallback: prune
-        execSync('git worktree prune', { cwd: this.repoRoot, stdio: 'ignore' });
+        execFileSync('git', ['worktree', 'prune'], { cwd: this.repoRoot, stdio: 'ignore' });
       }
     }
 

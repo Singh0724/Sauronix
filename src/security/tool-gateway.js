@@ -64,9 +64,30 @@ export function matchesGlobPattern(pathStr, patterns) {
         return true;
       }
     } else if (cleanPattern.includes('*')) {
-      // Simple regex conversion for wildcards
-      const regexStr = '^' + cleanPattern.replace(/\./g, '\\.').replace(/\*/g, '.*') + '$';
-      const re = new RegExp(regexStr);
+      // Safe wildcard conversion: escape regex metacharacters, then translate globs.
+      // '**/'  -> optional nested directories, '**' -> anything, '*' -> any chars except '/'
+      let regexStr = '';
+      for (let i = 0; i < cleanPattern.length; i++) {
+        const ch = cleanPattern[i];
+        if (ch === '*') {
+          if (cleanPattern[i + 1] === '*') {
+            if (cleanPattern[i + 2] === '/') {
+              regexStr += '(?:.*/)?';
+              i += 2;
+            } else {
+              regexStr += '.*';
+              i += 1;
+            }
+          } else {
+            regexStr += '[^/]*';
+          }
+        } else if (/[.+?^${}()|[\]\\]/.test(ch)) {
+          regexStr += '\\' + ch;
+        } else {
+          regexStr += ch;
+        }
+      }
+      const re = new RegExp('^' + regexStr + '$');
       if (re.test(normalized)) {
         return true;
       }

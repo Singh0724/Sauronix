@@ -199,7 +199,7 @@ export class EmployeePool {
    * @param {string} [options.taskId]
    * @param {string} [options.doubt]
    */
-  setEmployeeState(id, status, { taskId = null, doubt = null } = {}) {
+  setEmployeeState(id, status, { taskId = undefined, doubt = undefined } = {}) {
     const emp = this.employees.get(id);
     if (!emp) {
       throw new Error(`Employee '${id}' not found in pool.`);
@@ -209,6 +209,7 @@ export class EmployeePool {
     }
 
     emp.status = status;
+    // Distinguish "not provided" (undefined -> keep current) from explicit null (clear the field)
     emp.currentTaskId = taskId !== undefined ? taskId : emp.currentTaskId;
     emp.currentDoubt = doubt !== undefined ? doubt : emp.currentDoubt;
     emp.updatedAt = new Date().toISOString();

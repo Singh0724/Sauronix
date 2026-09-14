@@ -1,4 +1,4 @@
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { DiffEngine } from './diff-engine.js';
@@ -83,13 +83,15 @@ export class SurgicalCoder {
     const patchResult = DiffEngine.applyPatch(targetFullPath, diffContent);
 
     // 3. Stage and commit in isolated worktree
+    // execFileSync with argv array prevents shell metacharacter injection via
+    // untrusted commit messages (which embed raw founder prompt text).
     try {
-      execSync(`git add "${targetRelativeFile}"`, { cwd: worktreePath, stdio: 'pipe' });
-      execSync(`git commit -m "${commitMessage.replace(/"/g, '\\"')}"`, {
+      execFileSync('git', ['add', targetRelativeFile], { cwd: worktreePath, stdio: 'pipe' });
+      execFileSync('git', ['commit', '-m', commitMessage], {
         cwd: worktreePath,
         stdio: 'pipe'
       });
-      const commitSha = execSync('git rev-parse HEAD', {
+      const commitSha = execFileSync('git', ['rev-parse', 'HEAD'], {
         cwd: worktreePath,
         encoding: 'utf-8'
       }).trim();
