@@ -141,7 +141,13 @@ export class CctvServer {
       return res.end(html);
     }
 
-    // Authenticate all /api routes
+    // Public Health Check Endpoint for 24/7 Keep-Alive Monitors (cron-job.org / UptimeRobot)
+    if (method === 'GET' && (pathname === '/healthz' || pathname === '/api/health')) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ status: 'ok', timestamp: new Date().toISOString() }));
+    }
+
+    // Authenticate all other /api routes
     if (pathname.startsWith('/api')) {
       if (!this._authenticate(req, url)) {
         res.writeHead(401, { 'Content-Type': 'application/json' });
