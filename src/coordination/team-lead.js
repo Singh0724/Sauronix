@@ -44,6 +44,10 @@ export class TeamLead {
       throw new Error('TeamLead requires both taskId and rawPrompt.');
     }
 
+    if (!/^TASK-[0-9]{3,6}$/i.test(taskId)) {
+      throw new Error(`Invalid taskId format '${taskId}'. Must match ^TASK-[0-9]{3,6}$ (e.g. TASK-101).`);
+    }
+
     // Ambiguity detection: Check if prompt contains conflicting design dilemmas
     const isAmbiguous = !forceRefine && /either.*or|should we|not sure|maybe|or should|confused/i.test(rawPrompt);
 
@@ -67,7 +71,7 @@ export class TeamLead {
 
     // Refine into schema-valid task contract
     const files = suggestedFiles || (rawPrompt.toLowerCase().includes('package') ? ['package.json'] : ['src/index.js']);
-    const isSecurity = /auth|token|session|secret|credential|password/i.test(rawPrompt);
+    const isSecurity = /auth|token|session|secret|credential|password|payment|billing|stripe|wallet/i.test(rawPrompt);
 
     const taskSpec = {
       task_id: taskId.toUpperCase(),
@@ -147,7 +151,7 @@ export class TeamLead {
           targetRole = EMPLOYEE_ROLES.DIGITAL_MARKETER;
         } else if (/test|qa|mutation|coverage|audit|assert/i.test(goal)) {
           targetRole = EMPLOYEE_ROLES.QA_ENGINEER;
-        } else if (/research|analyze|investigate|benchmark|feasibility|topology/i.test(goal)) {
+        } else if (/research|analyze|investigate|benchmark|feasibility|topology|find|explore|how we can|architecture/i.test(goal)) {
           targetRole = EMPLOYEE_ROLES.RESEARCH_ANALYST;
         } else {
           targetRole = EMPLOYEE_ROLES.SOFTWARE_ENGINEER;
@@ -188,13 +192,14 @@ export class TeamLead {
     this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.BLOCKED, { taskId, doubt });
 
     // 1. Check if Team Lead can resolve using senior invariants or promoted patterns
-    if (failureClass === 'SYNTAX_ERROR' || doubt.toLowerCase().includes('syntax')) {
+    const doubtLower = (doubt || '').toLowerCase();
+    if (failureClass === 'SYNTAX_ERROR' || /(syntax|bracket|comma|token|parse)/i.test(doubtLower)) {
       const guidance = 'Team Lead Guidance: Retain original function envelope. Check missing brackets or commas without modifying outer signature.';
       this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.WORKING, { taskId, doubt: null });
       return { resolved: true, guidance };
     }
 
-    if (failureClass === 'TIMEOUT_DEADLOCK' || doubt.toLowerCase().includes('timeout')) {
+    if (failureClass === 'TIMEOUT_DEADLOCK' || /(timeout|timed out|deadlock|hang|stuck)/i.test(doubtLower)) {
       const guidance = 'Team Lead Guidance: Inspect async promise resolution and release any open SQLite connection handles.';
       this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.WORKING, { taskId, doubt: null });
       return { resolved: true, guidance };
