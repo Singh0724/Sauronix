@@ -193,11 +193,73 @@ export class CctvServer {
       return;
     }
 
-    // GET /api/studio/tasks - Query tasks from SQLite
+    // GET /api/studio/tasks - Query tasks from SQLite with deliverables
     if (method === 'GET' && pathname === '/api/studio/tasks') {
       const tasks = this.studioDb.prepare('SELECT * FROM tasks ORDER BY created_at DESC;').all();
+      const mappedTasks = tasks.map(t => {
+        let deliverable = null;
+        if (t.deliverable_report) {
+          deliverable = {
+            title: t.deliverable_title || 'Autonomous Specialist Deliverable',
+            content: t.deliverable_report,
+            source: 'Autonomous Engineering Studio',
+            generatedAt: t.updated_at || t.created_at
+          };
+        } else {
+          const qItem = this.teamLead.getQueue().find(q => q.taskId === t.task_id);
+          deliverable = qItem?.deliverable || null;
+        }
+        return { ...t, deliverable };
+      });
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ tasks }));
+      return res.end(JSON.stringify({ tasks: mappedTasks }));
+    }
+
+    // GET /api/studio/task/:id/report - Dedicated endpoint for full task deliverable report
+    if (method === 'GET' && pathname.startsWith('/api/studio/task/') && pathname.endsWith('/report')) {
+      const match = pathname.match(/^\/api\/studio\/task\/([^/]+)\/report$/);
+      if (match) {
+        const taskId = match[1];
+        let report = null;
+        if (this.studioDb) {
+          try {
+            const task = this.studioDb.prepare('SELECT * FROM tasks WHERE task_id = ?').get(taskId);
+            if (task && task.deliverable_report) {
+              report = {
+                taskId: task.task_id,
+                goal: task.goal,
+                status: task.status,
+                assignee: task.active_agent,
+                title: task.deliverable_title || 'Autonomous Specialist Deliverable',
+                content: task.deliverable_report,
+                updatedAt: task.updated_at
+              };
+            }
+          } catch {}
+        }
+        if (!report) {
+          const qItem = this.teamLead.getQueue().find(q => q.taskId === taskId);
+          if (qItem && qItem.deliverable) {
+            report = {
+              taskId: qItem.taskId,
+              goal: qItem.rawPrompt,
+              status: qItem.status,
+              assignee: qItem.assignedEmployee?.name || 'Specialist Agent',
+              title: qItem.deliverable.title,
+              content: qItem.deliverable.content,
+              updatedAt: qItem.completedAt || new Date().toISOString()
+            };
+          }
+        }
+
+        if (!report) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: `Report for task '${taskId}' not found.` }));
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ success: true, report }));
+      }
     }
 
     // GET /api/studio/active-diff - Query active diff
@@ -574,8 +636,8 @@ export class CctvServer {
     if (this.studioDb) {
       try {
         this.studioDb.prepare(`
-          UPDATE tasks SET status = 'COMPLETED', updated_at = CURRENT_TIMESTAMP WHERE task_id = ?
-        `).run(taskId);
+          UPDATE tasks SET status = 'COMPLETED', deliverable_title = ?, deliverable_report = ?, updated_at = CURRENT_TIMESTAMP WHERE task_id = ?
+        `).run(deliverable.title, deliverable.content, taskId);
       } catch {}
     }
 
@@ -586,14 +648,15 @@ export class CctvServer {
         prTitle: `feat(${taskId.toLowerCase()}): ${deliverable.title}`,
         commitSha: 'sha-' + Math.random().toString(16).slice(2, 10)
       });
-      this.employeePool.setEmployeeState(emp.id, 'FREE');
+      // Worker transitions to DONE with completed task reference (stays DONE until next assignment)
+      this.employeePool.setEmployeeState(emp.id, 'DONE', { taskId });
     }
 
-    this.broadcaster.log('TEAM_LEAD', `[${taskId}] Dr. Elena Rostova approved task. Invariants verified. Employee ${emp ? emp.name : 'Agent'} returned to FREE.`);
+    this.broadcaster.log('TEAM_LEAD', `[${taskId}] Dr. Elena Rostova approved task. Deliverable verified. Specialist ${emp ? emp.name : 'Agent'} status: DONE.`);
     this.broadcaster.decision({
       gate: 'Task Completion',
-      title: `Task ${taskId} Merged & Archived`,
-      explanation: `Acceptance criteria satisfied. Deliverable recorded in audit history.`
+      title: `Task ${taskId} Completed & Delivered`,
+      explanation: `Deliverable "${deliverable.title}" verified and published for Founder inspection.`
     });
 
     // Auto-process next item in queue if available
@@ -621,14 +684,49 @@ export class CctvServer {
 
     const p = (prompt || '').toLowerCase();
 
-    // A. Image Generation / Vision AI Queries
+    // A. Image Generation / Vision AI Queries (Free & Premium Models)
     if (/image|generation|draw|photo|art|picture|midjourney|flux|dall-e|stable diffusion/i.test(p)) {
-      return {
-        title: 'Comprehensive Evaluation: Top AI Models for Image Generation',
-        content: `### Executive Recommendations: Top AI Image Generation Models (2025/2026)
+      const isFreeQuery = /free|no cost|without pay|open source/i.test(p);
+      const title = isFreeQuery
+        ? 'Comprehensive Report: Best 100% Free AI Tools for Image Generation'
+        : 'Comprehensive Evaluation: Top AI Models for Image Generation';
+
+      const freeSection = isFreeQuery ? `### 🏆 Top 100% Free AI Image Generators (Ranked by Quality)
+
+1. **FLUX.1 [schnell] (Black Forest Labs)** — ★ #1 Best Free Open-Weights Model
+   • **Cost:** 100% Free (Apache 2.0 license).
+   • **Free Access:** Free online generation via Fal.ai playground, Together AI free tiers, and Hugging Face Spaces.
+   • **Local GPU:** Completely free forever with unlimited generations via ComfyUI / Forge / Pinokio.
+   • **Key Strengths:** Ultra-fast 4-step generation, sharp text rendering inside images, high prompt fidelity.
+
+2. **Stable Diffusion 3.5 Medium / SDXL (Stability AI)** — ★ Best for Unlimited Local Generations
+   • **Cost:** 100% Free for personal and small business research use.
+   • **Free Access:** Free via Hugging Face web demo, Google Colab free GPU tier, or local PC (RTX 3060+).
+   • **Key Strengths:** Unlimited generations, complete data privacy, offline operation, massive library of free community LoRAs and styles.
+
+3. **Microsoft Designer / Copilot (Powered by DALL-E 3)** — ★ Best Free Hosted Web Generator
+   • **Cost:** 100% Free with standard Microsoft Account.
+   • **Free Access:** designer.microsoft.com & copilot.microsoft.com.
+   • **Daily Allowance:** 15 free daily "boosts" that replenish every 24 hours (unlimited slower generations afterwards).
+   • **Key Strengths:** Natural conversational prompts, excellent surrealistic and conceptual images.
+
+4. **Ideogram 2.0 (Free Daily Tier)** — ★ Best for Free Typography, Logos & Graphic Design
+   • **Cost:** Free tier included.
+   • **Daily Allowance:** 10 free credits per day (equivalent to ~20 to 40 image variations daily).
+   • **Key Strengths:** Unrivaled spelling accuracy in lettering, posters, t-shirts, and logo mockups.
+
+5. **Leonardo.ai (Free Daily Allowance)** — ★ Best Free All-in-One Studio
+   • **Cost:** Free daily tier with 150 tokens replenished every 24 hours.
+   • **Key Strengths:** Built-in canvas editor, prompt expander, and style presets without installing software.
+
+---
+### 💡 Summary Recommendation:
+• **For quick free web generations (no install):** Use **Microsoft Designer (DALL-E 3)** or **Ideogram 2.0 Free Tier**.
+• **For the absolute highest modern quality (free):** Use **FLUX.1 [schnell]** on Hugging Face Spaces or Fal.ai.
+• **For unlimited private generation without limits:** Download **Stable Diffusion 3.5 / SDXL** locally.` : `### Executive Recommendations: Top AI Image Generation Models (2025/2026)
 
 1. **FLUX.1 (by Black Forest Labs)** — ★ Top Recommendation for Modern Quality & API
-   • **Models:** FLUX.1 [dev] (high fidelity), FLUX.1 [schnell] (ultra-fast 4-step), FLUX.1 [pro] (commercial API).
+   • **Models:** FLUX.1 [dev] (high fidelity), FLUX.1 [schnell] (ultra-fast 4-step free), FLUX.1 [pro] (commercial API).
    • **Key Strengths:** Industry-leading prompt adherence, unmatched text & typography rendering inside generated images, superior hand/anatomy realism.
    • **Where to use:** Fal.ai, Together.ai, Replicate, or self-hosted locally via ComfyUI.
 
@@ -648,7 +746,11 @@ export class CctvServer {
 #### Final Verdict:
 • If you need **stunning photorealism & text rendering**: Choose **FLUX.1 [dev]**.
 • If you want **cinematic art with zero technical friction**: Choose **Midjourney v6.1**.
-• If you need **complete privacy & local control**: Choose **Stable Diffusion 3.5** or **FLUX.1 [schnell]**.`,
+• If you need **complete privacy & local control**: Choose **Stable Diffusion 3.5** or **FLUX.1 [schnell]**.`;
+
+      return {
+        title,
+        content: freeSection,
         source: 'Autonomous Research Specialist (Dr. Katherine Ross)',
         generatedAt: new Date().toISOString()
       };

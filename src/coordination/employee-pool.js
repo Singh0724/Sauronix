@@ -172,8 +172,17 @@ export class EmployeePool {
    */
   getAvailableEmployee(role = null) {
     const targetRole = role === 'SURGICAL_CODER' ? EMPLOYEE_ROLES.SOFTWARE_ENGINEER : role;
+    // 1. Prioritize employee in FREE state
     for (const emp of this.employees.values()) {
       if (emp.status === EMPLOYEE_STATUS.FREE) {
+        if (!targetRole || emp.role === targetRole) {
+          return emp;
+        }
+      }
+    }
+    // 2. Fall back to employee in DONE state (they have completed previous work)
+    for (const emp of this.employees.values()) {
+      if (emp.status === EMPLOYEE_STATUS.DONE) {
         if (!targetRole || emp.role === targetRole) {
           return emp;
         }

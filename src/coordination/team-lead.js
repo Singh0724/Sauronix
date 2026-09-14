@@ -145,25 +145,12 @@ export class TeamLead {
     if (employeeId) {
       employee = this.employeePool.getEmployee(employeeId);
       if (!employee) throw new Error(`Employee ${employeeId} not found.`);
-      if (employee.status !== EMPLOYEE_STATUS.FREE) {
+      if (employee.status !== EMPLOYEE_STATUS.FREE && employee.status !== EMPLOYEE_STATUS.DONE) {
         throw new Error(`Employee ${employee.name} (${employee.id}) is busy (${employee.status}).`);
       }
     } else {
-      let targetRole = role;
-      if (!targetRole && taskSpec && taskSpec.goal) {
-        const goal = taskSpec.goal.toLowerCase();
-        if (/marketing|seo|campaign|growth|funnel|copywriting|audience|conversion|landing/i.test(goal)) {
-          targetRole = EMPLOYEE_ROLES.DIGITAL_MARKETER;
-        } else if (/test|qa|mutation|coverage|audit|assert/i.test(goal)) {
-          targetRole = EMPLOYEE_ROLES.QA_ENGINEER;
-        } else if (/research|analyze|investigate|benchmark|feasibility|topology|find|explore|how we can|architecture/i.test(goal)) {
-          targetRole = EMPLOYEE_ROLES.RESEARCH_ANALYST;
-        } else {
-          targetRole = EMPLOYEE_ROLES.SOFTWARE_ENGINEER;
-        }
-      }
-
-      employee = this.employeePool.getAvailableEmployee(targetRole || EMPLOYEE_ROLES.SOFTWARE_ENGINEER);
+      const targetRole = role || (taskSpec && taskSpec.goal ? this._inferRoleFromGoal(taskSpec.goal) : EMPLOYEE_ROLES.SOFTWARE_ENGINEER);
+      employee = this.employeePool.getAvailableEmployee(targetRole);
       if (!employee) {
         throw new Error('All specialist employee workers are currently working or blocked. Task queued.');
       }
@@ -433,15 +420,19 @@ export class TeamLead {
    */
   _inferRoleFromGoal(goal) {
     const g = (goal || '').toLowerCase();
-    if (/marketing|seo|campaign|growth|funnel|copywriting|audience|conversion|landing/i.test(g)) {
-      return EMPLOYEE_ROLES.DIGITAL_MARKETER;
-    }
-    if (/test|qa|mutation|coverage|audit|assert/i.test(g)) {
-      return EMPLOYEE_ROLES.QA_ENGINEER;
-    }
-    if (/research|analyze|investigate|benchmark|feasibility|topology|find|explore|how we can|architecture/i.test(g)) {
+    // 1. Research, Tool Evaluation, Model Comparison, Reports, Feasibility, Exploration
+    if (/report|which ai|best ai|ai tool|image generation|image gen|generator|compare|recommend|evaluation|evaluate|benchmark|research|analyze|investigate|feasibility|topology|find|explore|how we can|model|llm/i.test(g)) {
       return EMPLOYEE_ROLES.RESEARCH_ANALYST;
     }
+    // 2. Frontend, Web, UI/UX, CSS, Marketing
+    if (/frontend|ui|ux|css|html|design|webpage|landing|button|component|theme|styling|layout|responsive|marketing|seo|campaign|growth|funnel|copywriting|audience|conversion/i.test(g)) {
+      return EMPLOYEE_ROLES.DIGITAL_MARKETER;
+    }
+    // 3. QA, Testing, Invariants, Assertions
+    if (/test|qa|mutation|coverage|audit|assert|verify|validation|bug|reproduce|e2e|unit test/i.test(g)) {
+      return EMPLOYEE_ROLES.QA_ENGINEER;
+    }
+    // 4. Default: Backend, API, Server, Database & Core Logic
     return EMPLOYEE_ROLES.SOFTWARE_ENGINEER;
   }
 

@@ -36,6 +36,8 @@ CREATE TABLE IF NOT EXISTS tasks (
     branch_name TEXT,
     worktree_path TEXT,
     spec_sha TEXT,
+    deliverable_title TEXT,
+    deliverable_report TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

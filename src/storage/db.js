@@ -49,6 +49,14 @@ export class StudioDatabase {
   _bootstrapSchema() {
     const schemaSql = readFileSync(SCHEMA_PATH, 'utf-8');
     this.db.exec(schemaSql);
+
+    // Defensive migrations for existing SQLite databases
+    try {
+      this.db.exec('ALTER TABLE tasks ADD COLUMN deliverable_title TEXT;');
+    } catch {}
+    try {
+      this.db.exec('ALTER TABLE tasks ADD COLUMN deliverable_report TEXT;');
+    } catch {}
   }
 
   /**
