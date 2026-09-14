@@ -33,3 +33,8 @@ export { KnowledgePromoter, VALID_CATEGORIES, KNOWLEDGE_STATUS } from './knowled
 export { DynamicRiskEngine, RISK_TIERS, GOVERNANCE_POLICIES } from './risk/risk-engine.js';
 export { ParallelScheduler } from './scheduler/parallel-scheduler.js';
 export { PrGenerator } from './git/pr-generator.js';
+
+// Phase 6: Resilient Hybrid Overnight Execution & Central Policy
+export { AdaptiveQuotaManager, DEFAULT_PROVIDER_QUOTAS } from './quota/quota-manager.js';
+export { HybridExecutionRouter, ENVIRONMENTS, PROVIDER_ROTATIONS } from './execution/hybrid-router.js';
+export { CentralPolicyEngine, WHITELISTED_COMMAND_BINARIES, DEFAULT_BUDGET_POLICY } from './policy/policy-engine.js';

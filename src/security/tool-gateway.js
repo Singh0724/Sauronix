@@ -54,7 +54,9 @@ export const CAPABILITY_MATRIX = Object.freeze({
  */
 export function matchesGlobPattern(pathStr, patterns) {
   const normalized = pathStr.replace(/\\/g, '/');
-  for (const pattern of patterns) {
+  const list = Array.isArray(patterns) ? patterns : [patterns];
+  for (const pattern of list) {
+    if (!pattern || typeof pattern !== 'string') continue;
     const cleanPattern = pattern.replace(/\\/g, '/');
     if (cleanPattern.endsWith('/**')) {
       const prefix = cleanPattern.slice(0, -3);
