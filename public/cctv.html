@@ -8,35 +8,52 @@
   <meta name="studio-csrf-token" content="">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
   <style>
+    /* ==========================================================================
+       PRO MAX LUXURY EXECUTIVE DESIGN SYSTEM
+       Theme: Obsidian Glass, Polished Champagne Gold, & Cyber Titanium
+       ========================================================================== */
     :root {
-      --floor-bg: #070a13;
-      --floor-grid: rgba(30, 41, 59, 0.35);
-      --cabin-glass: rgba(15, 23, 42, 0.72);
-      --cabin-border: rgba(51, 65, 85, 0.6);
-      --cabin-border-glow: rgba(56, 189, 248, 0.4);
-      --wood-trim: #78350f;
-      --brass-gold: #f59e0b;
-      --executive-blue: #0284c7;
-      --emerald-led: #10b981;
-      --amber-led: #f59e0b;
-      --danger-led: #ef4444;
-      --desk-pad: rgba(2, 6, 23, 0.85);
+      --bg-primary: #05070d;
+      --bg-secondary: #090e18;
+      --surface-glass: rgba(13, 20, 36, 0.72);
+      --surface-card: rgba(16, 24, 44, 0.65);
+      --surface-hover: rgba(26, 38, 66, 0.85);
+      
+      --gold-primary: #eab308;
+      --gold-glow: #fde047;
+      --gold-gradient: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%);
+      --titanium-border: rgba(148, 163, 184, 0.18);
+      --titanium-glow: rgba(56, 189, 248, 0.25);
+      
+      --accent-cyan: #00f2fe;
+      --accent-violet: #8b5cf6;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
+
       --text-main: #f8fafc;
-      --text-dim: #94a3b8;
-      --text-brass: #fde68a;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --border-radius-xl: 18px;
+      --border-radius-lg: 12px;
+      --border-radius-md: 8px;
+      --border-radius-pill: 9999px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
 
     body {
-      background-color: var(--floor-bg);
-      background-image: 
-        radial-gradient(circle at 50% -20%, #0f1f3d 0%, transparent 60%),
-        linear-gradient(var(--floor-grid) 1px, transparent 1px),
-        linear-gradient(90deg, var(--floor-grid) 1px, transparent 1px);
-      background-size: 100% 100%, 48px 48px, 48px 48px;
+      background: radial-gradient(circle at 50% -10%, #0d1a33 0%, var(--bg-primary) 70%);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
@@ -44,157 +61,200 @@
       padding: 16px 24px;
       gap: 16px;
       overflow-x: hidden;
+      position: relative;
     }
 
-    /* Executive Penthouse Header */
-    .penthouse-header {
+    /* Subtle architectural grid pattern background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ==========================================================================
+       1. EXECUTIVE PENTHOUSE TOP COMMAND BAR
+       ========================================================================== */
+    .top-command-bar {
+      position: relative;
+      z-index: 10;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 14px 24px;
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.85) 100%);
-      border: 1px solid rgba(148, 163, 184, 0.15);
-      border-radius: 14px;
+      background: rgba(10, 15, 28, 0.82);
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-xl);
       backdrop-filter: blur(20px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    }
-    .corp-brand { display: flex; align-items: center; gap: 16px; }
-    .corp-emblem {
-      width: 44px; height: 44px;
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      border: 1.5px solid var(--brass-gold);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
-    }
-    .corp-title h1 {
-      font-size: 1.15rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      background: linear-gradient(90deg, #ffffff, #94a3b8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .corp-title p {
-      font-size: 0.72rem;
-      color: #38bdf8;
-      font-family: 'JetBrains Mono', monospace;
-      letter-spacing: 0.04em;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
-    .headquarters-telemetry {
+    .brand-cluster {
       display: flex;
       align-items: center;
       gap: 16px;
     }
-    .room-beacon {
+
+    .brand-crest {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid rgba(234, 179, 8, 0.5);
       display: flex;
       align-items: center;
-      gap: 9px;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.25);
+    }
+
+    .brand-meta h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-meta p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .telemetry-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       padding: 6px 14px;
       background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      border-radius: 20px;
-      font-size: 0.73rem;
-      font-weight: 700;
-      color: var(--emerald-led);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: var(--border-radius-pill);
       font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent-emerald);
     }
-    .beacon-light {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--emerald-led);
-      box-shadow: 0 0 10px var(--emerald-led);
-      animation: beacon-pulse 2s infinite;
-    }
-    @keyframes beacon-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.85); } }
 
-    .header-actions { display: flex; align-items: center; gap: 10px; }
-    .btn-executive {
+    .pulsing-beacon {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 10px var(--accent-emerald);
+      animation: beaconGlow 2s infinite ease-in-out;
+    }
+    @keyframes beaconGlow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.8); }
+    }
+
+    .quick-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-lux {
       background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      border: 1px solid var(--titanium-border);
       color: var(--text-main);
-      padding: 8px 15px;
-      border-radius: 8px;
+      padding: 8px 16px;
+      border-radius: var(--border-radius-md);
       font-size: 0.78rem;
       font-weight: 600;
+      letter-spacing: 0.02em;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 7px;
-      transition: all 0.2s;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .btn-executive:hover {
+    .btn-lux:hover {
       background: rgba(255, 255, 255, 0.09);
-      border-color: #38bdf8;
+      border-color: rgba(255, 255, 255, 0.3);
       transform: translateY(-1px);
     }
-    .btn-freeze {
-      border-color: rgba(239, 68, 68, 0.4);
-      color: #fca5a5;
+    .btn-lux.freeze {
+      border-color: rgba(244, 63, 94, 0.35);
+      color: #fda4af;
     }
-    .btn-freeze:hover {
-      background: rgba(239, 68, 68, 0.15);
-      border-color: var(--danger-led);
+    .btn-lux.freeze:hover {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: var(--accent-rose);
+      color: #fff;
     }
 
-    /* Main Floor Layout */
-    .hq-floor-layout {
+    /* ==========================================================================
+       2. MAIN OPERATIONS GRID LAYOUT
+       ========================================================================== */
+    .hq-layout-viewport {
+      position: relative;
+      z-index: 10;
       display: grid;
       grid-template-columns: 1fr 390px;
-      gap: 18px;
+      gap: 16px;
       flex: 1;
       min-height: 0;
     }
 
-    .wings-container {
+    .wings-column {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
       min-height: 0;
     }
 
-    /* Floor Plan Section Headers */
-    .floor-section-header {
+    /* Department Section Title */
+    .wing-header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 2px 4px;
-      margin-bottom: 8px;
     }
-    .section-tag {
-      font-size: 0.75rem;
-      font-weight: 800;
+    .wing-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #38bdf8;
+      color: #e2e8f0;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .section-meta {
+    .wing-meta {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.7rem;
       color: var(--text-dim);
     }
 
-    /* Cabins Grid */
-    .cabins-grid {
+    /* ==========================================================================
+       3. ARCHITECTURAL OFFICE CABIN SUITES (5 EXECUTIVE ROOMS)
+       ========================================================================== */
+    .cabins-floorplan {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 14px;
     }
 
-    /* Architectural Executive Cabin Card */
-    .office-cabin {
-      background: var(--cabin-glass);
-      border: 1px solid var(--cabin-border);
-      border-radius: 12px;
-      padding: 15px;
+    .executive-cabin {
+      background: var(--surface-card);
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-lg);
+      padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -204,78 +264,80 @@
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .office-cabin:hover {
+    .executive-cabin:hover {
       transform: translateY(-2px);
-      border-color: var(--cabin-border-glow);
-      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.65), 0 0 25px rgba(56, 189, 248, 0.12);
     }
 
-    /* Cabin Door Nameplate Header */
-    .cabin-doorplate {
+    /* Cabin Interior Identification Brass Plate */
+    .cabin-plate {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-bottom: 8px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
-    .cabin-number {
+    .cabin-code {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
-      font-weight: 800;
-      color: var(--text-dim);
+      font-weight: 700;
       letter-spacing: 0.08em;
-      padding: 2px 6px;
+      color: var(--text-muted);
       background: rgba(0, 0, 0, 0.35);
+      padding: 2px 7px;
       border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
-    .cabin-lamp {
-      width: 7px; height: 7px;
+    .cabin-light {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: var(--emerald-led);
-      box-shadow: 0 0 8px var(--emerald-led);
+      background: var(--accent-emerald);
+      box-shadow: 0 0 10px var(--accent-emerald);
     }
 
-    /* Cabin Interior & Occupant */
-    .occupant-suite {
+    /* Specialist Profile inside Cabin */
+    .specialist-desk-cluster {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    .occupant-avatar-frame {
-      width: 46px; height: 46px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
-      border: 1.5px solid rgba(148, 163, 184, 0.25);
+    .specialist-portrait-slot {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.12);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7);
-      position: relative;
+      font-size: 1.4rem;
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.7);
     }
-    .occupant-details { flex: 1; min-width: 0; }
-    .occupant-name {
+    .specialist-info { flex: 1; min-width: 0; }
+    .specialist-name {
       font-size: 0.88rem;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #ffffff;
+      color: #fff;
     }
-    .occupant-post {
+    .specialist-title {
       font-size: 0.68rem;
-      color: #38bdf8;
+      color: var(--accent-cyan);
       font-family: 'JetBrains Mono', monospace;
       margin-top: 1px;
     }
-    .occupant-tenure {
+    .specialist-legacy {
       font-size: 0.65rem;
-      color: var(--text-brass);
+      color: var(--gold-glow);
       font-weight: 600;
     }
 
-    /* Cabin Status Indicator */
-    .cabin-status-badge {
+    /* Cabin Flow Status Badge */
+    .cabin-flow-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -283,40 +345,46 @@
       padding: 3px 9px;
       border-radius: 6px;
       font-size: 0.68rem;
-      font-weight: 800;
+      font-weight: 700;
       font-family: 'JetBrains Mono', monospace;
       letter-spacing: 0.04em;
     }
     .status-free {
-      background: rgba(16, 185, 129, 0.12);
-      color: var(--emerald-led);
-      border: 1px solid rgba(16, 185, 129, 0.35);
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--accent-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
     }
     .status-working {
-      background: rgba(56, 189, 248, 0.18);
-      color: #38bdf8;
-      border: 1px solid #38bdf8;
-      animation: working-hud 2s infinite;
+      background: rgba(0, 242, 254, 0.12);
+      color: var(--accent-cyan);
+      border: 1px solid var(--accent-cyan);
+      animation: workingHUD 2s infinite ease-in-out;
     }
     .status-blocked {
-      background: rgba(245, 158, 11, 0.18);
-      color: var(--amber-led);
-      border: 1px solid var(--amber-led);
-      animation: alert-blink 1.2s infinite;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-amber);
+      border: 1px solid var(--accent-amber);
+      animation: alertBlink 1.4s infinite;
     }
     .status-done {
-      background: rgba(168, 85, 247, 0.18);
-      color: #c084fc;
-      border: 1px solid #c084fc;
+      background: rgba(139, 92, 246, 0.15);
+      color: #c4b5fd;
+      border: 1px solid #c4b5fd;
     }
-    @keyframes working-hud { 0%, 100% { box-shadow: 0 0 6px rgba(56, 189, 248, 0.3); } 50% { box-shadow: 0 0 16px rgba(56, 189, 248, 0.6); } }
-    @keyframes alert-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @keyframes workingHUD {
+      0%, 100% { box-shadow: 0 0 6px rgba(0, 242, 254, 0.25); }
+      50% { box-shadow: 0 0 16px rgba(0, 242, 254, 0.55); }
+    }
+    @keyframes alertBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
 
-    /* Workstation Interior Screen Display */
-    .desk-monitor-screen {
-      background: rgba(2, 6, 23, 0.7);
-      border: 1px solid rgba(30, 41, 59, 0.7);
-      border-radius: 7px;
+    /* Desk Interior Screen Monitor */
+    .desk-hud-monitor {
+      background: rgba(2, 6, 23, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--border-radius-md);
       padding: 8px 10px;
       font-size: 0.72rem;
       color: var(--text-dim);
@@ -326,48 +394,48 @@
       line-height: 1.35;
     }
 
-    /* Cabin Desk Action Controls */
-    .cabin-controls {
+    /* Cabin Desk Controls */
+    .cabin-actions-bar {
       display: flex;
       gap: 7px;
       margin-top: auto;
     }
-    .btn-intercom {
+    .btn-cabin {
       flex: 1;
       padding: 7px 10px;
       border-radius: 6px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.73rem;
+      font-weight: 600;
+      border: 1px solid var(--titanium-border);
+      background: rgba(255, 255, 255, 0.035);
       color: var(--text-main);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 5px;
-      transition: all 0.18s;
+      transition: all 0.18s ease;
     }
-    .btn-intercom:hover {
-      background: rgba(56, 189, 248, 0.12);
-      border-color: #38bdf8;
-      color: #38bdf8;
+    .btn-cabin:hover {
+      background: rgba(0, 242, 254, 0.1);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
     }
-    .btn-intervene {
+    .btn-cabin.pause {
       border-color: rgba(245, 158, 11, 0.35);
-      color: var(--amber-led);
+      color: var(--accent-amber);
     }
-    .btn-intervene:hover {
-      background: rgba(245, 158, 11, 0.15);
-      border-color: var(--amber-led);
+    .btn-cabin.pause:hover {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: var(--accent-amber);
     }
 
-    /* Intercom Holographic Speech Display */
-    .cabin-speech-hologram {
+    /* Cabin Intercom Speech Balloon */
+    .speech-balloon-hud {
       position: absolute;
       inset: 8px;
-      background: rgba(7, 10, 19, 0.96);
-      border: 1.5px solid #38bdf8;
+      background: rgba(5, 7, 13, 0.96);
+      border: 1.5px solid var(--accent-cyan);
       border-radius: 10px;
       padding: 12px;
       display: flex;
@@ -376,22 +444,27 @@
       font-size: 0.76rem;
       color: #f1f5f9;
       z-index: 20;
-      box-shadow: 0 0 30px rgba(56, 189, 248, 0.35);
-      animation: holo-pop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
+      animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    @keyframes holo-pop { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
-    .holo-text { line-height: 1.4; overflow-y: auto; max-height: 115px; }
-    .holo-dismiss {
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .balloon-body { line-height: 1.4; overflow-y: auto; max-height: 115px; }
+    .balloon-close {
       align-self: flex-end;
       font-size: 0.7rem;
-      color: #38bdf8;
+      color: var(--accent-cyan);
       font-weight: 700;
       cursor: pointer;
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Operations Floor: Founder Desk & Queue Board */
-    .operations-floor {
+    /* ==========================================================================
+       4. OPERATIONS CONSOLE & MULTI-TASK QUEUE
+       ========================================================================== */
+    .operations-subfloor {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
@@ -399,10 +472,10 @@
       min-height: 0;
     }
 
-    .desk-console {
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(2, 6, 23, 0.9) 100%);
-      border: 1px solid rgba(51, 65, 85, 0.6);
-      border-radius: 12px;
+    .console-module {
+      background: var(--surface-card);
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-lg);
       padding: 16px;
       display: flex;
       flex-direction: column;
@@ -412,47 +485,48 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
 
-    .console-header {
+    .module-heading-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-bottom: 8px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
-    .console-title {
-      font-size: 0.8rem;
-      font-weight: 800;
+    .module-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #38bdf8;
+      color: #f1f5f9;
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
     }
 
-    /* Executive Memo Dispatch Pad */
-    .directive-pad {
+    /* Founder Executive Directive Pad */
+    .directive-memo-area {
       width: 100%;
       height: 75px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(51, 65, 85, 0.8);
-      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-md);
       padding: 12px;
       color: var(--text-main);
       font-size: 0.82rem;
       resize: none;
       outline: none;
       line-height: 1.4;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: all 0.2s;
     }
-    .directive-pad:focus {
-      border-color: #38bdf8;
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    .directive-memo-area:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
     }
 
-    .attachment-drop-slot {
-      border: 1.5px dashed rgba(71, 85, 105, 0.7);
-      border-radius: 8px;
+    .blueprint-drop-surface {
+      border: 1.5px dashed rgba(148, 163, 184, 0.25);
+      border-radius: var(--border-radius-md);
       padding: 10px;
       text-align: center;
       background: rgba(255, 255, 255, 0.015);
@@ -465,26 +539,26 @@
       gap: 8px;
       transition: all 0.2s;
     }
-    .attachment-drop-slot:hover, .attachment-drop-slot.dragover {
-      border-color: #38bdf8;
-      background: rgba(56, 189, 248, 0.06);
-      color: #38bdf8;
+    .blueprint-drop-surface:hover, .blueprint-drop-surface.dragover {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 242, 254, 0.05);
+      color: var(--accent-cyan);
     }
 
-    .thumbnail-dock { display: flex; gap: 8px; overflow-x: auto; padding-top: 4px; }
-    .thumbnail-thumb {
+    .blueprint-shelf { display: flex; gap: 8px; overflow-x: auto; padding-top: 4px; }
+    .shelf-item {
       position: relative;
       width: 44px; height: 44px;
       border-radius: 6px;
       overflow: hidden;
-      border: 1px solid rgba(148, 163, 184, 0.3);
+      border: 1px solid var(--titanium-border);
     }
-    .thumbnail-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .thumbnail-del {
+    .shelf-item img { width: 100%; height: 100%; object-fit: cover; }
+    .shelf-del {
       position: absolute;
       top: 1px; right: 1px;
       background: rgba(0, 0, 0, 0.85);
-      color: var(--danger-led);
+      color: var(--accent-rose);
       width: 14px; height: 14px;
       border-radius: 50%;
       display: flex;
@@ -494,14 +568,15 @@
       cursor: pointer;
     }
 
-    .btn-dispatch-directive {
-      background: linear-gradient(135deg, #0284c7, #2563eb);
+    .btn-dispatch-exec {
+      background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
       color: #ffffff;
       border: none;
-      border-radius: 8px;
-      padding: 10px;
-      font-size: 0.85rem;
+      border-radius: var(--border-radius-md);
+      padding: 11px;
+      font-size: 0.82rem;
       font-weight: 700;
+      letter-spacing: 0.04em;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -510,13 +585,13 @@
       box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);
       transition: all 0.2s;
     }
-    .btn-dispatch-directive:hover {
+    .btn-dispatch-exec:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 22px rgba(2, 132, 199, 0.55);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.55);
     }
 
-    /* Multi-Task Backlog Board */
-    .queue-ledger {
+    /* Multi-Task Backlog Ledger */
+    .backlog-ledger-feed {
       flex: 1;
       overflow-y: auto;
       display: flex;
@@ -524,26 +599,31 @@
       gap: 8px;
       padding-right: 4px;
     }
-    .ledger-entry {
-      background: rgba(0, 0, 0, 0.3);
-      border-left: 3px solid #38bdf8;
-      border-radius: 0 8px 8px 0;
+    .ledger-row {
+      background: rgba(0, 0, 0, 0.25);
+      border-left: 3px solid var(--accent-cyan);
+      border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
       padding: 9px 12px;
       font-size: 0.75rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .ledger-entry.active { border-left-color: var(--emerald-led); background: rgba(16, 185, 129, 0.07); }
-    .ledger-entry.waiting { border-left-color: var(--amber-led); }
-    .ledger-meta { display: flex; flex-direction: column; gap: 2px; }
-    .ledger-id { font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #38bdf8; }
-    .ledger-desc { color: #cbd5e1; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ledger-row.active {
+      border-left-color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.06);
+    }
+    .ledger-row.waiting { border-left-color: var(--accent-amber); }
+    .ledger-data { display: flex; flex-direction: column; gap: 2px; }
+    .ledger-taskid { font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); }
+    .ledger-taskprompt { color: #cbd5e1; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* Right Operations Tower: 1-Week Audit & Live Feed */
-    .operations-tower { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
-    .tower-tabs { display: flex; gap: 6px; background: rgba(0, 0, 0, 0.35); padding: 4px; border-radius: 8px; }
-    .tab-trigger {
+    /* ==========================================================================
+       5. RIGHT OPERATIONS TOWER: AUDIT HISTORY & LIVE LOG
+       ========================================================================== */
+    .tower-column { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+    .tower-tab-dock { display: flex; gap: 6px; background: rgba(0, 0, 0, 0.35); padding: 4px; border-radius: 8px; }
+    .tab-switch {
       flex: 1;
       padding: 7px;
       border: none;
@@ -554,13 +634,13 @@
       font-weight: 700;
       cursor: pointer;
     }
-    .tab-trigger.active {
+    .tab-switch.active {
       background: rgba(30, 41, 59, 0.8);
-      color: #38bdf8;
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .audit-records-list {
+    .audit-ledger-list {
       flex: 1;
       overflow-y: auto;
       display: flex;
@@ -568,35 +648,35 @@
       gap: 8px;
       padding-right: 4px;
     }
-    .audit-card {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(51, 65, 85, 0.6);
-      border-radius: 8px;
+    .audit-entry-card {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-md);
       padding: 9px 12px;
       font-size: 0.73rem;
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
-    .audit-top { display: flex; justify-content: space-between; font-weight: 700; }
-    .audit-specialist { color: #38bdf8; }
-    .audit-date { color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; }
-    .audit-mission { color: #e2e8f0; line-height: 1.3; }
-    .audit-seal {
+    .audit-entry-top { display: flex; justify-content: space-between; font-weight: 700; }
+    .audit-author { color: var(--accent-cyan); }
+    .audit-time { color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; }
+    .audit-desc { color: #e2e8f0; line-height: 1.35; }
+    .audit-verification-stamp {
       align-self: flex-start;
       font-size: 0.65rem;
       padding: 2px 7px;
       border-radius: 4px;
       background: rgba(16, 185, 129, 0.12);
-      color: var(--emerald-led);
+      color: var(--accent-emerald);
       font-family: 'JetBrains Mono', monospace;
     }
 
-    .telemetry-stream {
+    .telemetry-console-view {
       flex: 1;
       background: #020617;
-      border: 1px solid rgba(51, 65, 85, 0.7);
-      border-radius: 8px;
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-md);
       padding: 10px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
@@ -606,118 +686,116 @@
       line-height: 1.45;
     }
 
-    /* Founder Directive Intervention Dialog */
+    /* Direct Intervention Modal */
     dialog {
       margin: auto;
       background: #090d1a;
-      border: 1.5px solid #38bdf8;
-      border-radius: 12px;
+      border: 1.5px solid var(--accent-cyan);
+      border-radius: var(--border-radius-lg);
       padding: 22px;
       color: var(--text-main);
       max-width: 480px;
       width: 90vw;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(56, 189, 248, 0.25);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 242, 254, 0.2);
     }
     dialog::backdrop { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); }
-    .dialog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .dialog-header h3 { font-size: 1.05rem; color: #38bdf8; font-weight: 800; }
-    .dialog-textarea {
+    .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .modal-head h3 { font-size: 1.05rem; color: var(--accent-cyan); font-weight: 800; }
+    .modal-input {
       width: 100%;
       height: 95px;
       background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      border-radius: 8px;
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-md);
       padding: 10px;
       color: var(--text-main);
       font-size: 0.82rem;
       resize: none;
       margin: 12px 0;
     }
-    .dialog-footer { display: flex; justify-content: flex-end; gap: 8px; }
+    .modal-foot { display: flex; justify-content: flex-end; gap: 8px; }
   </style>
 </head>
 <body>
 
-  <!-- Executive Penthouse Header -->
-  <header class="penthouse-header">
-    <div class="corp-brand">
-      <div class="corp-emblem">🏛️</div>
-      <div class="corp-title">
-        <h1>Sauronix AI • Virtual Corporate HQ</h1>
+  <!-- 1. EXECUTIVE PENTHOUSE COMMAND BAR -->
+  <header class="top-command-bar">
+    <div class="brand-cluster">
+      <div class="brand-crest">🏛️</div>
+      <div class="brand-meta">
+        <h1>SAURONIX AI • EXECUTIVE OPERATIONS HQ</h1>
         <p>FLOOR 42 EXECUTIVE SUITE & SPECIALIST OPERATIONS WING</p>
       </div>
     </div>
 
-    <div class="headquarters-telemetry">
-      <div class="room-beacon" id="hudEngineStatus">
-        <div class="beacon-light"></div>
-        HQ OPERATIONS ONLINE (PORT 3000)
-      </div>
+    <div class="telemetry-status-pill" id="hudEngineStatus">
+      <div class="pulsing-beacon"></div>
+      HQ ONLINE (PORT 3000)
     </div>
 
-    <div class="header-actions">
-      <button class="btn-executive" onclick="toggleVoice()" id="voiceToggleBtn">
-        <span id="voiceIcon">🔊</span> Intercom Audio: ON
+    <div class="quick-actions">
+      <button class="btn-lux" onclick="toggleVoice()" id="voiceToggleBtn">
+        <span id="voiceIcon">🔊</span> Intercom: ON
       </button>
-      <button class="btn-executive" onclick="refreshTeamData()">🔄 Floor Scan</button>
-      <button class="btn-executive btn-freeze" onclick="triggerEmergencyStop()">🛑 Security Airlock</button>
+      <button class="btn-lux" onclick="refreshTeamData()">🔄 Scan Floor</button>
+      <button class="btn-lux freeze" onclick="triggerEmergencyStop()">🛑 Security Airlock</button>
     </div>
   </header>
 
-  <!-- Main Floor Plan Layout -->
-  <div class="hq-floor-layout">
+  <!-- 2. MAIN OPERATIONS GRID -->
+  <div class="hq-layout-viewport">
     
-    <!-- Left: Department Wings & Founder Console -->
-    <main class="wings-container">
+    <!-- Left Column: Department Cabins & Founder Console -->
+    <main class="wings-column">
       
       <!-- Executive Cabins Section -->
       <section>
-        <div class="floor-section-header">
-          <div class="section-tag">
+        <div class="wing-header-row">
+          <div class="wing-title">
             <span>🚪 Executive Suites & Department Cabins</span>
           </div>
-          <div class="section-meta" id="squadSummary">
+          <div class="wing-meta" id="squadSummary">
             1 Lead Commander • 4 Senior Specialists
           </div>
         </div>
 
-        <div class="cabins-grid" id="robotSquadContainer">
-          <!-- Dynamically populated with office cabins by renderRobots() -->
+        <div class="cabins-floorplan" id="robotSquadContainer">
+          <!-- Dynamically populated with 5 office cabins by renderRobots() -->
         </div>
       </section>
 
-      <!-- Operations Floor: Founder Desk & Multi-Task Backlog -->
-      <div class="operations-floor">
+      <!-- Operations Subfloor: Founder Console & Multi-Task Queue -->
+      <div class="operations-subfloor">
         
         <!-- Task Dispatch Console -->
-        <section class="desk-console">
-          <div class="console-header">
-            <h2 class="console-title">⚡ Founder Directive Console</h2>
-            <span style="font-size: 0.7rem; color: #38bdf8; font-family: 'JetBrains Mono', monospace;">Direct Line to Cabin 101</span>
+        <section class="console-module">
+          <div class="module-heading-bar">
+            <h2 class="module-title">⚡ Founder Directive Console</h2>
+            <span style="font-size: 0.7rem; color: var(--accent-cyan); font-family: 'JetBrains Mono', monospace;">Direct Line to Cabin 101</span>
           </div>
 
-          <textarea id="taskPromptInput" class="directive-pad" placeholder="Draft directive memo for Chief Coordinator Dr. Elena Rostova (e.g. 'Build Stripe payment webhook router' or 'Audit landing page conversion architecture')..."></textarea>
+          <textarea id="taskPromptInput" class="directive-memo-area" placeholder="Draft directive memo for Chief Coordinator Dr. Elena Rostova (e.g. 'Build Stripe payment webhook router' or 'Audit landing page conversion architecture')..."></textarea>
 
-          <div class="attachment-drop-slot" id="imageDropZone" onclick="document.getElementById('imageFileInput').click()">
+          <div class="blueprint-drop-surface" id="imageDropZone" onclick="document.getElementById('imageFileInput').click()">
             <span>📎 Drop architectural blueprints, mockups, or click to attach</span>
             <input type="file" id="imageFileInput" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
           </div>
 
-          <div class="thumbnail-dock" id="thumbnailBar"></div>
+          <div class="blueprint-shelf" id="thumbnailBar"></div>
 
-          <button class="btn-dispatch-directive" onclick="dispatchTaskToLead()">
+          <button class="btn-dispatch-exec" onclick="dispatchTaskToLead()">
             <span>🚀 Transmit Directive to Cabin 101</span>
           </button>
         </section>
 
         <!-- Live Queue Board -->
-        <section class="desk-console">
-          <div class="console-header">
-            <h2 class="console-title">📋 Operations Backlog & Queue</h2>
-            <span id="queueCountBadge" style="font-size: 0.7rem; color: var(--amber-led); font-family: 'JetBrains Mono', monospace;">0 Tasks Pending</span>
+        <section class="console-module">
+          <div class="module-heading-bar">
+            <h2 class="module-title">📋 Operations Backlog & Queue</h2>
+            <span id="queueCountBadge" style="font-size: 0.7rem; color: var(--accent-amber); font-family: 'JetBrains Mono', monospace;">0 Tasks Pending</span>
           </div>
 
-          <div class="queue-ledger" id="queueListContainer">
+          <div class="backlog-ledger-feed" id="queueListContainer">
             <div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">
               Executive backlog clear. Transmit directives to queue them sequentially!
             </div>
@@ -727,23 +805,23 @@
       </div>
     </main>
 
-    <!-- Right: Audit Records & Live Telemetry Feed -->
-    <aside class="operations-tower">
-      <section class="desk-console" style="flex: 1;">
-        <div class="tower-tabs">
-          <button class="tab-trigger active" id="tabHistoryBtn" onclick="switchSideTab('history')">📅 7-Day Office Audit</button>
-          <button class="tab-trigger" id="tabTerminalBtn" onclick="switchSideTab('terminal')">📟 Operations Stream</button>
+    <!-- Right Column: Audit Records & Live Telemetry Feed -->
+    <aside class="tower-column">
+      <section class="console-module" style="flex: 1;">
+        <div class="tower-tab-dock">
+          <button class="tab-switch active" id="tabHistoryBtn" onclick="switchSideTab('history')">📅 7-Day Office Audit</button>
+          <button class="tab-switch" id="tabTerminalBtn" onclick="switchSideTab('terminal')">📟 Operations Stream</button>
         </div>
 
         <!-- 1-Week Audit Ledger -->
-        <div class="audit-records-list" id="historyTabContent">
+        <div class="audit-ledger-list" id="historyTabContent">
           <div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">
             Loading 7-day completed task audit...
           </div>
         </div>
 
         <!-- Operations Stream Log -->
-        <div class="telemetry-stream" id="terminalTabContent" style="display: none;">
+        <div class="telemetry-console-view" id="terminalTabContent" style="display: none;">
 [HQ Stream]: Initializing secure CCTV telemetry link...
         </div>
       </section>
@@ -753,17 +831,17 @@
 
   <!-- Direct Intervention Dialog -->
   <dialog id="directiveModal">
-    <div class="dialog-header">
+    <div class="modal-head">
       <h3 id="modalEmployeeTitle">Intervene & Direct Specialist</h3>
       <button onclick="closeDirectiveModal()" style="background: transparent; border: none; color: var(--text-dim); font-size: 1.1rem; cursor: pointer;">✕</button>
     </div>
     <p style="font-size: 0.75rem; color: var(--text-dim);" id="modalEmployeeSub">Specialist cabin worktree is frozen. Provide corrective directive to resume.</p>
     
-    <textarea id="founderInstructionInput" class="dialog-textarea" placeholder="Type corrective directive (e.g. 'Use async iteration instead of recursive promises')..."></textarea>
+    <textarea id="founderInstructionInput" class="modal-input" placeholder="Type corrective directive (e.g. 'Use async iteration instead of recursive promises')..."></textarea>
 
-    <div class="dialog-footer">
-      <button class="btn-executive" onclick="closeDirectiveModal()">Cancel</button>
-      <button class="btn-dispatch-directive" style="padding: 8px 16px;" onclick="submitFounderInstruction()">🚀 Resume Worktree</button>
+    <div class="modal-foot">
+      <button class="btn-lux" onclick="closeDirectiveModal()">Cancel</button>
+      <button class="btn-dispatch-exec" style="padding: 8px 16px;" onclick="submitFounderInstruction()">🚀 Resume Worktree</button>
     </div>
   </dialog>
 
@@ -805,7 +883,7 @@
     function toggleVoice() {
       voiceEnabled = !voiceEnabled;
       const btn = document.getElementById('voiceToggleBtn');
-      btn.innerHTML = voiceEnabled ? '<span>🔊</span> Intercom Audio: ON' : '<span>🔇</span> Intercom Audio: MUTED';
+      btn.innerHTML = voiceEnabled ? '<span>🔊</span> Intercom: ON' : '<span>🔇</span> Intercom: MUTED';
       if (!voiceEnabled) window.speechSynthesis.cancel();
     }
 
@@ -829,29 +907,29 @@
       // 1. Render Cabin 101 - Executive Suite (Lead)
       if (lead) {
         const leadCard = document.createElement('div');
-        leadCard.className = 'office-cabin';
-        leadCard.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+        leadCard.className = 'executive-cabin';
+        leadCard.style.borderColor = 'rgba(234, 179, 8, 0.4)';
         leadCard.innerHTML = `
-          <div class="cabin-doorplate">
-            <span class="cabin-number">CABIN 101 • EXECUTIVE SUITE</span>
-            <span class="cabin-lamp" style="background: var(--brass-gold); box-shadow: 0 0 10px var(--brass-gold);"></span>
+          <div class="cabin-plate">
+            <span class="cabin-code" style="color: #fde047; border-color: rgba(234, 179, 8, 0.3);">CABIN 101 • EXECUTIVE SUITE</span>
+            <span class="cabin-light" style="background: var(--gold-primary); box-shadow: 0 0 10px var(--gold-primary);"></span>
           </div>
-          <div class="occupant-suite">
-            <div class="occupant-avatar-frame" style="border-color: var(--brass-gold);">
+          <div class="specialist-desk-cluster">
+            <div class="specialist-portrait-slot" style="border-color: var(--gold-primary);">
               👑
             </div>
-            <div class="occupant-details">
-              <div class="occupant-name">${lead.name}</div>
-              <div class="occupant-post">Chief Engineering Coordinator</div>
-              <div class="occupant-tenure">50+ Yrs Exp • Female Commander</div>
+            <div class="specialist-info">
+              <div class="specialist-name">${lead.name}</div>
+              <div class="specialist-title">Chief Engineering Coordinator</div>
+              <div class="specialist-legacy">50+ Yrs Exp • Female Commander</div>
             </div>
           </div>
-          <div class="cabin-status-badge status-working">⚡ SQUAD COORDINATION</div>
-          <div class="desk-monitor-screen">Active leadership desk: Orchestrating multi-agent task queue and QA reviews.</div>
-          <div class="cabin-controls">
-            <button class="btn-intercom" onclick="askWorker('LEAD-01')">🎙️ Intercom Line</button>
+          <div class="cabin-flow-badge status-working">⚡ SQUAD COORDINATION</div>
+          <div class="desk-hud-monitor">Executive leadership desk: Orchestrating multi-agent task queue and QA reviews.</div>
+          <div class="cabin-actions-bar">
+            <button class="btn-cabin" onclick="askWorker('LEAD-01')">🎙️ Intercom Line</button>
           </div>
-          <div id="bubble-LEAD-01" class="cabin-speech-hologram" style="display: none;"></div>
+          <div id="bubble-LEAD-01" class="speech-balloon-hud" style="display: none;"></div>
         `;
         container.appendChild(leadCard);
       }
@@ -866,49 +944,49 @@
 
       employees.forEach((emp, index) => {
         const card = document.createElement('div');
-        card.className = 'office-cabin';
+        card.className = 'executive-cabin';
         const cabinInfo = cabinMap[emp.id] || { no: `CABIN ${102 + index}`, wing: emp.role.replace(/_/g, ' '), icon: '🏢' };
 
         let statusClass = 'status-free';
         let statusText = '🟢 IN CABIN / STANDBY';
-        let lampColor = 'var(--emerald-led)';
+        let lampColor = 'var(--accent-emerald)';
 
         if (emp.status === 'WORKING') {
           statusClass = 'status-working';
           statusText = `⚡ ACTIVE WORKTREE [${emp.currentTaskId || 'TASK'}]`;
-          lampColor = '#38bdf8';
+          lampColor = 'var(--accent-cyan)';
         } else if (emp.status === 'BLOCKED') {
           statusClass = 'status-blocked';
           statusText = '⚠️ AIRLOCK / DIRECTIVE';
-          lampColor = 'var(--amber-led)';
+          lampColor = 'var(--accent-amber)';
         } else if (emp.status === 'DONE') {
           statusClass = 'status-done';
           statusText = '✔ REVIEW / PR READY';
-          lampColor = '#c084fc';
+          lampColor = '#c4b5fd';
         }
 
         card.innerHTML = `
-          <div class="cabin-doorplate">
-            <span class="cabin-number">${cabinInfo.no} • ${cabinInfo.wing}</span>
-            <span class="cabin-lamp" style="background: ${lampColor}; box-shadow: 0 0 8px ${lampColor};"></span>
+          <div class="cabin-plate">
+            <span class="cabin-code">${cabinInfo.no} • ${cabinInfo.wing}</span>
+            <span class="cabin-light" style="background: ${lampColor}; box-shadow: 0 0 8px ${lampColor};"></span>
           </div>
-          <div class="occupant-suite">
-            <div class="occupant-avatar-frame" style="border-color: ${emp.hologramColor || '#38bdf8'};">
+          <div class="specialist-desk-cluster">
+            <div class="specialist-portrait-slot" style="border-color: ${emp.hologramColor || 'var(--accent-cyan)'};">
               ${emp.avatar ? emp.avatar.replace('🤖', '') : cabinInfo.icon}
             </div>
-            <div class="occupant-details">
-              <div class="occupant-name">${emp.name}</div>
-              <div class="occupant-post">${emp.role.replace(/_/g, ' ')}</div>
-              <div class="occupant-tenure">${emp.experience} • ${emp.gender}</div>
+            <div class="specialist-info">
+              <div class="specialist-name">${emp.name}</div>
+              <div class="specialist-title">${emp.role.replace(/_/g, ' ')}</div>
+              <div class="specialist-legacy">${emp.experience} • ${emp.gender}</div>
             </div>
           </div>
-          <div class="cabin-status-badge ${statusClass}">${statusText}</div>
-          <div class="desk-monitor-screen">${emp.currentDoubt ? 'Doubt Escalation: ' + escapeHtml(emp.currentDoubt) : (emp.currentTaskId ? 'Worktree active on ' + escapeHtml(emp.currentTaskId) : escapeHtml(emp.specialty.slice(0, 52)) + '...')}</div>
-          <div class="cabin-controls">
-            <button class="btn-intercom" onclick="askWorker('${emp.id}')">🎙️ Intercom</button>
-            <button class="btn-intercom btn-intervene" onclick="openDirectiveModal('${emp.id}', '${emp.name}')">⏸️ Intervene</button>
+          <div class="cabin-flow-badge ${statusClass}">${statusText}</div>
+          <div class="desk-hud-monitor">${emp.currentDoubt ? 'Doubt Escalation: ' + escapeHtml(emp.currentDoubt) : (emp.currentTaskId ? 'Worktree active on ' + escapeHtml(emp.currentTaskId) : escapeHtml(emp.specialty.slice(0, 52)) + '...')}</div>
+          <div class="cabin-actions-bar">
+            <button class="btn-cabin" onclick="askWorker('${emp.id}')">🎙️ Intercom</button>
+            <button class="btn-cabin pause" onclick="openDirectiveModal('${emp.id}', '${emp.name}')">⏸️ Intervene</button>
           </div>
-          <div id="bubble-${emp.id}" class="cabin-speech-hologram" style="display: none;"></div>
+          <div id="bubble-${emp.id}" class="speech-balloon-hud" style="display: none;"></div>
         `;
         container.appendChild(card);
       });
@@ -927,8 +1005,8 @@
         const bubble = document.getElementById(`bubble-${empId}`);
         if (bubble) {
           bubble.innerHTML = `
-            <div class="holo-text">"${escapeHtml(data.speechBubble)}"</div>
-            <div class="holo-dismiss" onclick="closeBubble('${empId}')">DISMISS ×</div>
+            <div class="balloon-body">"${escapeHtml(data.speechBubble)}"</div>
+            <div class="balloon-close" onclick="closeBubble('${empId}')">DISMISS ×</div>
           `;
           bubble.style.display = 'flex';
           clearTimeout(activeSpeechBubbleTimeout);
@@ -1026,10 +1104,10 @@
       bar.innerHTML = '';
       imageAttachments.forEach((imgSrc, idx) => {
         const thumb = document.createElement('div');
-        thumb.className = 'thumbnail-thumb';
+        thumb.className = 'shelf-item';
         thumb.innerHTML = `
           <img src="${imgSrc}" />
-          <div class="thumbnail-del" onclick="removeImage(${idx})">×</div>
+          <div class="shelf-del" onclick="removeImage(${idx})">×</div>
         `;
         bar.appendChild(thumb);
       });
@@ -1100,13 +1178,13 @@
       container.innerHTML = '';
       queue.forEach((item, idx) => {
         const qItem = document.createElement('div');
-        qItem.className = `ledger-entry ${item.status === 'ASSIGNED' ? 'active' : 'waiting'}`;
+        qItem.className = `ledger-row ${item.status === 'ASSIGNED' ? 'active' : 'waiting'}`;
         qItem.innerHTML = `
-          <div class="ledger-meta">
-            <span class="ledger-id">[#${idx + 1}] ${item.taskId}</span>
-            <span class="ledger-desc">${escapeHtml(item.rawPrompt)}</span>
+          <div class="ledger-data">
+            <span class="ledger-taskid">[#${idx + 1}] ${item.taskId}</span>
+            <span class="ledger-taskprompt">${escapeHtml(item.rawPrompt)}</span>
           </div>
-          <div style="font-size: 0.68rem; font-family: 'JetBrains Mono', monospace; color: #38bdf8; font-weight: 700;">
+          <div style="font-size: 0.68rem; font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); font-weight: 700;">
             ${item.assignedEmployee ? item.assignedEmployee.name : item.status}
           </div>
         `;
@@ -1137,14 +1215,14 @@
       container.innerHTML = '';
       history.forEach(item => {
         const card = document.createElement('div');
-        card.className = 'audit-card';
+        card.className = 'audit-entry-card';
         card.innerHTML = `
-          <div class="audit-top">
-            <span class="audit-specialist">🏛️ ${item.employeeName}</span>
-            <span class="audit-date">${new Date(item.timestamp).toLocaleDateString()}</span>
+          <div class="audit-entry-top">
+            <span class="audit-author">🏛️ ${item.employeeName}</span>
+            <span class="audit-time">${new Date(item.timestamp).toLocaleDateString()}</span>
           </div>
-          <div class="audit-mission">${escapeHtml(item.goal)}</div>
-          <div class="audit-seal">QA Verified • PR: ${item.taskId}</div>
+          <div class="audit-desc">${escapeHtml(item.goal)}</div>
+          <div class="audit-verification-stamp">QA Verified • PR: ${item.taskId}</div>
         `;
         container.appendChild(card);
       });
