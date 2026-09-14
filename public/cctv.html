@@ -3,814 +3,847 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Autonomous AI Engineering Studio • Founder CCTV Mission Control</title>
+  <title>Sauronix AI • Founder CCTV Mission Control & Executive Office Cabins</title>
   <meta name="studio-auth-token" content="">
   <meta name="studio-csrf-token" content="">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   
   <style>
     /* ==========================================================================
-       ENTERPRISE DEVELOPER PLATFORM DESIGN SYSTEM (Linear / GitHub / Datadog)
+       PRO MAX LUXURY EXECUTIVE DESIGN SYSTEM
+       Theme: Obsidian Glass, Polished Champagne Gold, & Cyber Titanium
        ========================================================================== */
     :root {
-      --bg-canvas: #090d13;
-      --bg-subtle: #0d1117;
-      --bg-surface: #161b22;
-      --bg-surface-hover: #1f242c;
-      --bg-surface-active: #262c36;
-      --border-default: #30363d;
-      --border-muted: #21262d;
-      --border-active: #58a6ff;
+      --bg-primary: #05070d;
+      --bg-secondary: #090e18;
+      --surface-glass: rgba(13, 20, 36, 0.72);
+      --surface-card: rgba(16, 24, 44, 0.65);
+      --surface-hover: rgba(26, 38, 66, 0.85);
+      
+      --gold-primary: #eab308;
+      --gold-glow: #fde047;
+      --gold-gradient: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%);
+      --titanium-border: rgba(148, 163, 184, 0.18);
+      --titanium-glow: rgba(56, 189, 248, 0.25);
+      
+      --accent-cyan: #00f2fe;
+      --accent-violet: #8b5cf6;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
 
-      --text-primary: #e6edf3;
-      --text-secondary: #8b949e;
-      --text-tertiary: #6e7681;
-      --text-white: #ffffff;
-
-      --accent-blue: #2f81f7;
-      --accent-blue-subtle: rgba(56, 139, 253, 0.12);
-      --accent-green: #238636;
-      --accent-green-subtle: rgba(46, 160, 67, 0.12);
-      --accent-amber: #d29922;
-      --accent-amber-subtle: rgba(210, 153, 34, 0.12);
-      --accent-red: #da3633;
-      --accent-red-subtle: rgba(248, 81, 73, 0.12);
-      --accent-purple: #8957e5;
-      --accent-purple-subtle: rgba(137, 87, 229, 0.12);
-
-      --radius-sm: 4px;
-      --radius-md: 6px;
-      --radius-lg: 8px;
-
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --font-mono: 'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --border-radius-xl: 18px;
+      --border-radius-lg: 12px;
+      --border-radius-md: 8px;
+      --border-radius-pill: 9999px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
 
     body {
-      background-color: var(--bg-canvas);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      font-size: 13px;
-      line-height: 1.5;
+      background: radial-gradient(circle at 50% -10%, #0d1a33 0%, var(--bg-primary) 70%);
+      color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      padding: 16px 24px;
+      gap: 16px;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    /* 1. Global Top Navigation Bar */
-    .top-nav {
-      height: 48px;
-      background: var(--bg-subtle);
-      border-bottom: 1px solid var(--border-muted);
+    /* Subtle architectural grid pattern background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ==========================================================================
+       1. EXECUTIVE PENTHOUSE TOP COMMAND BAR
+       ========================================================================== */
+    .top-command-bar {
+      position: relative;
+      z-index: 10;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
-      flex-shrink: 0;
-      z-index: 100;
+      align-items: center;
+      padding: 14px 24px;
+      background: rgba(10, 15, 28, 0.82);
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-xl);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
-    .nav-left {
+    .brand-cluster {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
     }
-    .org-badge {
-      width: 20px;
-      height: 20px;
-      background: #1f242c;
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-sm);
+
+    .brand-crest {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid rgba(234, 179, 8, 0.5);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--accent-blue);
-    }
-    .product-title {
-      font-weight: 600;
-      font-size: 13px;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .env-tag {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      padding: 1px 6px;
-      border-radius: var(--radius-sm);
-      background: #1f242c;
-      color: var(--text-secondary);
-      border: 1px solid var(--border-muted);
+      font-size: 1.5rem;
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.25);
     }
 
-    .nav-center {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .brand-meta h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    .health-pill {
+
+    .brand-meta p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      color: var(--accent-cyan);
       display: flex;
       align-items: center;
       gap: 6px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: #3fb950;
-      background: rgba(46, 160, 67, 0.1);
-      border: 1px solid rgba(46, 160, 67, 0.3);
-      padding: 2px 8px;
-      border-radius: 12px;
-    }
-    .health-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #3fb950;
     }
 
-    .nav-right {
+    .telemetry-status-pill {
       display: flex;
       align-items: center;
       gap: 8px;
+      padding: 6px 14px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: var(--border-radius-pill);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent-emerald);
     }
 
-    .btn-action {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-default);
-      color: var(--text-primary);
-      padding: 4px 10px;
-      border-radius: var(--radius-md);
-      font-size: 12px;
-      font-weight: 500;
+    .pulsing-beacon {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 10px var(--accent-emerald);
+      animation: beaconGlow 2s infinite ease-in-out;
+    }
+    @keyframes beaconGlow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.8); }
+    }
+
+    .quick-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-lux {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--titanium-border);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: var(--border-radius-md);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: background 0.15s, border-color 0.15s;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .btn-action:hover {
-      background: var(--bg-surface-hover);
-      border-color: var(--text-secondary);
+    .btn-lux:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
     }
-    .btn-action.danger {
-      color: #f85149;
-      border-color: rgba(248, 81, 73, 0.3);
+    .btn-lux.freeze {
+      border-color: rgba(244, 63, 94, 0.35);
+      color: #fda4af;
     }
-    .btn-action.danger:hover {
-      background: var(--accent-red-subtle);
-      border-color: var(--accent-red);
+    .btn-lux.freeze:hover {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: var(--accent-rose);
+      color: #fff;
     }
 
-    /* 2. Main Workbench Shell Layout */
-    .app-workbench {
-      display: flex;
+    /* ==========================================================================
+       2. MAIN OPERATIONS GRID LAYOUT
+       ========================================================================== */
+    .hq-layout-viewport {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: 1fr 390px;
+      gap: 16px;
       flex: 1;
       min-height: 0;
     }
 
-    /* Left Enterprise Sidebar */
-    .sidebar {
-      width: 220px;
-      background: var(--bg-subtle);
-      border-right: 1px solid var(--border-muted);
+    .wings-column {
       display: flex;
       flex-direction: column;
-      flex-shrink: 0;
-      padding: 12px 8px;
       gap: 16px;
-      overflow-y: auto;
+      min-height: 0;
     }
 
-    .sidebar-section {
+    /* Department Section Title */
+    .wing-header-row {
       display: flex;
-      flex-direction: column;
-      gap: 2px;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2px 4px;
     }
-    .section-label {
-      font-size: 10px;
-      font-weight: 600;
+    .wing-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-tertiary);
-      padding: 4px 8px;
-    }
-    .sidebar-item {
+      color: #e2e8f0;
       display: flex;
       align-items: center;
+      gap: 8px;
+    }
+    .wing-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+
+    /* ==========================================================================
+       3. ARCHITECTURAL OFFICE CABIN SUITES (5 EXECUTIVE ROOMS)
+       ========================================================================== */
+    .cabins-floorplan {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .executive-cabin {
+      background: var(--surface-card);
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .executive-cabin:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.65), 0 0 25px rgba(56, 189, 248, 0.12);
+    }
+
+    /* Cabin Interior Identification Brass Plate */
+    .cabin-plate {
+      display: flex;
       justify-content: space-between;
-      padding: 5px 8px;
-      border-radius: var(--radius-md);
-      color: var(--text-secondary);
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.12s;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
-    .sidebar-item:hover {
-      background: var(--bg-surface);
-      color: var(--text-primary);
+    .cabin-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
-    .sidebar-item.active {
-      background: var(--bg-surface-active);
-      color: var(--text-primary);
+    .cabin-light {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 10px var(--accent-emerald);
+    }
+
+    /* Specialist Profile inside Cabin */
+    .specialist-desk-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .specialist-portrait-slot {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.7);
+    }
+    .specialist-info { flex: 1; min-width: 0; }
+    .specialist-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #fff;
+    }
+    .specialist-title {
+      font-size: 0.68rem;
+      color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 1px;
+    }
+    .specialist-legacy {
+      font-size: 0.65rem;
+      color: var(--gold-glow);
       font-weight: 600;
     }
-    .count-badge {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      padding: 0 5px;
-      border-radius: 10px;
-      background: #21262d;
-      color: var(--text-secondary);
-    }
 
-    /* Main Content Area */
-    .main-viewport {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      overflow-y: auto;
-      background: var(--bg-canvas);
-    }
-
-    /* Subheader Metrics Strip */
-    .metrics-ribbon {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      border-bottom: 1px solid var(--border-muted);
-      background: var(--bg-subtle);
-    }
-    .metric-cell {
-      padding: 12px 16px;
-      border-right: 1px solid var(--border-muted);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .metric-cell:last-child { border-right: none; }
-    .metric-label {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-transform: uppercase;
+    /* Cabin Flow Status Badge */
+    .cabin-flow-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      align-self: flex-start;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
       letter-spacing: 0.04em;
     }
-    .metric-value {
-      font-family: var(--font-mono);
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text-primary);
+    .status-free {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--accent-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .status-working {
+      background: rgba(0, 242, 254, 0.12);
+      color: var(--accent-cyan);
+      border: 1px solid var(--accent-cyan);
+      animation: workingHUD 2s infinite ease-in-out;
+    }
+    .status-blocked {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-amber);
+      border: 1px solid var(--accent-amber);
+      animation: alertBlink 1.4s infinite;
+    }
+    .status-done {
+      background: rgba(139, 92, 246, 0.15);
+      color: #c4b5fd;
+      border: 1px solid #c4b5fd;
+    }
+    @keyframes workingHUD {
+      0%, 100% { box-shadow: 0 0 6px rgba(0, 242, 254, 0.25); }
+      50% { box-shadow: 0 0 16px rgba(0, 242, 254, 0.55); }
+    }
+    @keyframes alertBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
     }
 
-    /* Workspace Content Layout */
-    .view-content {
-      padding: 16px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      flex: 1;
-    }
-
-    /* Section Panels */
-    .panel-card {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-muted);
-      border-radius: var(--radius-lg);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .panel-header {
-      padding: 10px 14px;
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-muted);
+    /* Desk Interior Screen Monitor */
+    .desk-hud-monitor {
+      background: rgba(2, 6, 23, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--border-radius-md);
+      padding: 8px 10px;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      min-height: 42px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      line-height: 1.35;
     }
-    .panel-title {
-      font-size: 12px;
+
+    /* Cabin Desk Controls */
+    .cabin-actions-bar {
+      display: flex;
+      gap: 7px;
+      margin-top: auto;
+    }
+    .btn-cabin {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 0.73rem;
       font-weight: 600;
-      color: var(--text-primary);
+      border: 1px solid var(--titanium-border);
+      background: rgba(255, 255, 255, 0.035);
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.18s ease;
+    }
+    .btn-cabin:hover {
+      background: rgba(0, 242, 254, 0.1);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+    .btn-cabin.pause {
+      border-color: rgba(245, 158, 11, 0.35);
+      color: var(--accent-amber);
+    }
+    .btn-cabin.pause:hover {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: var(--accent-amber);
+    }
+
+    /* Cabin Intercom Speech Balloon */
+    .speech-balloon-hud {
+      position: absolute;
+      inset: 8px;
+      background: rgba(5, 7, 13, 0.96);
+      border: 1.5px solid var(--accent-cyan);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      color: #f1f5f9;
+      z-index: 20;
+      box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
+      animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .balloon-body { line-height: 1.4; overflow-y: auto; max-height: 115px; }
+    .balloon-close {
+      align-self: flex-end;
+      font-size: 0.7rem;
+      color: var(--accent-cyan);
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ==========================================================================
+       4. OPERATIONS CONSOLE & MULTI-TASK QUEUE
+       ========================================================================== */
+    .operations-subfloor {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .console-module {
+      background: var(--surface-card);
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .module-heading-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .module-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f1f5f9;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    /* 3. Team Squad Table (Engineering Structure) */
-    .data-table {
+    /* Founder Executive Directive Pad */
+    .directive-memo-area {
       width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-    .data-table th {
-      padding: 8px 14px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      border-bottom: 1px solid var(--border-muted);
-      background: var(--bg-subtle);
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-    .data-table td {
-      padding: 10px 14px;
-      font-size: 12px;
-      border-bottom: 1px solid var(--border-muted);
-      color: var(--text-primary);
-      vertical-align: middle;
-    }
-    .data-table tr:last-child td { border-bottom: none; }
-    .data-table tr:hover td { background: rgba(255, 255, 255, 0.015); }
-
-    .agent-identity {
-      display: flex;
-      flex-direction: column;
-    }
-    .agent-name {
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-    .agent-role {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-secondary);
-    }
-
-    /* Engineering Status Dots & Badges */
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 500;
-    }
-    .status-badge.free {
-      background: #1f242c;
-      color: var(--text-secondary);
-      border: 1px solid var(--border-default);
-    }
-    .status-badge.working {
-      background: var(--accent-blue-subtle);
-      color: #58a6ff;
-      border: 1px solid rgba(56, 139, 253, 0.3);
-    }
-    .status-badge.blocked {
-      background: var(--accent-amber-subtle);
-      color: #e3b341;
-      border: 1px solid rgba(210, 153, 34, 0.3);
-    }
-    .status-badge.done {
-      background: var(--accent-green-subtle);
-      color: #3fb950;
-      border: 1px solid rgba(46, 160, 67, 0.3);
-    }
-
-    .table-actions {
-      display: flex;
-      gap: 6px;
-    }
-    .btn-tbl {
-      background: transparent;
-      border: 1px solid var(--border-default);
-      color: var(--text-primary);
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
-      font-size: 11px;
-      cursor: pointer;
-      font-weight: 500;
-    }
-    .btn-tbl:hover {
-      background: var(--bg-surface-hover);
-      border-color: var(--text-secondary);
-    }
-    .btn-tbl.halt {
-      color: #f85149;
-    }
-    .btn-tbl.halt:hover {
-      background: var(--accent-red-subtle);
-    }
-
-    /* 4. Split Workbench: Dispatch Memo & Backlog Queue */
-    .workbench-split {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 16px;
-    }
-
-    .task-entry-form {
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .spec-textarea {
-      width: 100%;
-      height: 80px;
-      background: var(--bg-canvas);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-md);
-      padding: 10px;
-      color: var(--text-primary);
-      font-family: var(--font-mono);
-      font-size: 12px;
-      line-height: 1.4;
-      resize: vertical;
+      height: 75px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-md);
+      padding: 12px;
+      color: var(--text-main);
+      font-size: 0.82rem;
+      resize: none;
       outline: none;
+      line-height: 1.4;
+      transition: all 0.2s;
     }
-    .spec-textarea:focus {
-      border-color: var(--border-active);
+    .directive-memo-area:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
     }
 
-    .file-attachment-zone {
-      border: 1px dashed var(--border-default);
-      border-radius: var(--radius-md);
+    .blueprint-drop-surface {
+      border: 1.5px dashed rgba(148, 163, 184, 0.25);
+      border-radius: var(--border-radius-md);
       padding: 10px;
       text-align: center;
-      background: var(--bg-canvas);
+      background: rgba(255, 255, 255, 0.015);
       cursor: pointer;
-      font-size: 11px;
-      color: var(--text-secondary);
-      transition: all 0.15s;
-    }
-    .file-attachment-zone:hover, .file-attachment-zone.dragover {
-      border-color: var(--accent-blue);
-      background: var(--accent-blue-subtle);
-      color: var(--text-primary);
-    }
-
-    .attachment-preview-bar {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-    }
-    .att-thumb {
-      position: relative;
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-default);
-      overflow: hidden;
-    }
-    .att-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .att-del {
-      position: absolute;
-      top: 0; right: 0;
-      background: rgba(0,0,0,0.8);
-      color: #f85149;
-      font-size: 10px;
-      width: 12px; height: 12px;
+      font-size: 0.75rem;
+      color: var(--text-dim);
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .blueprint-drop-surface:hover, .blueprint-drop-surface.dragover {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 242, 254, 0.05);
+      color: var(--accent-cyan);
+    }
+
+    .blueprint-shelf { display: flex; gap: 8px; overflow-x: auto; padding-top: 4px; }
+    .shelf-item {
+      position: relative;
+      width: 44px; height: 44px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--titanium-border);
+    }
+    .shelf-item img { width: 100%; height: 100%; object-fit: cover; }
+    .shelf-del {
+      position: absolute;
+      top: 1px; right: 1px;
+      background: rgba(0, 0, 0, 0.85);
+      color: var(--accent-rose);
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
       cursor: pointer;
     }
 
-    .btn-submit-task {
-      background: var(--accent-blue);
+    .btn-dispatch-exec {
+      background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
       color: #ffffff;
       border: none;
-      padding: 7px 12px;
-      border-radius: var(--radius-md);
-      font-weight: 500;
-      font-size: 12px;
+      border-radius: var(--border-radius-md);
+      padding: 11px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
       cursor: pointer;
-      align-self: flex-start;
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s;
     }
-    .btn-submit-task:hover {
-      background: #388bfd;
+    .btn-dispatch-exec:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.55);
     }
 
-    /* Queue & Audit Feeds */
-    .feed-container {
-      padding: 8px;
+    /* Multi-Task Backlog Ledger */
+    .backlog-ledger-feed {
+      flex: 1;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      max-height: 280px;
-      overflow-y: auto;
+      gap: 8px;
+      padding-right: 4px;
     }
-    .queue-row {
-      padding: 8px 10px;
-      background: var(--bg-canvas);
-      border: 1px solid var(--border-muted);
-      border-left: 3px solid var(--border-default);
-      border-radius: var(--radius-sm);
+    .ledger-row {
+      background: rgba(0, 0, 0, 0.25);
+      border-left: 3px solid var(--accent-cyan);
+      border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+      padding: 9px 12px;
+      font-size: 0.75rem;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      font-size: 12px;
+      align-items: center;
     }
-    .queue-row.running { border-left-color: var(--accent-blue); background: var(--accent-blue-subtle); }
-    .queue-row.waiting { border-left-color: var(--accent-amber); }
+    .ledger-row.active {
+      border-left-color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.06);
+    }
+    .ledger-row.waiting { border-left-color: var(--accent-amber); }
+    .ledger-data { display: flex; flex-direction: column; gap: 2px; }
+    .ledger-taskid { font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); }
+    .ledger-taskprompt { color: #cbd5e1; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .q-meta { display: flex; flex-direction: column; gap: 2px; }
-    .q-id { font-family: var(--font-mono); font-weight: 600; color: var(--text-primary); }
-    .q-prompt { color: var(--text-secondary); max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; }
+    /* ==========================================================================
+       5. RIGHT OPERATIONS TOWER: AUDIT HISTORY & LIVE LOG
+       ========================================================================== */
+    .tower-column { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+    .tower-tab-dock { display: flex; gap: 6px; background: rgba(0, 0, 0, 0.35); padding: 4px; border-radius: 8px; }
+    .tab-switch {
+      flex: 1;
+      padding: 7px;
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .tab-switch.active {
+      background: rgba(30, 41, 59, 0.8);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-    /* 5. Terminal Telemetry Stream */
-    .telemetry-feed {
-      background: #040608;
-      padding: 12px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: #7ee787;
-      line-height: 1.45;
-      max-height: 200px;
+    .audit-ledger-list {
+      flex: 1;
       overflow-y: auto;
-      white-space: pre-wrap;
-      border-top: 1px solid var(--border-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 4px;
     }
-
-    /* 6. Intervention & Correction Modal */
-    dialog {
-      margin: auto;
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-lg);
-      padding: 16px 20px;
-      color: var(--text-primary);
-      width: 480px;
-      max-width: 90vw;
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5);
-    }
-    dialog::backdrop { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .modal-title { font-size: 13px; font-weight: 600; }
-    .modal-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; }
-    .modal-textarea {
-      width: 100%;
-      height: 90px;
-      background: var(--bg-canvas);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-md);
-      padding: 8px 10px;
-      color: var(--text-primary);
-      font-size: 12px;
-      font-family: var(--font-mono);
-      outline: none;
-      resize: vertical;
-      margin-bottom: 14px;
-    }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
-
-    /* Clean Speech / Status Notification Banner */
-    .status-toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-default);
-      border-left: 3px solid var(--accent-blue);
-      border-radius: var(--radius-md);
-      padding: 10px 14px;
-      max-width: 380px;
-      display: none;
+    .audit-entry-card {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-md);
+      padding: 9px 12px;
+      font-size: 0.73rem;
+      display: flex;
       flex-direction: column;
       gap: 4px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-      z-index: 1000;
     }
-    .toast-head { display: flex; justify-content: space-between; font-weight: 600; font-size: 12px; }
-    .toast-body { font-size: 11px; color: var(--text-secondary); }
+    .audit-entry-top { display: flex; justify-content: space-between; font-weight: 700; }
+    .audit-author { color: var(--accent-cyan); }
+    .audit-time { color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; }
+    .audit-desc { color: #e2e8f0; line-height: 1.35; }
+    .audit-verification-stamp {
+      align-self: flex-start;
+      font-size: 0.65rem;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--accent-emerald);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .telemetry-console-view {
+      flex: 1;
+      background: #020617;
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-md);
+      padding: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #34d399;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      line-height: 1.45;
+    }
+
+    /* Direct Intervention Modal */
+    dialog {
+      margin: auto;
+      background: #090d1a;
+      border: 1.5px solid var(--accent-cyan);
+      border-radius: var(--border-radius-lg);
+      padding: 22px;
+      color: var(--text-main);
+      max-width: 480px;
+      width: 90vw;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 242, 254, 0.2);
+    }
+    dialog::backdrop { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .modal-head h3 { font-size: 1.05rem; color: var(--accent-cyan); font-weight: 800; }
+    .modal-input {
+      width: 100%;
+      height: 95px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--titanium-border);
+      border-radius: var(--border-radius-md);
+      padding: 10px;
+      color: var(--text-main);
+      font-size: 0.82rem;
+      resize: none;
+      margin: 12px 0;
+    }
+    .modal-foot { display: flex; justify-content: flex-end; gap: 8px; }
   </style>
 </head>
 <body>
 
-  <!-- Top Enterprise Navigation -->
-  <header class="top-nav">
-    <div class="nav-left">
-      <div class="org-badge">S</div>
-      <div class="product-title">
-        Autonomous Engineering Studio
-        <span class="env-tag">Production</span>
+  <!-- 1. EXECUTIVE PENTHOUSE COMMAND BAR -->
+  <header class="top-command-bar">
+    <div class="brand-cluster">
+      <div class="brand-crest">🏛️</div>
+      <div class="brand-meta">
+        <h1>SAURONIX AI • EXECUTIVE OPERATIONS HQ</h1>
+        <p>FLOOR 42 EXECUTIVE SUITE & SPECIALIST OPERATIONS WING</p>
       </div>
     </div>
 
-    <div class="nav-center">
-      <div class="health-pill" id="hudEngineStatus">
-        <div class="health-dot"></div>
-        Control Plane Online :3000
-      </div>
+    <div class="telemetry-status-pill" id="hudEngineStatus">
+      <div class="pulsing-beacon"></div>
+      HQ ONLINE (PORT 3000)
     </div>
 
-    <div class="nav-right">
-      <button class="btn-action" onclick="toggleVoice()" id="voiceToggleBtn">
-        <span id="voiceIcon">🔊</span> Audio: Active
+    <div class="quick-actions">
+      <button class="btn-lux" onclick="toggleVoice()" id="voiceToggleBtn">
+        <span id="voiceIcon">🔊</span> Intercom: ON
       </button>
-      <button class="btn-action" onclick="refreshTeamData()">Sync</button>
-      <button class="btn-action danger" onclick="triggerEmergencyStop()">Halt System</button>
+      <button class="btn-lux" onclick="refreshTeamData()">🔄 Scan Floor</button>
+      <button class="btn-lux freeze" onclick="triggerEmergencyStop()">🛑 Security Airlock</button>
     </div>
   </header>
 
-  <!-- Main Application Shell -->
-  <div class="app-workbench">
+  <!-- 2. MAIN OPERATIONS GRID -->
+  <div class="hq-layout-viewport">
     
-    <!-- Left Navigation Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-section">
-        <a class="sidebar-item active" href="#">Overview</a>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="section-label">Work Management</div>
-        <a class="sidebar-item" href="#tasks">Tasks <span class="count-badge" id="sideTaskCount">0</span></a>
-        <a class="sidebar-item" href="#team">Team Roster <span class="count-badge">5</span></a>
-        <a class="sidebar-item" href="#activity">Activity Stream</a>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="section-label">Engineering</div>
-        <a class="sidebar-item" href="#worktrees">Worktrees</a>
-        <a class="sidebar-item" href="#diff">Diff Inspector</a>
-        <a class="sidebar-item" href="#qa">QA Verification</a>
-        <a class="sidebar-item" href="#prs">Pull Requests</a>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="section-label">Operations</div>
-        <a class="sidebar-item" href="#telemetry">Event Stream</a>
-        <a class="sidebar-item" href="#incidents">Incidents</a>
-        <a class="sidebar-item" href="#knowledge">Knowledge Base</a>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="section-label">System</div>
-        <a class="sidebar-item" href="#quotas">Quota & Limits</a>
-        <a class="sidebar-item" href="#policies">Security Policies</a>
-        <a class="sidebar-item" href="#settings">Settings</a>
-      </div>
-    </aside>
-
-    <!-- Main Viewport -->
-    <main class="main-viewport">
+    <!-- Left Column: Department Cabins & Founder Console -->
+    <main class="wings-column">
       
-      <!-- Metrics Ribbon -->
-      <section class="metrics-ribbon">
-        <div class="metric-cell">
-          <span class="metric-label">Active Tasks</span>
-          <span class="metric-value" id="mActiveTasks">0</span>
+      <!-- Executive Cabins Section -->
+      <section>
+        <div class="wing-header-row">
+          <div class="wing-title">
+            <span>🚪 Executive Suites & Department Cabins</span>
+          </div>
+          <div class="wing-meta" id="squadSummary">
+            1 Lead Commander • 4 Senior Specialists
+          </div>
         </div>
-        <div class="metric-cell">
-          <span class="metric-label">Running Agents</span>
-          <span class="metric-value" id="mRunningAgents">0</span>
-        </div>
-        <div class="metric-cell">
-          <span class="metric-label">Blocked Tasks</span>
-          <span class="metric-value" id="mBlockedTasks" style="color: var(--accent-amber);">0</span>
-        </div>
-        <div class="metric-cell">
-          <span class="metric-label">Ready for Review</span>
-          <span class="metric-value" id="mReadyReview" style="color: #3fb950;">0</span>
-        </div>
-        <div class="metric-cell">
-          <span class="metric-label">QA Failures</span>
-          <span class="metric-value" id="mFailures">0</span>
-        </div>
-        <div class="metric-cell">
-          <span class="metric-label">Quota Health</span>
-          <span class="metric-value" style="color: #3fb950; font-size: 15px;">100% OK</span>
+
+        <div class="cabins-floorplan" id="robotSquadContainer">
+          <!-- Dynamically populated with 5 office cabins by renderRobots() -->
         </div>
       </section>
 
-      <!-- View Content Container -->
-      <div class="view-content">
+      <!-- Operations Subfloor: Founder Console & Multi-Task Queue -->
+      <div class="operations-subfloor">
         
-        <!-- Team Organization & Specialists Table -->
-        <section class="panel-card">
-          <div class="panel-header">
-            <h2 class="panel-title">Autonomous Engineering Team Structure</h2>
-            <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">1 Team Lead • 4 Domain Specialists</span>
+        <!-- Task Dispatch Console -->
+        <section class="console-module">
+          <div class="module-heading-bar">
+            <h2 class="module-title">⚡ Founder Directive Console</h2>
+            <span style="font-size: 0.7rem; color: var(--accent-cyan); font-family: 'JetBrains Mono', monospace;">Direct Line to Cabin 101</span>
           </div>
 
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Agent Identifier</th>
-                <th>Role & Domain</th>
-                <th>Status</th>
-                <th>Active Task / Worktree</th>
-                <th>Current Output / Diagnostics</th>
-                <th style="text-align: right;">Operations</th>
-              </tr>
-            </thead>
-            <tbody id="teamTableBody">
-              <!-- Rendered dynamically by renderRobots() -->
-            </tbody>
-          </table>
+          <textarea id="taskPromptInput" class="directive-memo-area" placeholder="Draft directive memo for Chief Coordinator Dr. Elena Rostova (e.g. 'Build Stripe payment webhook router' or 'Audit landing page conversion architecture')..."></textarea>
+
+          <div class="blueprint-drop-surface" id="imageDropZone" onclick="document.getElementById('imageFileInput').click()">
+            <span>📎 Drop architectural blueprints, mockups, or click to attach</span>
+            <input type="file" id="imageFileInput" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
+          </div>
+
+          <div class="blueprint-shelf" id="thumbnailBar"></div>
+
+          <button class="btn-dispatch-exec" onclick="dispatchTaskToLead()">
+            <span>🚀 Transmit Directive to Cabin 101</span>
+          </button>
         </section>
 
-        <!-- Workbench Split: Task Dispatch & Queue Backlog -->
-        <div class="workbench-split">
-          
-          <!-- Dispatch Memo Pad -->
-          <section class="panel-card">
-            <div class="panel-header">
-              <h2 class="panel-title">Task Specification Dispatch</h2>
-              <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">Route via Team Lead</span>
-            </div>
-
-            <div class="task-entry-form">
-              <textarea id="taskPromptInput" class="spec-textarea" placeholder="Enter feature specification, bug report, or engineering task (e.g. 'Implement OAuth2 state nonce validation in auth middleware')..."></textarea>
-
-              <div class="file-attachment-zone" id="imageDropZone" onclick="document.getElementById('imageFileInput').click()">
-                <span>Attach architectural diagrams, UI mockups, or error logs</span>
-                <input type="file" id="imageFileInput" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
-              </div>
-
-              <div class="attachment-preview-bar" id="thumbnailBar"></div>
-
-              <button class="btn-submit-task" onclick="dispatchTaskToLead()">
-                Submit Task to Backlog
-              </button>
-            </div>
-          </section>
-
-          <!-- Backlog & FIFO Queue -->
-          <section class="panel-card">
-            <div class="panel-header">
-              <h2 class="panel-title">Execution Backlog & Queue</h2>
-              <span id="queueCountBadge" style="font-family: var(--font-mono); font-size: 11px; color: var(--accent-amber);">0 Queued</span>
-            </div>
-
-            <div class="feed-container" id="queueListContainer">
-              <div style="color: var(--text-tertiary); font-size: 12px; text-align: center; padding: 24px 0;">
-                Backlog empty. Submit an engineering task to start autonomous execution.
-              </div>
-            </div>
-          </section>
-
-        </div>
-
-        <!-- 7-Day Completed Audit & Live Telemetry Stream -->
-        <section class="panel-card">
-          <div class="panel-header">
-            <h2 class="panel-title">System Observability & Audit Log</h2>
-            <div style="display: flex; gap: 8px;">
-              <button class="btn-action" style="padding: 2px 8px; font-size: 11px;" onclick="toggleAuditTab('history')">7-Day Audit</button>
-              <button class="btn-action" style="padding: 2px 8px; font-size: 11px;" onclick="toggleAuditTab('telemetry')">Live Stream</button>
-            </div>
+        <!-- Live Queue Board -->
+        <section class="console-module">
+          <div class="module-heading-bar">
+            <h2 class="module-title">📋 Operations Backlog & Queue</h2>
+            <span id="queueCountBadge" style="font-size: 0.7rem; color: var(--accent-amber); font-family: 'JetBrains Mono', monospace;">0 Tasks Pending</span>
           </div>
 
-          <!-- History Tab -->
-          <div class="feed-container" id="historyTabContent">
-            <div style="color: var(--text-tertiary); font-size: 12px; text-align: center; padding: 20px 0;">
-              Loading task audit records...
+          <div class="backlog-ledger-feed" id="queueListContainer">
+            <div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">
+              Executive backlog clear. Transmit directives to queue them sequentially!
             </div>
-          </div>
-
-          <!-- Telemetry Stream Tab -->
-          <div class="telemetry-feed" id="terminalTabContent" style="display: none;">
-[System]: Initializing authenticated telemetry stream...
           </div>
         </section>
 
       </div>
     </main>
 
+    <!-- Right Column: Audit Records & Live Telemetry Feed -->
+    <aside class="tower-column">
+      <section class="console-module" style="flex: 1;">
+        <div class="tower-tab-dock">
+          <button class="tab-switch active" id="tabHistoryBtn" onclick="switchSideTab('history')">📅 7-Day Office Audit</button>
+          <button class="tab-switch" id="tabTerminalBtn" onclick="switchSideTab('terminal')">📟 Operations Stream</button>
+        </div>
+
+        <!-- 1-Week Audit Ledger -->
+        <div class="audit-ledger-list" id="historyTabContent">
+          <div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">
+            Loading 7-day completed task audit...
+          </div>
+        </div>
+
+        <!-- Operations Stream Log -->
+        <div class="telemetry-console-view" id="terminalTabContent" style="display: none;">
+[HQ Stream]: Initializing secure CCTV telemetry link...
+        </div>
+      </section>
+    </aside>
+
   </div>
 
-  <!-- Direct Intervention Modal Dialog -->
+  <!-- Direct Intervention Dialog -->
   <dialog id="directiveModal">
-    <div class="modal-header">
-      <h3 class="modal-title" id="modalEmployeeTitle">Intervene on Agent Session</h3>
-      <button onclick="closeDirectiveModal()" style="background: transparent; border: none; color: var(--text-secondary); font-size: 14px; cursor: pointer;">✕</button>
+    <div class="modal-head">
+      <h3 id="modalEmployeeTitle">Intervene & Direct Specialist</h3>
+      <button onclick="closeDirectiveModal()" style="background: transparent; border: none; color: var(--text-dim); font-size: 1.1rem; cursor: pointer;">✕</button>
     </div>
-    <div class="modal-desc" id="modalEmployeeSub">The target worktree is currently halted. Input corrective directive to resume execution.</div>
+    <p style="font-size: 0.75rem; color: var(--text-dim);" id="modalEmployeeSub">Specialist cabin worktree is frozen. Provide corrective directive to resume.</p>
     
-    <textarea id="founderInstructionInput" class="modal-textarea" placeholder="Input corrective engineering instructions (e.g. 'Reuse existing TokenValidator instead of implementing custom HMAC parser')..."></textarea>
+    <textarea id="founderInstructionInput" class="modal-input" placeholder="Type corrective directive (e.g. 'Use async iteration instead of recursive promises')..."></textarea>
 
-    <div class="modal-actions">
-      <button class="btn-action" onclick="closeDirectiveModal()">Cancel</button>
-      <button class="btn-submit-task" onclick="submitFounderInstruction()">Resume Worktree</button>
+    <div class="modal-foot">
+      <button class="btn-lux" onclick="closeDirectiveModal()">Cancel</button>
+      <button class="btn-dispatch-exec" style="padding: 8px 16px;" onclick="submitFounderInstruction()">🚀 Resume Worktree</button>
     </div>
   </dialog>
-
-  <!-- Status Notification Toast -->
-  <div class="status-toast" id="statusToast">
-    <div class="toast-head">
-      <span id="toastAuthor">Agent Notification</span>
-      <span style="cursor: pointer; color: var(--text-tertiary);" onclick="closeToast()">✕</span>
-    </div>
-    <div class="toast-body" id="toastMessage">Agent status message...</div>
-  </div>
 
   <!-- Client-side Logic: SSE, Audio Speech, Queue, & Actions -->
   <script>
@@ -829,8 +862,9 @@
     let voiceEnabled = true;
     let currentInterveneEmpId = null;
     let imageAttachments = [];
+    let activeSpeechBubbleTimeout = null;
 
-    // 1. Web Speech Audio Engine
+    // 1. Voice Synthesis Engine
     function speakText(text, pitch = 1.0, rate = 1.0) {
       if (!voiceEnabled || !('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
@@ -849,11 +883,11 @@
     function toggleVoice() {
       voiceEnabled = !voiceEnabled;
       const btn = document.getElementById('voiceToggleBtn');
-      btn.innerHTML = voiceEnabled ? '<span>🔊</span> Audio: Active' : '<span>🔇</span> Audio: Muted';
+      btn.innerHTML = voiceEnabled ? '<span>🔊</span> Intercom: ON' : '<span>🔇</span> Intercom: MUTED';
       if (!voiceEnabled) window.speechSynthesis.cancel();
     }
 
-    // 2. Fetch Team & Render Structured Engineering Table
+    // 2. Fetch Team & Render Executive Cabins
     async function refreshTeamData() {
       try {
         const res = await fetch('/api/studio/team', {
@@ -867,80 +901,98 @@
     }
 
     function renderRobots(lead, employees) {
-      const tbody = document.getElementById('teamTableBody');
-      tbody.innerHTML = '';
+      const container = document.getElementById('robotSquadContainer');
+      container.innerHTML = '';
 
-      let activeCount = 0;
-      let blockedCount = 0;
-
-      // 1. Team Lead Row
+      // 1. Render Cabin 101 - Executive Suite (Lead)
       if (lead) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>
-            <div class="agent-identity">
-              <span class="agent-name">${lead.name}</span>
-              <span class="agent-role">TEAM_LEAD</span>
+        const leadCard = document.createElement('div');
+        leadCard.className = 'executive-cabin';
+        leadCard.style.borderColor = 'rgba(234, 179, 8, 0.4)';
+        leadCard.innerHTML = `
+          <div class="cabin-plate">
+            <span class="cabin-code" style="color: #fde047; border-color: rgba(234, 179, 8, 0.3);">CABIN 101 • EXECUTIVE SUITE</span>
+            <span class="cabin-light" style="background: var(--gold-primary); box-shadow: 0 0 10px var(--gold-primary);"></span>
+          </div>
+          <div class="specialist-desk-cluster">
+            <div class="specialist-portrait-slot" style="border-color: var(--gold-primary);">
+              👑
             </div>
-          </td>
-          <td>Chief Engineering Coordinator</td>
-          <td><span class="status-badge working">WORKING</span></td>
-          <td><span style="font-family: var(--font-mono); color: var(--accent-blue);">QUEUE_COORDINATOR</span></td>
-          <td style="color: var(--text-secondary); max-width: 320px;">Orchestrating task refinement, doubt triage, and PR verification</td>
-          <td style="text-align: right;">
-            <div class="table-actions" style="justify-content: flex-end;">
-              <button class="btn-tbl" onclick="askWorker('LEAD-01')">Session Status</button>
+            <div class="specialist-info">
+              <div class="specialist-name">${lead.name}</div>
+              <div class="specialist-title">Chief Engineering Coordinator</div>
+              <div class="specialist-legacy">50+ Yrs Exp • Female Commander</div>
             </div>
-          </td>
+          </div>
+          <div class="cabin-flow-badge status-working">⚡ SQUAD COORDINATION</div>
+          <div class="desk-hud-monitor">Executive leadership desk: Orchestrating multi-agent task queue and QA reviews.</div>
+          <div class="cabin-actions-bar">
+            <button class="btn-cabin" onclick="askWorker('LEAD-01')">🎙️ Intercom Line</button>
+          </div>
+          <div id="bubble-LEAD-01" class="speech-balloon-hud" style="display: none;"></div>
         `;
-        tbody.appendChild(tr);
+        container.appendChild(leadCard);
       }
 
-      // 2. Specialized Workers
-      employees.forEach(emp => {
-        let statusClass = 'free';
-        let statusText = 'FREE';
+      // 2. Render Specialist Department Cabins
+      const cabinMap = {
+        'EMP-01': { no: 'CABIN 102', wing: 'SOFTWARE ARCHITECTURE LAB', icon: '💻' },
+        'EMP-02': { no: 'CABIN 103', wing: 'GROWTH STRATEGY SUITE', icon: '📈' },
+        'EMP-03': { no: 'CABIN 104', wing: 'QA VERIFICATION VAULT', icon: '🛡️' },
+        'EMP-04': { no: 'CABIN 105', wing: 'INTELLIGENCE OBSERVATORY', icon: '🔭' }
+      };
+
+      employees.forEach((emp, index) => {
+        const card = document.createElement('div');
+        card.className = 'executive-cabin';
+        const cabinInfo = cabinMap[emp.id] || { no: `CABIN ${102 + index}`, wing: emp.role.replace(/_/g, ' '), icon: '🏢' };
+
+        let statusClass = 'status-free';
+        let statusText = '🟢 IN CABIN / STANDBY';
+        let lampColor = 'var(--accent-emerald)';
+
         if (emp.status === 'WORKING') {
-          statusClass = 'working';
-          statusText = 'WORKING';
-          activeCount++;
+          statusClass = 'status-working';
+          statusText = `⚡ ACTIVE WORKTREE [${emp.currentTaskId || 'TASK'}]`;
+          lampColor = 'var(--accent-cyan)';
         } else if (emp.status === 'BLOCKED') {
-          statusClass = 'blocked';
-          statusText = 'BLOCKED';
-          blockedCount++;
+          statusClass = 'status-blocked';
+          statusText = '⚠️ AIRLOCK / DIRECTIVE';
+          lampColor = 'var(--accent-amber)';
         } else if (emp.status === 'DONE') {
-          statusClass = 'done';
-          statusText = 'DONE';
+          statusClass = 'status-done';
+          statusText = '✔ REVIEW / PR READY';
+          lampColor = '#c4b5fd';
         }
 
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>
-            <div class="agent-identity">
-              <span class="agent-name">${emp.name}</span>
-              <span class="agent-role">${emp.id}</span>
+        card.innerHTML = `
+          <div class="cabin-plate">
+            <span class="cabin-code">${cabinInfo.no} • ${cabinInfo.wing}</span>
+            <span class="cabin-light" style="background: ${lampColor}; box-shadow: 0 0 8px ${lampColor};"></span>
+          </div>
+          <div class="specialist-desk-cluster">
+            <div class="specialist-portrait-slot" style="border-color: ${emp.hologramColor || 'var(--accent-cyan)'};">
+              ${emp.avatar ? emp.avatar.replace('🤖', '') : cabinInfo.icon}
             </div>
-          </td>
-          <td>${emp.role.replace(/_/g, ' ')}</td>
-          <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-          <td><span style="font-family: var(--font-mono); color: ${emp.currentTaskId ? 'var(--accent-blue)' : 'var(--text-tertiary)'};">${emp.currentTaskId ? escapeHtml(emp.currentTaskId) : '—'}</span></td>
-          <td style="color: var(--text-secondary); max-width: 320px;">${emp.currentDoubt ? '<span style="color: var(--accent-amber); font-weight: 500;">Blocker: ' + escapeHtml(emp.currentDoubt) + '</span>' : escapeHtml(emp.specialty.slice(0, 60)) + '...'}</td>
-          <td style="text-align: right;">
-            <div class="table-actions" style="justify-content: flex-end;">
-              <button class="btn-tbl" onclick="askWorker('${emp.id}')">Query</button>
-              <button class="btn-tbl halt" onclick="openDirectiveModal('${emp.id}', '${emp.name}')">Intervene</button>
+            <div class="specialist-info">
+              <div class="specialist-name">${emp.name}</div>
+              <div class="specialist-title">${emp.role.replace(/_/g, ' ')}</div>
+              <div class="specialist-legacy">${emp.experience} • ${emp.gender}</div>
             </div>
-          </td>
+          </div>
+          <div class="cabin-flow-badge ${statusClass}">${statusText}</div>
+          <div class="desk-hud-monitor">${emp.currentDoubt ? 'Doubt Escalation: ' + escapeHtml(emp.currentDoubt) : (emp.currentTaskId ? 'Worktree active on ' + escapeHtml(emp.currentTaskId) : escapeHtml(emp.specialty.slice(0, 52)) + '...')}</div>
+          <div class="cabin-actions-bar">
+            <button class="btn-cabin" onclick="askWorker('${emp.id}')">🎙️ Intercom</button>
+            <button class="btn-cabin pause" onclick="openDirectiveModal('${emp.id}', '${emp.name}')">⏸️ Intervene</button>
+          </div>
+          <div id="bubble-${emp.id}" class="speech-balloon-hud" style="display: none;"></div>
         `;
-        tbody.appendChild(tr);
+        container.appendChild(card);
       });
-
-      // Update Top Metrics Ribbon
-      document.getElementById('mRunningAgents').innerText = activeCount;
-      document.getElementById('mBlockedTasks').innerText = blockedCount;
     }
 
-    // 3. Audio & Toast Query
+    // 3. Voice Intercom Query ("Ask Employee")
     async function askWorker(empId) {
       try {
         const res = await fetch(`/api/studio/employee/${empId}/ask`, {
@@ -950,25 +1002,31 @@
 
         speakText(data.spokenText, data.voicePitch, data.voiceRate);
 
-        const toast = document.getElementById('statusToast');
-        document.getElementById('toastAuthor').innerText = `${data.name} (${data.role})`;
-        document.getElementById('toastMessage').innerText = data.speechBubble;
-        toast.style.display = 'flex';
-        setTimeout(() => { toast.style.display = 'none'; }, 8000);
+        const bubble = document.getElementById(`bubble-${empId}`);
+        if (bubble) {
+          bubble.innerHTML = `
+            <div class="balloon-body">"${escapeHtml(data.speechBubble)}"</div>
+            <div class="balloon-close" onclick="closeBubble('${empId}')">DISMISS ×</div>
+          `;
+          bubble.style.display = 'flex';
+          clearTimeout(activeSpeechBubbleTimeout);
+          activeSpeechBubbleTimeout = setTimeout(() => { bubble.style.display = 'none'; }, 9000);
+        }
       } catch (err) {
-        console.error('Failed to query employee status', err);
+        console.error('Failed to ask employee', err);
       }
     }
 
-    function closeToast() {
-      document.getElementById('statusToast').style.display = 'none';
+    function closeBubble(empId) {
+      const bubble = document.getElementById(`bubble-${empId}`);
+      if (bubble) bubble.style.display = 'none';
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     }
 
-    // 4. Modal Intervention & Guidance
+    // 4. Pause & Intervene Directive Modal
     function openDirectiveModal(empId, empName) {
       currentInterveneEmpId = empId;
-      document.getElementById('modalEmployeeTitle').innerText = `Direct Guidance: ${empName}`;
+      document.getElementById('modalEmployeeTitle').innerText = `Directive to ${empName}`;
       document.getElementById('founderInstructionInput').value = '';
       const modal = document.getElementById('directiveModal');
       modal.showModal();
@@ -980,7 +1038,7 @@
           'X-Studio-CSRF': CSRF_TOKEN,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ reason: 'Halted for founder engineering review' })
+        body: JSON.stringify({ reason: 'Cabin frozen for founder directive' })
       }).then(() => refreshTeamData());
     }
 
@@ -991,7 +1049,7 @@
     async function submitFounderInstruction() {
       const instruction = document.getElementById('founderInstructionInput').value.trim();
       if (!instruction) {
-        alert('Please enter guidance instructions.');
+        alert('Please enter directive guidance.');
         return;
       }
 
@@ -1008,11 +1066,11 @@
         closeDirectiveModal();
         refreshTeamData();
       } catch (err) {
-        alert('Failed to apply directive: ' + err.message);
+        alert('Failed to instruct employee: ' + err.message);
       }
     }
 
-    // 5. File Attachment
+    // 5. Image Drag & Drop and Preview
     function handleImageSelect(event) {
       const files = event.target.files;
       for (const file of files) {
@@ -1046,10 +1104,10 @@
       bar.innerHTML = '';
       imageAttachments.forEach((imgSrc, idx) => {
         const thumb = document.createElement('div');
-        thumb.className = 'att-thumb';
+        thumb.className = 'shelf-item';
         thumb.innerHTML = `
           <img src="${imgSrc}" />
-          <div class="att-del" onclick="removeImage(${idx})">×</div>
+          <div class="shelf-del" onclick="removeImage(${idx})">×</div>
         `;
         bar.appendChild(thumb);
       });
@@ -1060,11 +1118,11 @@
       renderThumbnails();
     }
 
-    // 6. Submit Task to Team Lead
+    // 6. Transmit Directive to Team Lead
     async function dispatchTaskToLead() {
       const prompt = document.getElementById('taskPromptInput').value.trim();
       if (!prompt) {
-        alert('Task prompt cannot be empty.');
+        alert('Please draft a directive prompt.');
         return;
       }
 
@@ -1090,7 +1148,7 @@
           refreshTeamData();
         }
       } catch (err) {
-        alert('Failed to dispatch task: ' + err.message);
+        alert('Failed to dispatch directive: ' + err.message);
       }
     }
 
@@ -1110,33 +1168,31 @@
     function renderQueue(queue) {
       const container = document.getElementById('queueListContainer');
       const badge = document.getElementById('queueCountBadge');
-      badge.innerText = `${queue.length} Queued`;
-      document.getElementById('mActiveTasks').innerText = queue.length;
-      document.getElementById('sideTaskCount').innerText = queue.length;
+      badge.innerText = `${queue.length} Tasks Pending`;
 
       if (queue.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-tertiary); font-size: 12px; text-align: center; padding: 24px 0;">Backlog empty. Submit an engineering task to start autonomous execution.</div>`;
+        container.innerHTML = `<div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">Executive backlog clear. Transmit directives to queue them sequentially!</div>`;
         return;
       }
 
       container.innerHTML = '';
       queue.forEach((item, idx) => {
-        const row = document.createElement('div');
-        row.className = `queue-row ${item.status === 'ASSIGNED' ? 'running' : 'waiting'}`;
-        row.innerHTML = `
-          <div class="q-meta">
-            <span class="q-id">[#${idx + 1}] ${item.taskId}</span>
-            <span class="q-prompt">${escapeHtml(item.rawPrompt)}</span>
+        const qItem = document.createElement('div');
+        qItem.className = `ledger-row ${item.status === 'ASSIGNED' ? 'active' : 'waiting'}`;
+        qItem.innerHTML = `
+          <div class="ledger-data">
+            <span class="ledger-taskid">[#${idx + 1}] ${item.taskId}</span>
+            <span class="ledger-taskprompt">${escapeHtml(item.rawPrompt)}</span>
           </div>
-          <span style="font-family: var(--font-mono); font-size: 11px; color: ${item.assignedEmployee ? 'var(--accent-blue)' : 'var(--text-secondary)'}; font-weight: 500;">
+          <div style="font-size: 0.68rem; font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); font-weight: 700;">
             ${item.assignedEmployee ? item.assignedEmployee.name : item.status}
-          </span>
+          </div>
         `;
-        container.appendChild(row);
+        container.appendChild(qItem);
       });
     }
 
-    // 8. 7-Day Completed Work History
+    // 8. 7-Day Office Audit
     async function refreshHistory() {
       try {
         const res = await fetch('/api/studio/history?days=7', {
@@ -1151,32 +1207,33 @@
 
     function renderHistory(history) {
       const container = document.getElementById('historyTabContent');
-      document.getElementById('mReadyReview').innerText = history.length;
-
       if (history.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-tertiary); font-size: 12px; text-align: center; padding: 20px 0;">No completed tasks in the last 7 days. Completed PRs will appear here.</div>`;
+        container.innerHTML = `<div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding-top: 25px;">No completed tasks in the last 7 days yet. Tasks will appear here upon QA verification and PR completion.</div>`;
         return;
       }
 
       container.innerHTML = '';
       history.forEach(item => {
-        const row = document.createElement('div');
-        row.className = 'queue-row';
-        row.innerHTML = `
-          <div class="q-meta">
-            <span class="q-id">${item.taskId} — ${item.employeeName}</span>
-            <span class="q-prompt">${escapeHtml(item.goal)}</span>
+        const card = document.createElement('div');
+        card.className = 'audit-entry-card';
+        card.innerHTML = `
+          <div class="audit-entry-top">
+            <span class="audit-author">🏛️ ${item.employeeName}</span>
+            <span class="audit-time">${new Date(item.timestamp).toLocaleDateString()}</span>
           </div>
-          <span style="font-family: var(--font-mono); font-size: 10px; color: #3fb950;">QA PASSED • PR READY</span>
+          <div class="audit-desc">${escapeHtml(item.goal)}</div>
+          <div class="audit-verification-stamp">QA Verified • PR: ${item.taskId}</div>
         `;
-        container.appendChild(row);
+        container.appendChild(card);
       });
     }
 
-    // 9. Observability Tabs Switch
-    function toggleAuditTab(tab) {
+    // 9. Side Tabs Switch
+    function switchSideTab(tab) {
+      document.getElementById('tabHistoryBtn').classList.toggle('active', tab === 'history');
+      document.getElementById('tabTerminalBtn').classList.toggle('active', tab === 'terminal');
       document.getElementById('historyTabContent').style.display = tab === 'history' ? 'flex' : 'none';
-      document.getElementById('terminalTabContent').style.display = tab === 'telemetry' ? 'block' : 'none';
+      document.getElementById('terminalTabContent').style.display = tab === 'terminal' ? 'block' : 'none';
     }
 
     // 10. SSE Telemetry Stream
@@ -1200,7 +1257,7 @@
     }
 
     function triggerEmergencyStop() {
-      if (!confirm('Halt all active worktrees and invoke emergency stop?')) return;
+      if (!confirm('Seal security airlock and freeze all worktrees?')) return;
       fetch('/api/studio/emergency-stop', {
         method: 'POST',
         headers: {
@@ -1208,14 +1265,14 @@
           'X-Studio-CSRF': CSRF_TOKEN,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ reason: 'Emergency stop invoked from Engineering Studio control plane' })
+        body: JSON.stringify({ reason: 'Emergency Stop invoked from Founder HQ Console' })
       }).then(() => {
-        alert('Control Plane: All active worktrees frozen.');
+        alert('Security Airlock Engaged: Worktrees and state frozen.');
         refreshTeamData();
       });
     }
 
-    // Initialize on page load
+    // Initialize
     refreshTeamData();
     refreshQueue();
     refreshHistory();
