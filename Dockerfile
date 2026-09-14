@@ -9,12 +9,15 @@ WORKDIR /app
 RUN git config --global user.name "Autonomous Studio Coder" && \
     git config --global user.email "studio-bot@company.com"
 
-# Copy repository
-COPY . .
+# Copy repository and set permissions
+COPY --chown=node:node . .
 
 # Set environment
 ENV NODE_ENV=production
 ENV PORT=3000
+
+# Use non-root node user for container execution
+USER node
 
 # Expose CCTV Mission Control Web & API port
 EXPOSE 3000

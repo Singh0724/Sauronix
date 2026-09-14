@@ -2,6 +2,7 @@ import { createServer } from 'node:http';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { timingSafeEqual } from 'node:crypto';
 import { EventBroadcaster } from './event-broadcaster.js';
 import { StudioDatabase, getStudioDb } from '../storage/db.js';
 import { WorktreeManager } from '../git/worktree-manager.js';
@@ -58,6 +59,18 @@ export class CctvServer {
   }
 
   /**
+   * Constant-time string comparison to prevent timing side-channel attacks.
+   * @private
+   */
+  _safeCompare(a, b) {
+    if (typeof a !== 'string' || typeof b !== 'string') return false;
+    const bufA = Buffer.from(a, 'utf-8');
+    const bufB = Buffer.from(b, 'utf-8');
+    if (bufA.length !== bufB.length) return false;
+    return timingSafeEqual(bufA, bufB);
+  }
+
+  /**
    * Authenticate incoming request via Bearer header or URL query token.
    * @private
    */
@@ -65,12 +78,12 @@ export class CctvServer {
     const authHeader = req.headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.slice(7).trim();
-      return token === this.authToken;
+      return this._safeCompare(token, this.authToken);
     }
 
     const queryToken = url.searchParams.get('token');
     if (queryToken) {
-      return queryToken === this.authToken;
+      return this._safeCompare(queryToken, this.authToken);
     }
 
     return false;
@@ -82,7 +95,7 @@ export class CctvServer {
    */
   _validateCsrf(req) {
     const csrfHeader = req.headers['x-studio-csrf'];
-    return csrfHeader === this.csrfToken;
+    return this._safeCompare(csrfHeader, this.csrfToken);
   }
 
   /**

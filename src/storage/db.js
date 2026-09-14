@@ -115,17 +115,24 @@ export class StudioDatabase {
 }
 
 let defaultInstance = null;
+const instanceRegistry = new Map();
 
 /**
- * Get or create the default singleton Studio database.
+ * Get or create the singleton Studio database instance.
+ * Caches custom paths to prevent handle leaks.
  * @param {string} [customPath]
  * @returns {StudioDatabase}
  */
 export function getStudioDb(customPath) {
-  if (!defaultInstance || customPath) {
-    const db = new StudioDatabase(customPath);
-    if (!customPath) defaultInstance = db;
-    return db;
+  if (customPath) {
+    if (!instanceRegistry.has(customPath)) {
+      instanceRegistry.set(customPath, new StudioDatabase(customPath));
+    }
+    return instanceRegistry.get(customPath);
+  }
+
+  if (!defaultInstance) {
+    defaultInstance = new StudioDatabase();
   }
   return defaultInstance;
 }

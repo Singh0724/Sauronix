@@ -73,7 +73,15 @@ export class LayeredQARunner {
     const t2 = Date.now();
     try {
       for (const crit of taskSpec.acceptance_criteria) {
-        execSync(crit.verification_command, { cwd: worktreePath, stdio: 'pipe' });
+        const cmd = crit.verification_command;
+        if (!cmd || typeof cmd !== 'string') {
+          throw new Error('Invalid or empty verification command');
+        }
+        // Defense-in-depth: Disallow shell chaining operators or command injection tokens
+        if (/[;&|`$]/.test(cmd)) {
+          throw new Error(`Command injection prevention: verification command '${cmd}' contains forbidden shell metacharacters.`);
+        }
+        execSync(cmd, { cwd: worktreePath, stdio: 'pipe' });
       }
       recordStage(2, 'Targeted Unit Suite', true, `${taskSpec.acceptance_criteria.length} criteria passed`, Date.now() - t2);
     } catch (err) {

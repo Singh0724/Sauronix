@@ -25,6 +25,10 @@ export class BackupManager {
     this.backupDir = options.backupDir || resolve(PROJECT_ROOT, 'backups');
     this.encryptionKey = options.encryptionKey || DEFAULT_KEY;
 
+    if (process.env.NODE_ENV === 'production' && !process.env.STUDIO_BACKUP_KEY && !options.encryptionKey) {
+      console.warn('[SECURITY WARNING] In production, STUDIO_BACKUP_KEY environment variable should be set for database encryption.');
+    }
+
     if (!existsSync(this.backupDir)) {
       mkdirSync(this.backupDir, { recursive: true });
     }

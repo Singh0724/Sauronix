@@ -13,6 +13,7 @@ export class TeamLead {
     this.employeePool = options.employeePool || new EmployeePool();
     this.prGenerator = options.prGenerator || new PrGenerator();
     this.knowledgePromoter = options.knowledgePromoter;
+    this.studioDb = options.studioDb || null;
 
     /** @type {{ name: string, title: string, role: string, experience: string, gender: string, specialty: string }} */
     this.leadProfile = Object.freeze({
@@ -410,6 +411,9 @@ export class TeamLead {
     if (!employee) throw new Error(`Employee '${employeeId}' not found.`);
     if (!founderInstruction || !founderInstruction.trim()) {
       throw new Error('Founder instruction cannot be empty.');
+    }
+    if (employee.status !== EMPLOYEE_STATUS.BLOCKED && employee.status !== EMPLOYEE_STATUS.WORKING) {
+      throw new Error(`Cannot instruct worker in '${employee.status}' status; worker must be BLOCKED or WORKING.`);
     }
 
     // Unblock and resume
