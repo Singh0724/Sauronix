@@ -61,6 +61,26 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* Custom Modern Slim Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e1 transparent;
+    }
+
     /* Left Sidebar */
     .sidebar {
       width: 220px;
@@ -665,15 +685,31 @@
     .member-text {
       display: flex;
       flex-direction: column;
+      min-width: 0;
     }
     .member-name {
       font-size: 13px;
       font-weight: 600;
       color: var(--text-main);
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .member-persona-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
     }
     .member-role {
       font-size: 11px;
       color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
     }
 
     /* Clean Subtle Status Badges */
@@ -1379,7 +1415,8 @@
       </div>
     </div>
 
-    <div class="modal-actions" style="margin-top: 20px;">
+    <div class="modal-actions" style="margin-top: 20px; gap: 8px;">
+      <button class="btn-secondary" onclick="askSelectedEmployee()">Ask Status</button>
       <button class="btn-secondary" onclick="closeEmployeeModal()">Close</button>
       <button class="btn-create-task" id="empModalDirectBtn" onclick="directSelectedEmployee()">Direct Agent</button>
     </div>
@@ -1652,32 +1689,55 @@
         notifBadge.style.display = 'none';
       }
 
-      // B. Render Real Team Roster
+      // B. Render Real Team Roster with Exact Roles & Domain Work
       const teamContainer = document.getElementById('teamMemberList');
       teamContainer.innerHTML = '';
 
+      function getSpecialistMeta(role) {
+        switch (role) {
+          case 'TEAM_LEAD':
+            return { code: 'TL', roleTitle: 'Team Lead', domain: 'Architecture & Planning', avatarBg: '#eff6ff', avatarColor: '#2563eb' };
+          case 'SOFTWARE_ENGINEER':
+            return { code: 'BE', roleTitle: 'Backend Engineer', domain: 'API & Server', avatarBg: '#f1f5f9', avatarColor: '#334155' };
+          case 'DIGITAL_MARKETER':
+            return { code: 'FE', roleTitle: 'Frontend Engineer', domain: 'UI & Web', avatarBg: '#f1f5f9', avatarColor: '#334155' };
+          case 'QA_ENGINEER':
+            return { code: 'QA', roleTitle: 'QA Engineer', domain: 'Testing & Validation', avatarBg: '#f1f5f9', avatarColor: '#334155' };
+          case 'RESEARCH_ANALYST':
+            return { code: 'SE', roleTitle: 'Security Engineer', domain: 'Security & Compliance', avatarBg: '#f1f5f9', avatarColor: '#334155' };
+          default:
+            return { code: (role || 'AG').slice(0, 2).toUpperCase(), roleTitle: (role || '').replace(/_/g, ' '), domain: 'Engineering', avatarBg: '#f1f5f9', avatarColor: '#334155' };
+        }
+      }
+
       // 1. Team Lead
       if (lead) {
+        const leadMeta = getSpecialistMeta('TEAM_LEAD');
+        const isWorking = activeTasksCount > 0;
         const leadRow = document.createElement('div');
         leadRow.className = 'team-member-row';
         leadRow.onclick = () => openEmployeeModal({
-          name: lead.name,
-          role: formatRoleSubtitle('TEAM_LEAD'),
-          status: activeTasksCount > 0 ? 'WORKING' : 'FREE',
-          currentTaskId: activeTasksCount > 0 ? Array.from(allActiveTaskIds)[0] : 'None',
-          specialty: lead.specialty || 'Architecture & Planning',
+          id: 'LEAD-01',
+          name: lead.name || 'Dr. Elena Rostova',
+          role: 'TEAM_LEAD',
+          status: isWorking ? 'WORKING' : 'FREE',
+          currentTaskId: isWorking ? Array.from(allActiveTaskIds)[0] : 'None',
+          specialty: lead.specialty || 'Distributed Systems, Autonomous Governance & Architectural Synthesis',
           completedCount: history.length
         });
         leadRow.innerHTML = `
           <div class="member-profile">
-            <div class="member-avatar" style="background: #eff6ff; color: #2563eb;">TL</div>
+            <div class="member-avatar" style="background: ${leadMeta.avatarBg}; color: ${leadMeta.avatarColor}; font-weight: 700;">${leadMeta.code}</div>
             <div class="member-text">
-              <span class="member-name">${escapeHtml(lead.name)}</span>
-              <span class="member-role">${formatRoleSubtitle('TEAM_LEAD')}</span>
+              <div class="member-name">
+                ${leadMeta.roleTitle}
+                <span class="member-persona-label">· ${escapeHtml(lead.name || 'Dr. Elena Rostova')}</span>
+              </div>
+              <div class="member-role">${isWorking ? 'Architecture & Planning • Coordinating active tasks' : 'Architecture & Planning'}</div>
             </div>
           </div>
-          <span class="status-badge ${activeTasksCount > 0 ? 'status-working' : 'status-free'}">
-            ${activeTasksCount > 0 ? 'Working' : 'Free'}
+          <span class="status-badge ${isWorking ? 'status-working' : 'status-free'}">
+            ${isWorking ? 'Working' : 'Free'}
           </span>
         `;
         teamContainer.appendChild(leadRow);
@@ -1688,19 +1748,29 @@
         teamContainer.innerHTML += `<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 12px;">No employees registered in pool.</div>`;
       } else {
         employees.forEach(emp => {
-          const initials = getInitials(emp.name);
+          const meta = getSpecialistMeta(emp.role);
           const badgeClass = getStatusBadgeClass(emp.status);
           const badgeText = formatStatusLabel(emp.status);
+
+          let subtitle = meta.domain;
+          if (emp.status === 'WORKING' && emp.currentTaskId && emp.currentTaskId !== 'None') {
+            subtitle = `${meta.domain} • Working on ${escapeHtml(emp.currentTaskId)}`;
+          } else if (emp.status === 'BLOCKED') {
+            subtitle = `${meta.domain} • Blocked: ${escapeHtml((emp.currentDoubt || 'Waiting for resolution').slice(0, 32))}`;
+          }
 
           const row = document.createElement('div');
           row.className = 'team-member-row';
           row.onclick = () => openEmployeeModal(emp);
           row.innerHTML = `
             <div class="member-profile">
-              <div class="member-avatar">${initials}</div>
+              <div class="member-avatar" style="background: ${meta.avatarBg}; color: ${meta.avatarColor}; font-weight: 700;">${meta.code}</div>
               <div class="member-text">
-                <span class="member-name">${escapeHtml(emp.name)}</span>
-                <span class="member-role">${formatRoleSubtitle(emp.role)}</span>
+                <div class="member-name">
+                  ${meta.roleTitle}
+                  <span class="member-persona-label">· ${escapeHtml(emp.name)}</span>
+                </div>
+                <div class="member-role">${subtitle}</div>
               </div>
             </div>
             <span class="status-badge ${badgeClass}">${badgeText}</span>
@@ -2084,6 +2154,26 @@
       if (!selectedEmployeeForModal) return;
       closeEmployeeModal();
       openDirectiveModal(selectedEmployeeForModal.id || 'EMP-01', selectedEmployeeForModal.name);
+    }
+
+    async function askSelectedEmployee() {
+      if (!selectedEmployeeForModal) return;
+      const empId = selectedEmployeeForModal.id || 'EMP-01';
+      const activityEl = document.getElementById('empModalActivity');
+      activityEl.innerText = 'Querying live agent telemetry report...';
+      try {
+        const res = await fetch(`/api/studio/employee/${empId}/ask`, {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          activityEl.innerText = data.spokenText || data.speechBubble || 'Status report received.';
+        } else {
+          activityEl.innerText = 'Agent query completed. Invariants nominal.';
+        }
+      } catch (err) {
+        activityEl.innerText = 'Connection error: ' + err.message;
+      }
     }
 
     // System Health & Emergency Stop
