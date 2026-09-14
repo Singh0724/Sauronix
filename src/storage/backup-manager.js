@@ -1,5 +1,5 @@
 import { createCipheriv, createDecipheriv, randomBytes, createHash } from 'node:crypto';
-import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, readdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { StudioDatabase } from './db.js';
@@ -62,12 +62,17 @@ export class BackupManager {
   /**
    * Create an atomic online snapshot using SQLite VACUUM INTO, then encrypt.
    * @param {StudioDatabase} [studioDb]
-   * @returns {{ backupPath: string, checksum: string }}
+   * @returns {{ backupPath: string, checksum: string, timestamp: string }}
    */
   createEncryptedBackup(studioDb) {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const tempRawPath = resolve(this.backupDir, `temp-${timestamp}.sqlite`);
     const finalEncryptedPath = resolve(this.backupDir, `studio-backup-${timestamp}.enc`);
+
+    // Ensure parent directory exists
+    if (!existsSync(this.backupDir)) {
+      mkdirSync(this.backupDir, { recursive: true });
+    }
 
     // Use VACUUM INTO to create a zero-lock, consistent, defragmented online snapshot
     if (studioDb) {
@@ -100,14 +105,32 @@ export class BackupManager {
   }
 
   /**
+   * Get the most recent encrypted backup file.
+   * @returns {string | null}
+   */
+  getLatestBackup() {
+    if (!existsSync(this.backupDir)) return null;
+    const files = readdirSync(this.backupDir)
+      .filter(f => f.endsWith('.enc'))
+      .sort()
+      .reverse();
+    return files.length > 0 ? resolve(this.backupDir, files[0]) : null;
+  }
+
+  /**
    * Monthly Disaster Recovery Restore Verification Drill.
    * Decrypts backup into an isolated sandbox, verifies SQLite integrity,
    * validates schema and state tables, and issues a signed verification certificate.
    *
-   * @param {string} encryptedBackupPath
+   * @param {string} [encryptedBackupPath]
    * @returns {object} Disaster Recovery Certificate
    */
   runRestoreDrill(encryptedBackupPath) {
+    const backupFile = encryptedBackupPath || this.getLatestBackup();
+    if (!backupFile) {
+      throw new Error('No backup archive found to restore. Run backup first.');
+    }
+
     const drillSandboxDir = resolve(PROJECT_ROOT, `test-scratch/dr-drill-${Date.now()}`);
     mkdirSync(drillSandboxDir, { recursive: true });
 
@@ -115,7 +138,7 @@ export class BackupManager {
 
     try {
       // 1. Read and decrypt
-      const encryptedData = readFileSync(encryptedBackupPath);
+      const encryptedData = readFileSync(backupFile);
       const decryptedData = this.decryptBuffer(encryptedData);
       const restoredChecksum = createHash('sha256').update(decryptedData).digest('hex');
 
@@ -141,7 +164,7 @@ export class BackupManager {
       return {
         verified: true,
         drill_timestamp: new Date().toISOString(),
-        backup_file: encryptedBackupPath,
+        backup_file: backupFile,
         restored_sha256: restoredChecksum,
         integrity_status: 'ok',
         restored_records: {
@@ -156,5 +179,24 @@ export class BackupManager {
         rmSync(drillSandboxDir, { recursive: true, force: true });
       }
     }
+  }
+}
+
+// CLI Dispatcher when run directly via "npm run backup" or "npm run restore-drill"
+if (process.argv[1] && resolve(process.argv[1]) === resolve(__filename)) {
+  const command = process.argv[2] || 'backup';
+  const manager = new BackupManager();
+
+  if (command === 'backup') {
+    console.log('[DR Backup] Initiating online atomic encrypted backup...');
+    const res = manager.createEncryptedBackup();
+    console.log(`[DR Backup] Backup generated successfully: ${res.backupPath} (SHA256: ${res.checksum.slice(0, 16)}...)`);
+  } else if (command === 'drill') {
+    console.log('[DR Drill] Executing Disaster Recovery Restore Verification Drill...');
+    const cert = manager.runRestoreDrill();
+    console.log('[DR Drill] Verification Result:', JSON.stringify(cert, null, 2));
+  } else {
+    console.error(`Unknown command: ${command}. Use 'backup' or 'drill'.`);
+    process.exit(1);
   }
 }

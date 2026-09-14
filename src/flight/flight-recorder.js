@@ -1,6 +1,11 @@
 import { createHash } from 'node:crypto';
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const PROJECT_ROOT = resolve(__dirname, '../../');
 
 function sha256(data) {
   if (!data) return '';
@@ -154,4 +159,24 @@ export class FlightRecorder {
 
     return replayTrace;
   }
+}
+
+// CLI Dispatcher for deterministic replay
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+  const { getStudioDb } = await import('../storage/db.js');
+  const taskId = process.argv[2] === 'replay' ? process.argv[3] : process.argv[2];
+
+  if (!taskId) {
+    console.error('Usage: node src/flight/flight-recorder.js replay <TASK_ID>');
+    process.exit(1);
+  }
+
+  const recorder = new FlightRecorder({
+    studioDb: getStudioDb(),
+    artifactBaseDir: resolve(PROJECT_ROOT, '.agents/artifacts')
+  });
+
+  console.log(`[Flight Recorder] Replaying historical execution trace for ${taskId}...`);
+  const trace = recorder.replay(taskId);
+  console.log(JSON.stringify(trace, null, 2));
 }
