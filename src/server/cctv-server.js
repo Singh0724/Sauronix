@@ -31,8 +31,8 @@ export class CctvServer {
    * @param {string} [options.csrfToken]
    */
   constructor(options = {}) {
-    this.port = options.port || 3000;
-    this.host = options.host || '127.0.0.1';
+    this.port = Number(process.env.PORT) || options.port || 3000;
+    this.host = process.env.HOST || options.host || '0.0.0.0';
     this.studioDb = options.studioDb || getStudioDb();
     this.worktreeManager = options.worktreeManager || new WorktreeManager(PROJECT_ROOT);
     this.stateMachine = new TaskStateMachine(this.studioDb);
@@ -387,8 +387,10 @@ export class CctvServer {
 
 // CLI Dispatcher when run directly via "node src/server/cctv-server.js"
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
-  const server = new CctvServer({ port: 3000 });
+  const port = Number(process.env.PORT) || 3000;
+  const host = process.env.HOST || '0.0.0.0';
+  const server = new CctvServer({ port, host });
   await server.start();
-  console.log(`[CCTV Server] Founder Mission Control live at http://127.0.0.1:3000`);
+  console.log(`[CCTV Server] Founder Mission Control live at http://${host}:${port}`);
   console.log(`[CCTV Server] Auth Token: ${server.authToken}`);
 }

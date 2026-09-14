@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: autonomous-studio
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: node src/server/cctv-server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: HOST
+        value: 0.0.0.0
