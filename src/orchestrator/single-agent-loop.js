@@ -1,6 +1,9 @@
 import { resolve } from 'node:path';
+import { execSync } from 'node:child_process';
 import { TASK_STATUS } from '../state/task-state-machine.js';
 import { ToolGateway } from '../security/tool-gateway.js';
+import { FailureRouter, FAILURE_CLASSES } from '../remediation/failure-router.js';
+import { KnowledgePromoter } from '../knowledge/knowledge-promoter.js';
 
 export class SingleAgentPipeline {
   /**
@@ -12,6 +15,8 @@ export class SingleAgentPipeline {
    * @param {import('../coder/surgical-coder.js').SurgicalCoder} options.surgicalCoder
    * @param {import('../qa/qa-runner.js').LayeredQARunner} options.qaRunner
    * @param {import('../flight/flight-recorder.js').FlightRecorder} options.flightRecorder
+   * @param {FailureRouter} [options.failureRouter]
+   * @param {KnowledgePromoter} [options.knowledgePromoter]
    */
   constructor({
     workspaceRoot,
@@ -20,7 +25,9 @@ export class SingleAgentPipeline {
     specValidator,
     surgicalCoder,
     qaRunner,
-    flightRecorder
+    flightRecorder,
+    failureRouter,
+    knowledgePromoter
   }) {
     this.workspaceRoot = resolve(workspaceRoot);
     this.stateMachine = stateMachine;
@@ -29,6 +36,8 @@ export class SingleAgentPipeline {
     this.surgicalCoder = surgicalCoder;
     this.qaRunner = qaRunner;
     this.flightRecorder = flightRecorder;
+    this.failureRouter = failureRouter || new FailureRouter();
+    this.knowledgePromoter = knowledgePromoter || new KnowledgePromoter({ workspaceRoot: this.workspaceRoot });
   }
 
   /**
@@ -37,7 +46,7 @@ export class SingleAgentPipeline {
    * @param {object} params
    * @param {object} params.taskSpec - Task specification contract
    * @param {(prompt: string) => Promise<{ targetFile: string, diffContent: string }>} params.patchProvider
-   * @returns {Promise<{ success: boolean, task: object, qaReceipt: object, commitSha?: string, error?: string }>}
+   * @returns {Promise<{ success: boolean, task: object, qaReceipt?: object, commitSha?: string, branch?: string, error?: string }>}
    */
   async executeTask({ taskSpec, patchProvider }) {
     const taskId = taskSpec.task_id;
@@ -53,10 +62,11 @@ export class SingleAgentPipeline {
 
     // 3. Allocate Isolated Git Worktree (Mutual Exclusion Write Lock)
     const { worktreePath, branch } = this.worktreeManager.allocateWorktree(taskId);
+    const baseCommit = execSync('git rev-parse HEAD', { cwd: worktreePath, encoding: 'utf-8' }).trim();
 
     try {
       // 4. Transition State Machine: PENDING -> RUNNING
-      const task = this.stateMachine.transition({
+      this.stateMachine.transition({
         taskId,
         toStatus: TASK_STATUS.RUNNING,
         triggerReason: 'Pipeline allocated isolated worktree',
@@ -65,7 +75,7 @@ export class SingleAgentPipeline {
       });
 
       // 5. Flight Recorder: Step 1 Context Assembly
-      const assembledPrompt = this.surgicalCoder.assemblePrompt(taskSpec);
+      const basePrompt = this.surgicalCoder.assemblePrompt(taskSpec);
       this.flightRecorder.recordStep({
         taskId,
         stepIndex: 1,
@@ -73,78 +83,164 @@ export class SingleAgentPipeline {
         modelProvider: 'control-plane',
         modelName: 'surgical-coder-v5',
         temperature: 0.0,
-        prompt: assembledPrompt
+        prompt: basePrompt
       });
 
-      // 6. Obtain Surgical Patch
-      const patch = await patchProvider(assembledPrompt);
+      let currentPrompt = basePrompt;
+      let attempt = 0;
+      let lastCommitSha = null;
+      let lastFailureClass = null;
 
-      // 7. Security Tool Gateway Interception
-      const toolGateway = new ToolGateway({
-        workspaceRoot: worktreePath,
-        role: 'SURGICAL_CODER',
-        taskAllowedFiles: taskSpec.allowed_files,
-        taskForbiddenFiles: taskSpec.forbidden_files
-      });
+      while (true) {
+        // 6. Obtain Surgical Patch
+        const patch = await patchProvider(currentPrompt);
 
-      // 8. Apply Surgical Patch & Commit to Branch
-      const patchReceipt = this.surgicalCoder.applySurgicalPatch({
-        worktreePath,
-        targetRelativeFile: patch.targetFile,
-        diffContent: patch.diffContent,
-        toolGateway,
-        commitMessage: `feat(${taskId.toLowerCase()}): ${taskSpec.goal.slice(0, 50)}`
-      });
+        // Pre-patch Loop Detection: Check if consecutive patch is identical
+        if (attempt > 0) {
+          const loopCheck = this.failureRouter.getRemediationPlan({
+            taskId,
+            errorOrReceipt: 'Identical patch emitted consecutively',
+            currentPatch: patch.diffContent
+          });
 
-      // 9. Flight Recorder: Step 2 Patch Applied
-      this.flightRecorder.recordStep({
-        taskId,
-        stepIndex: 2,
-        agentRole: 'SURGICAL_CODER',
-        modelProvider: 'control-plane',
-        modelName: 'surgical-coder-v5',
-        temperature: 0.0,
-        prompt: `Apply patch to ${patch.targetFile}`,
-        toolName: 'emit_surgical_diff',
-        diff: patch.diffContent
-      });
+          if (loopCheck.failureClass === FAILURE_CLASSES.IDENTICAL_DIFF) {
+            const quarantinedTask = this.stateMachine.transition({
+              taskId,
+              toStatus: TASK_STATUS.QUARANTINED,
+              triggerReason: `Circuit breaker tripped [${FAILURE_CLASSES.IDENTICAL_DIFF}]: ${loopCheck.action}`,
+              actor: 'CIRCUIT_BREAKER'
+            });
 
-      // 10. Run 11-Stage Layered QA Pipeline
-      const diffText = this.worktreeManager.captureDiff(taskId);
-      const qaReceipt = this.qaRunner.runAllStages({
-        taskSpec,
-        worktreePath,
-        diffText: patch.diffContent,
-        modifiedFiles: [patch.targetFile]
-      });
+            return {
+              success: false,
+              task: quarantinedTask,
+              error: `Circuit breaker tripped: ${FAILURE_CLASSES.IDENTICAL_DIFF}`
+            };
+          }
 
-      // 11. Evaluate QA Results & Transition State Machine
-      if (qaReceipt.all_passed) {
-        const completedTask = this.stateMachine.transition({
-          taskId,
-          toStatus: TASK_STATUS.READY_FOR_PR,
-          triggerReason: 'All 11 Layered QA stages passed cleanly',
-          actor: 'QA'
+          // Reset worktree back to clean base commit before applying remediated patch
+          execSync(`git reset --hard ${baseCommit}`, { cwd: worktreePath, stdio: 'pipe' });
+          execSync('git clean -fd', { cwd: worktreePath, stdio: 'pipe' });
+        }
+
+        // 7. Security Tool Gateway Interception
+        const toolGateway = new ToolGateway({
+          workspaceRoot: worktreePath,
+          role: 'SURGICAL_CODER',
+          taskAllowedFiles: taskSpec.allowed_files,
+          taskForbiddenFiles: taskSpec.forbidden_files
         });
 
-        return {
-          success: true,
-          task: completedTask,
-          qaReceipt,
-          commitSha: patchReceipt.commitSha,
-          branch
-        };
-      } else {
-        // Failure-Class Triage
+        // 8. Apply Surgical Patch & Commit to Branch
+        const patchReceipt = this.surgicalCoder.applySurgicalPatch({
+          worktreePath,
+          targetRelativeFile: patch.targetFile,
+          diffContent: patch.diffContent,
+          toolGateway,
+          commitMessage: attempt === 0
+            ? `feat(${taskId.toLowerCase()}): ${taskSpec.goal.slice(0, 50)}`
+            : `fix(${taskId.toLowerCase()}): remediation attempt ${attempt + 1}`
+        });
+        lastCommitSha = patchReceipt.commitSha;
+
+        // 9. Flight Recorder: Record Patch Step
+        this.flightRecorder.recordStep({
+          taskId,
+          stepIndex: 2 + attempt * 2,
+          agentRole: 'SURGICAL_CODER',
+          modelProvider: 'control-plane',
+          modelName: 'surgical-coder-v5',
+          temperature: 0.0,
+          prompt: `Apply patch (attempt ${attempt + 1}) to ${patch.targetFile}`,
+          toolName: 'emit_surgical_diff',
+          diff: patch.diffContent
+        });
+
+        // 10. Run 11-Stage Layered QA Pipeline
+        const qaReceipt = this.qaRunner.runAllStages({
+          taskSpec,
+          worktreePath,
+          diffText: patch.diffContent,
+          modifiedFiles: [patch.targetFile]
+        });
+
+        // 11. Evaluate QA Results & Handle Success
+        if (qaReceipt.all_passed) {
+          // If resolved after failure remediation, stage candidate learning
+          if (attempt > 0 && this.knowledgePromoter) {
+            try {
+              this.knowledgePromoter.recordCandidateLearning({
+                category: 'SCHEMA_MISMATCH',
+                symptom: `Task failed initially with ${lastFailureClass || 'ASSERTION_FAILURE'}`,
+                rootCause: `Initial diff failed QA verification stages`,
+                permanentPattern: `Ensure validation criteria and test assertions pass on initial patch`,
+                antiPattern: `Emitting unvalidated changes without verifying test expectations`,
+                evidenceTaskId: taskId
+              });
+            } catch {
+              // Best-effort candidate recording
+            }
+          }
+
+          const completedTask = this.stateMachine.transition({
+            taskId,
+            toStatus: TASK_STATUS.READY_FOR_PR,
+            triggerReason: attempt === 0
+              ? 'All 11 Layered QA stages passed cleanly'
+              : `All 11 Layered QA stages passed cleanly after ${attempt} remediation attempt(s)`,
+            actor: 'QA'
+          });
+
+          return {
+            success: true,
+            task: completedTask,
+            qaReceipt,
+            commitSha: lastCommitSha,
+            branch
+          };
+        }
+
+        // 12. QA Failed: Consult FailureRouter for Remediation Plan
+        lastFailureClass = qaReceipt.failure_classification;
+        const plan = this.failureRouter.getRemediationPlan({
+          taskId,
+          errorOrReceipt: qaReceipt,
+          currentPatch: patch.diffContent
+        });
+
+        if (plan.canRetry) {
+          attempt += 1;
+          const failedStagesSummary = qaReceipt.failed_stages
+            ? qaReceipt.failed_stages.map(s => `${s.stage_name}: ${s.message || ''}`).join('; ')
+            : 'Unspecified failure';
+
+          currentPrompt = [
+            basePrompt,
+            '',
+            '### REMEDIATION REQUIRED (PREVIOUS ATTEMPT FAILED QA):',
+            `- Failure Classification: ${plan.failureClass}`,
+            `- Remediation Strategy: ${plan.action}`,
+            `- Remediation Guidance: ${plan.promptGuidance}`,
+            `- Failed Verification Stages: ${failedStagesSummary}`,
+            `- Remaining Retries: ${plan.remainingRetries}`,
+            '',
+            'CRITICAL INSTRUCTION: Author a corrected <<<<<<< SEARCH ... ======= ... >>>>>>> REPLACE patch.',
+            'Do NOT emit the exact same diff, as repeated identical diffs trip the circuit breaker and quarantine the task immediately.'
+          ].join('\n');
+
+          continue;
+        }
+
+        // 13. Retries exhausted or circuit breaker tripped
         let nextStatus = TASK_STATUS.FAILED;
-        if (qaReceipt.failure_classification === 'SECURITY_VIOLATION') {
+        if (plan.quarantine || plan.failureClass === FAILURE_CLASSES.SECURITY_VIOLATION || plan.failureClass === FAILURE_CLASSES.IDENTICAL_DIFF) {
           nextStatus = TASK_STATUS.QUARANTINED;
         }
 
         const failedTask = this.stateMachine.transition({
           taskId,
           toStatus: nextStatus,
-          triggerReason: `QA Pipeline rejected task [${qaReceipt.failure_classification}]`,
+          triggerReason: `Circuit breaker tripped [${plan.failureClass}]: ${plan.action}`,
           actor: 'CIRCUIT_BREAKER'
         });
 
@@ -152,11 +248,35 @@ export class SingleAgentPipeline {
           success: false,
           task: failedTask,
           qaReceipt,
-          error: `QA Verification failed: ${qaReceipt.failure_classification}`
+          error: `QA Verification rejected task [${plan.failureClass}]`
         };
       }
+    } catch (err) {
+      // Capture uncaught exceptions through failure router
+      const plan = this.failureRouter.getRemediationPlan({
+        taskId,
+        errorOrReceipt: err
+      });
+
+      const nextStatus = plan.quarantine ? TASK_STATUS.QUARANTINED : TASK_STATUS.FAILED;
+      try {
+        const failedTask = this.stateMachine.transition({
+          taskId,
+          toStatus: nextStatus,
+          triggerReason: `Execution abort [${plan.failureClass}]: ${err.message}`,
+          actor: 'CIRCUIT_BREAKER'
+        });
+
+        return {
+          success: false,
+          task: failedTask,
+          error: err.message
+        };
+      } catch {
+        throw err;
+      }
     } finally {
-      // 12. Always release worktree lock cleanly
+      // 14. Always release worktree lock cleanly
       this.worktreeManager.releaseWorktree(taskId);
     }
   }

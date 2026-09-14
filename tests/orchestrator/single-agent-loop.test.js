@@ -172,3 +172,168 @@ test('SingleAgentPipeline: Rejects security-violating task and transitions to QU
     if (existsSync(REPORTS_DIR)) rmSync(REPORTS_DIR, { recursive: true, force: true });
   }
 });
+
+test('SingleAgentPipeline: Remediates initial QA assertion failure and succeeds on second attempt', async () => {
+  const db = new StudioDatabase(':memory:');
+  const sm = new TaskStateMachine(db);
+  const wm = new WorktreeManager(REPO_ROOT);
+  const validator = new SpecValidator(REPO_ROOT);
+  const coder = new SurgicalCoder({ workspaceRoot: REPO_ROOT });
+  const qaRunner = new LayeredQARunner({ reportsDir: REPORTS_DIR });
+  const recorder = new FlightRecorder({ studioDb: db, artifactBaseDir: ARTIFACT_DIR });
+
+  const pipeline = new SingleAgentPipeline({
+    workspaceRoot: REPO_ROOT,
+    stateMachine: sm,
+    worktreeManager: wm,
+    specValidator: validator,
+    surgicalCoder: coder,
+    qaRunner,
+    flightRecorder: recorder
+  });
+
+  const taskId = 'TASK-110';
+  try { execSync(`git branch -D agent/${taskId.toLowerCase()}`, { stdio: 'ignore' }); } catch {}
+
+  const taskSpec = {
+    task_id: taskId,
+    goal: 'Test remediation loop on initial invalid JSON',
+    risk_level: 'LOW',
+    allowed_files: ['package.json'],
+    forbidden_files: ['.env*'],
+    acceptance_criteria: [
+      {
+        id: 'CRIT-1',
+        description: 'Verify package.json remains valid JSON',
+        verification_command: 'node -e "JSON.parse(require(\'fs\').readFileSync(\'package.json\'))"',
+        expected_exit_code: 0
+      }
+    ],
+    test_plan: ['JSON parsing check'],
+    rollback_plan: 'git checkout main && git branch -D agent/task-110',
+    security_impact: 'NONE',
+    human_approval_required: false
+  };
+
+  let callCount = 0;
+  const selfHealingPatchProvider = async (prompt) => {
+    callCount += 1;
+    if (callCount === 1) {
+      // First attempt: emits broken JSON with trailing comma
+      return {
+        targetFile: 'package.json',
+        diffContent: `<<<<<<< SEARCH
+  "license": "UNLICENSED",
+=======
+  "license": "UNLICENSED",,
+>>>>>>> REPLACE`
+      };
+    } else {
+      // Second attempt: remediated valid patch
+      assert.equal(prompt.includes('REMEDIATION REQUIRED'), true);
+      return {
+        targetFile: 'package.json',
+        diffContent: `<<<<<<< SEARCH
+  "license": "UNLICENSED",
+=======
+  "license": "UNLICENSED",
+  "verified_patch": true,
+>>>>>>> REPLACE`
+      };
+    }
+  };
+
+  try {
+    const result = await pipeline.executeTask({
+      taskSpec,
+      patchProvider: selfHealingPatchProvider
+    });
+
+    assert.equal(result.success, true);
+    assert.equal(result.task.status, TASK_STATUS.READY_FOR_PR);
+    assert.equal(result.qaReceipt.all_passed, true);
+    assert.equal(callCount, 2);
+    assert.equal(wm.isLocked(), false);
+  } finally {
+    wm.releaseWorktree(taskId);
+    try { execSync(`git branch -D agent/${taskId.toLowerCase()}`, { stdio: 'ignore' }); } catch {}
+    db.close();
+    if (existsSync(ARTIFACT_DIR)) rmSync(ARTIFACT_DIR, { recursive: true, force: true });
+    if (existsSync(REPORTS_DIR)) rmSync(REPORTS_DIR, { recursive: true, force: true });
+  }
+});
+
+test('SingleAgentPipeline: Trips circuit breaker immediately on consecutive identical diffs and quarantines', async () => {
+  const db = new StudioDatabase(':memory:');
+  const sm = new TaskStateMachine(db);
+  const wm = new WorktreeManager(REPO_ROOT);
+  const validator = new SpecValidator(REPO_ROOT);
+  const coder = new SurgicalCoder({ workspaceRoot: REPO_ROOT });
+  const qaRunner = new LayeredQARunner({ reportsDir: REPORTS_DIR });
+  const recorder = new FlightRecorder({ studioDb: db, artifactBaseDir: ARTIFACT_DIR });
+
+  const pipeline = new SingleAgentPipeline({
+    workspaceRoot: REPO_ROOT,
+    stateMachine: sm,
+    worktreeManager: wm,
+    specValidator: validator,
+    surgicalCoder: coder,
+    qaRunner,
+    flightRecorder: recorder
+  });
+
+  const taskId = 'TASK-111';
+  try { execSync(`git branch -D agent/${taskId.toLowerCase()}`, { stdio: 'ignore' }); } catch {}
+
+  const taskSpec = {
+    task_id: taskId,
+    goal: 'Test loop detection on repeated identical broken diff',
+    risk_level: 'LOW',
+    allowed_files: ['package.json'],
+    forbidden_files: ['.env*'],
+    acceptance_criteria: [
+      {
+        id: 'CRIT-1',
+        description: 'Verify package.json remains valid JSON',
+        verification_command: 'node -e "JSON.parse(require(\'fs\').readFileSync(\'package.json\'))"',
+        expected_exit_code: 0
+      }
+    ],
+    test_plan: ['JSON parsing check'],
+    rollback_plan: 'git checkout main && git branch -D agent/task-111',
+    security_impact: 'NONE',
+    human_approval_required: false
+  };
+
+  const stubbornLoopPatchProvider = async () => {
+    // Repeated identical broken diff
+    return {
+      targetFile: 'package.json',
+      diffContent: `<<<<<<< SEARCH
+  "license": "UNLICENSED",
+=======
+  "license": "UNLICENSED",,
+>>>>>>> REPLACE`
+    };
+  };
+
+  try {
+    const result = await pipeline.executeTask({
+      taskSpec,
+      patchProvider: stubbornLoopPatchProvider
+    });
+
+    assert.equal(result.success, false);
+    assert.equal(result.task.status, TASK_STATUS.QUARANTINED);
+    assert.equal(result.error.includes('IDENTICAL_DIFF'), true);
+    const transitions = sm.getHistory(taskId);
+    assert.equal(transitions[transitions.length - 1].trigger_reason.includes('IDENTICAL_DIFF'), true);
+    assert.equal(wm.isLocked(), false);
+  } finally {
+    wm.releaseWorktree(taskId);
+    try { execSync(`git branch -D agent/${taskId.toLowerCase()}`, { stdio: 'ignore' }); } catch {}
+    db.close();
+    if (existsSync(ARTIFACT_DIR)) rmSync(ARTIFACT_DIR, { recursive: true, force: true });
+    if (existsSync(REPORTS_DIR)) rmSync(REPORTS_DIR, { recursive: true, force: true });
+  }
+});

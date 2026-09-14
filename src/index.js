@@ -24,3 +24,7 @@ export { SingleAgentPipeline } from './orchestrator/single-agent-loop.js';
 // Phase 3: Mission Control & CCTV Telemetry
 export { EventBroadcaster } from './server/event-broadcaster.js';
 export { CctvServer, DEFAULT_AUTH_TOKEN, DEFAULT_CSRF_TOKEN } from './server/cctv-server.js';
+
+// Phase 4: Failure-Class Remediation & Knowledge Promotion
+export { FailureRouter, FAILURE_CLASSES, FAILURE_STRATEGIES } from './remediation/failure-router.js';
+export { KnowledgePromoter, VALID_CATEGORIES, KNOWLEDGE_STATUS } from './knowledge/knowledge-promoter.js';
