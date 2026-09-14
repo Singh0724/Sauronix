@@ -18,10 +18,12 @@
     :root {
       --bg-page: #f8fafc;
       --bg-surface: #ffffff;
+      --bg-card: #ffffff;
       --bg-subtle: #f1f5f9;
       --bg-hover: #e2e8f0;
       
       --border-light: #e2e8f0;
+      --border-color: #e2e8f0;
       --border-subtle: #cbd5e1;
       
       --text-main: #0f172a;
@@ -896,16 +898,115 @@
     /* Standard Enterprise Modals */
     dialog {
       margin: auto;
-      background: #ffffff;
+      background: #ffffff !important;
       border: 1px solid var(--border-light);
       border-radius: var(--radius-lg);
       padding: 24px;
       color: var(--text-main);
       width: 620px;
       max-width: 92vw;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
-    dialog::backdrop { background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); }
+    dialog::backdrop { background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px); }
+
+    /* Specialist Cabin Active Workstation */
+    .cabin-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .cabin-worker-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: var(--bg-subtle);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+    }
+    .cabin-worker-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cabin-worker-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #eff6ff;
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #bfdbfe;
+    }
+    .cabin-worker-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .cabin-worker-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .cabin-worker-role {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .cabin-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    @keyframes pulse-working {
+      0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+      70% { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+    }
+    .status-dot-working {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--primary-blue);
+      animation: pulse-working 2s infinite;
+    }
+    .status-dot-done {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--emerald-green);
+    }
+    .cabin-followup-box {
+      margin-top: 14px;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+    }
+    .cabin-input {
+      width: 100%;
+      height: 36px;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 0 12px;
+      font-size: 12px;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .cabin-input:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    }
+
+    /* Modal Styling */
     .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .modal-title { font-size: 15px; font-weight: 700; color: var(--text-main); }
     .modal-input {
@@ -1092,9 +1193,7 @@
           <div class="date-caption" id="currentDateCaption"></div>
           <h1 class="greeting-title" id="greetingTitle">Good day, Saurabh 👋</h1>
           <p class="greeting-sub" id="greetingTeamStatus">Connecting to live autonomous engineering telemetry...</p>
-        </div>
-
-        <button class="btn-create-task" onclick="openTaskModal()">
+             <button class="btn-create-task" id="btnOpenNewTaskModal" onclick="openTaskModal()">
           <span>+ New Task</span>
         </button>
       </section>
@@ -1114,7 +1213,7 @@
 
         <div class="summary-card">
           <div class="summary-icon-box" style="background: #ecfdf5; color: #10b981;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
           </div>
           <div class="summary-details">
             <span class="summary-title">Working Agents</span>
@@ -1152,14 +1251,14 @@
         <!-- Left Column -->
         <div class="col-left">
           
-          <!-- Current Task Focus Card -->
-          <div class="clean-panel">
+          <!-- Specialist Cabin & Active Workstation Card -->
+          <div class="clean-panel" id="cabinPanel">
             <div class="panel-top-row">
-              <span class="panel-heading">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                Current Task
+              <span class="panel-heading" style="display: flex; align-items: center; gap: 8px;">
+                <span id="cabinStatusDot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #94a3b8;"></span>
+                🏢 Specialist Cabin • Active Workstation
               </span>
-              <span class="status-badge status-free" id="heroTaskStatus">Idle</span>
+              <span class="status-badge status-free" id="heroTaskStatus">Standby</span>
             </div>
 
             <div class="current-task-body" id="heroTaskContent">
@@ -1387,8 +1486,8 @@
   </dialog>
 
   <!-- Dedicated Task Report Viewer Modal -->
-  <dialog id="taskReportModal" style="width: 720px; max-width: 90vw; max-height: 85vh; padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); background: var(--bg-card); box-shadow: var(--shadow-lg);">
-    <div class="modal-head" style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+  <dialog id="taskReportModal" style="width: 760px; max-width: 94vw; max-height: 88vh; padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-light); background: #ffffff !important; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);">
+    <div class="modal-head" style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-light);">
       <div>
         <div style="display: flex; align-items: center; gap: 8px;">
           <span style="font-size: 16px;">📄</span>
@@ -1400,12 +1499,12 @@
       <button onclick="closeTaskReportModal()" style="background: transparent; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
     </div>
 
-    <div style="margin-bottom: 14px; padding: 10px 14px; background: var(--bg-subtle); border-radius: var(--radius-md); font-size: 12px;">
+    <div style="margin-bottom: 14px; padding: 10px 14px; background: var(--bg-subtle); border-radius: var(--radius-md); font-size: 12px; border: 1px solid var(--border-light);">
       <strong style="color: var(--text-main);">Directive / Goal:</strong>
       <span style="color: var(--text-muted); margin-left: 6px;" id="reportModalGoal">Goal text</span>
     </div>
 
-    <div id="reportModalContent" style="font-size: 13px; line-height: 1.7; color: var(--text-main); background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; max-height: 440px; overflow-y: auto; white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <div id="reportModalContent" style="font-size: 13px; line-height: 1.7; color: var(--text-main); background: #ffffff; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 20px; max-height: 480px; overflow-y: auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
       Loading report...
     </div>
 
@@ -1832,63 +1931,94 @@
       renderAttentionPanel(blockedAgents, queue);
 
       // E. Update System Diagnostics Dialog
-      document.getElementById('diagTasksCount').innerText = `${tasks.length} total (${activeTasksCount} active)`;
-    }
-
-    // Render Current Task Card
+      document.getElementById('diagTasksCount').inn    // Render Specialist Cabin / Active Engineering Workstation
     function renderHeroTask(tasks, queue) {
       const container = document.getElementById('heroTaskContent');
       const headerStatus = document.getElementById('heroTaskStatus');
+      const statusDot = document.getElementById('cabinStatusDot');
 
-      // Find highest priority active task
+      const employees = teamDataState.employees || [];
+
+      // 1. Check if any specialist is currently WORKING, BLOCKED, or DONE (waiting in Cabin)
+      let cabinWorker = employees.find(e => e.status === 'WORKING') ||
+                        employees.find(e => e.status === 'BLOCKED');
+      if (!cabinWorker) {
+        cabinWorker = employees.find(e => e.status === 'DONE' && e.currentTaskId && e.currentTaskId !== 'None');
+      }
+
+      // 2. Find associated active task
       let activeTask = null;
-
-      // 1. Check queue for running/assigned task
-      if (queue && queue.length > 0) {
-        activeTask = queue.find(q => q.status === 'RUNNING') ||
-                     queue.find(q => q.status === 'ASSIGNED') ||
-                     queue.find(q => q.status === 'QUEUED');
+      if (cabinWorker && cabinWorker.currentTaskId && cabinWorker.currentTaskId !== 'None') {
+        if (queue) activeTask = queue.find(q => q.taskId === cabinWorker.currentTaskId);
+        if (!activeTask && tasks) activeTask = tasks.find(t => t.task_id === cabinWorker.currentTaskId || t.taskId === cabinWorker.currentTaskId);
       }
 
-      // 2. Check tasks table if not found in queue
-      if (!activeTask && tasks && tasks.length > 0) {
-        activeTask = tasks.find(t => t.status === 'RUNNING') ||
-                     tasks.find(t => t.status === 'PENDING') ||
-                     tasks.find(t => t.status === 'READY_FOR_PR') ||
-                     tasks[0]; // fallback to most recent task
-      }
-
+      // 3. Fallback to queue or tasks if worker didn't pin it yet
       if (!activeTask) {
+        if (queue && queue.length > 0) {
+          activeTask = queue.find(q => q.status === 'RUNNING') ||
+                       queue.find(q => q.status === 'ASSIGNED') ||
+                       queue.find(q => q.status === 'QUEUED');
+        }
+        if (!activeTask && tasks && tasks.length > 0) {
+          activeTask = tasks.find(t => t.status === 'RUNNING') ||
+                       tasks.find(t => t.status === 'PENDING') ||
+                       tasks.find(t => t.status === 'READY_FOR_PR') ||
+                       tasks[0];
+        }
+      }
+
+      if (!activeTask && !cabinWorker) {
+        if (statusDot) statusDot.style.background = '#94a3b8';
         headerStatus.className = 'status-badge status-free';
-        headerStatus.innerText = 'Idle';
+        headerStatus.innerText = 'Standby';
         container.innerHTML = `
           <div class="empty-state-box">
             <div class="empty-icon-circle">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m14 9 3 3-3 3"/></svg>
             </div>
-            <div class="empty-heading">No Active Tasks</div>
-            <p class="empty-text">Your autonomous engineering pipeline is idle. Submit a new task specification to begin work.</p>
-            <button class="btn-create-task" onclick="openTaskModal()" style="margin-top: 4px;">+ Create Task</button>
+            <div class="empty-heading">Specialist Cabin on Standby</div>
+            <p class="empty-text">Workstation ready. Submit a new task directive for Team Lead Dr. Elena Rostova to assign a specialist.</p>
+            <button class="btn-create-task" onclick="openTaskModal()" style="margin-top: 6px;">+ Create Task</button>
           </div>
         `;
         return;
       }
 
-      // We have a real task!
-      selectedTaskForModal = activeTask;
-      const taskId = activeTask.taskId || activeTask.task_id;
-      const taskGoal = activeTask.goal || activeTask.rawPrompt || 'Autonomous Engineering Directive';
-      const taskStatus = activeTask.status || 'PENDING';
-      const riskLevel = (activeTask.risk_level || (activeTask.taskSpec?.riskLevel) || 'MEDIUM').toUpperCase();
-      const assigneeName = activeTask.assignedEmployee?.name || activeTask.active_agent || 'Team Lead';
+      // We have an active specialist or task in the Cabin!
+      selectedTaskForModal = activeTask || {
+        taskId: cabinWorker?.currentTaskId || 'TASK-ACTIVE',
+        goal: 'Specialist Workstation Task',
+        status: cabinWorker?.status || 'WORKING'
+      };
+
+      const taskId = activeTask ? (activeTask.taskId || activeTask.task_id) : (cabinWorker?.currentTaskId || 'TASK-ACTIVE');
+      const taskGoal = activeTask ? (activeTask.goal || activeTask.rawPrompt || 'Autonomous Engineering Directive') : 'Autonomous Engineering Directive';
+      const taskStatus = activeTask ? (activeTask.status || 'PENDING') : (cabinWorker?.status || 'WORKING');
+      const riskLevel = activeTask ? ((activeTask.risk_level || activeTask.taskSpec?.riskLevel || 'MEDIUM').toUpperCase()) : 'MEDIUM';
+      
+      const assignedEmp = cabinWorker || activeTask?.assignedEmployee || (employees.find(e => e.name === activeTask?.active_agent)) || {
+        id: 'EMP-01',
+        name: activeTask?.active_agent || 'Specialist Agent',
+        role: 'SOFTWARE_ENGINEER',
+        specialty: 'Engineering Specialist'
+      };
+
+      const assigneeName = assignedEmp.name;
       const assigneeInitials = getInitials(assigneeName);
+      const isDone = taskStatus === 'COMPLETED' || taskStatus === 'DONE' || (cabinWorker && cabinWorker.status === 'DONE');
+      const isWorking = taskStatus === 'RUNNING' || taskStatus === 'WORKING' || taskStatus === 'ASSIGNED' || taskStatus === 'READY_FOR_PR';
+
+      if (statusDot) {
+        statusDot.style.background = isDone ? '#10b981' : (taskStatus === 'BLOCKED' ? '#f59e0b' : '#2563eb');
+      }
 
       // Status header badge
       headerStatus.className = `status-badge ${getStatusBadgeClass(taskStatus)}`;
       headerStatus.innerText = formatStatusLabel(taskStatus);
 
       // If task is ASSIGNED, auto-trigger autonomous background execution
-      if ((taskStatus === 'ASSIGNED' || taskStatus === 'QUEUED') && !activeTask._execTriggered) {
+      if (activeTask && (taskStatus === 'ASSIGNED' || taskStatus === 'QUEUED') && !activeTask._execTriggered) {
         activeTask._execTriggered = true;
         fetch(`/api/studio/task/${encodeURIComponent(taskId)}/execute`, {
           method: 'POST',
@@ -1902,26 +2032,52 @@
 
       // Progress computation
       let pct = 20;
-      if (typeof activeTask.progress === 'number') {
+      if (activeTask && typeof activeTask.progress === 'number') {
         pct = activeTask.progress;
       } else {
-        if (taskStatus === 'RUNNING' || taskStatus === 'WORKING') pct = 65;
-        else if (taskStatus === 'READY_FOR_PR') pct = 90;
-        else if (taskStatus === 'COMPLETED' || taskStatus === 'DONE') pct = 100;
+        if (isDone) pct = 100;
+        else if (taskStatus === 'READY_FOR_PR') pct = 95;
+        else if (isWorking) pct = 65;
         else if (taskStatus === 'BLOCKED') pct = 50;
       }
 
-      const stageText = activeTask.stage || (
-        taskStatus === 'COMPLETED' ? 'Task Completed & Verified' :
+      const stageText = (activeTask && activeTask.stage) ? activeTask.stage : (
+        isDone ? 'Task Completed & Verified. Deliverable Available.' :
         taskStatus === 'BLOCKED' ? 'Blocked: Waiting for resolution' :
         taskStatus === 'ASSIGNED' ? 'Assigned · Initializing Execution Pipeline' :
         'Autonomous Execution in Progress'
       );
 
       container.innerHTML = `
-        <span class="task-id-caption">${escapeHtml(taskId)}</span>
-        <h3 class="task-hero-title">${escapeHtml(taskGoal.slice(0, 60))}${taskGoal.length > 60 ? '...' : ''}</h3>
-        <p class="task-hero-desc">${escapeHtml(taskGoal)}</p>
+        <!-- Specialist Workstation Header -->
+        <div class="cabin-worker-row">
+          <div class="cabin-worker-info">
+            <div class="cabin-worker-avatar">${assigneeInitials}</div>
+            <div class="cabin-worker-text">
+              <span class="cabin-worker-name">${escapeHtml(assigneeName)}</span>
+              <span class="cabin-worker-role">${escapeHtml(formatRoleSubtitle(assignedEmp.role))} • ${escapeHtml(assignedEmp.specialty || 'Engineering')}</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            ${isWorking ? `
+              <span class="cabin-status-badge" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">
+                <span class="status-dot-working"></span> Working in Cabin
+              </span>
+            ` : (isDone ? `
+              <span class="cabin-status-badge" style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+                <span class="status-dot-done"></span> Completed &amp; Waiting
+              </span>
+            ` : `
+              <span class="status-badge ${getStatusBadgeClass(taskStatus)}">${formatStatusLabel(taskStatus)}</span>
+            `)}
+          </div>
+        </div>
+
+        <div style="margin-top: 12px;">
+          <span class="task-id-caption">${escapeHtml(taskId)}</span>
+          <h3 class="task-hero-title">${escapeHtml(taskGoal.slice(0, 70))}${taskGoal.length > 70 ? '...' : ''}</h3>
+          <p class="task-hero-desc">${escapeHtml(taskGoal)}</p>
+        </div>
 
         <div class="task-tag-row">
           <span class="tag-chip ${riskLevel === 'HIGH' || riskLevel === 'CRITICAL' ? 'high-priority' : ''}">
@@ -1939,21 +2095,17 @@
         </div>
 
         <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; display: flex; align-items: center; gap: 6px;">
-          <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: ${taskStatus === 'COMPLETED' ? '#16a34a' : (taskStatus === 'BLOCKED' ? '#eab308' : '#2563eb')};"></span>
+          <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: ${isDone ? '#16a34a' : (taskStatus === 'BLOCKED' ? '#eab308' : '#2563eb')};"></span>
           <span style="font-weight: 500;">${escapeHtml(stageText)}</span>
         </div>
 
-        <div class="task-footer-row">
-          <div class="task-assignee-block">
-            <div class="assignee-bubble">${assigneeInitials}</div>
-            <div class="assignee-meta">
-              <span class="assignee-name">${escapeHtml(assigneeName)}</span>
-              <span class="assignee-time">Status: ${formatStatusLabel(taskStatus)}</span>
-            </div>
+        <div class="task-footer-row" style="margin-top: 12px;">
+          <div style="font-size: 11px; color: var(--text-muted);">
+            Branch: <code style="font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--bg-subtle); padding: 2px 6px; border-radius: 4px;">worktree/${escapeHtml(taskId.toLowerCase())}</code>
           </div>
 
           <div style="display: flex; gap: 8px; align-items: center;">
-            ${(taskStatus === 'COMPLETED' || activeTask.deliverable) ? `
+            ${(isDone || (activeTask && activeTask.deliverable)) ? `
               <button class="btn-create-task" onclick="openTaskReportModal()" style="font-size: 12px; padding: 6px 14px; background: #059669; border-color: #059669; box-shadow: 0 1px 2px rgba(5,150,105,0.2);">
                 📄 View Report
               </button>
@@ -1963,6 +2115,28 @@
             </button>
           </div>
         </div>
+
+        <!-- Follow-up Directive Workstation Box (When finished or waiting) -->
+        ${isDone ? `
+          <div class="cabin-followup-box">
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+              <span>💬 Direct Specialist (Suggest Next Work / Revision):</span>
+              <span style="font-size: 11px; color: var(--text-muted); font-weight: 400;">Specialist waiting in cabin</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="cabinFollowUpInput" class="cabin-input" placeholder="Suggest next work for ${escapeHtml(assigneeName)} (e.g. 'Now build tests for this')..." onkeydown="if(event.key==='Enter') submitCabinFollowUp('${escapeHtml(assignedEmp.id)}', '${escapeHtml(taskId)}')" />
+              <button class="btn-create-task" onclick="submitCabinFollowUp('${escapeHtml(assignedEmp.id)}', '${escapeHtml(taskId)}')" style="font-size: 12px; padding: 0 14px; height: 36px; white-space: nowrap;">
+                Direct →
+              </button>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+              <span style="font-size: 11px; color: var(--text-muted);">Specialist stays stationed in cabin until new assignment.</span>
+              <button class="btn-secondary" onclick="dismissCabinSpecialist('${escapeHtml(assignedEmp.id)}')" style="font-size: 11px; padding: 4px 10px;">
+                Dismiss to Standby
+              </button>
+            </div>
+          </div>
+        ` : ''}
       `;
     }
 
@@ -2034,8 +2208,47 @@
       }
     }
 
+    // Task Cooldown Management (1-Minute Deliberate Pacing)
+    let taskCooldownSeconds = 0;
+    let taskCooldownTimer = null;
+
+    function startTaskCooldown(seconds = 60) {
+      taskCooldownSeconds = seconds;
+      if (taskCooldownTimer) clearInterval(taskCooldownTimer);
+      updateCooldownUI();
+      taskCooldownTimer = setInterval(() => {
+        taskCooldownSeconds--;
+        if (taskCooldownSeconds <= 0) {
+          clearInterval(taskCooldownTimer);
+          taskCooldownTimer = null;
+          taskCooldownSeconds = 0;
+        }
+        updateCooldownUI();
+      }, 1000);
+    }
+
+    function updateCooldownUI() {
+      const btn = document.getElementById('btnOpenNewTaskModal');
+      if (!btn) return;
+      if (taskCooldownSeconds > 0) {
+        btn.disabled = true;
+        btn.style.opacity = '0.75';
+        btn.style.cursor = 'not-allowed';
+        btn.innerHTML = `<span>⏳ In Progress (${taskCooldownSeconds}s)</span>`;
+      } else {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+        btn.innerHTML = `<span>+ New Task</span>`;
+      }
+    }
+
     // Modal Triggers
     function openTaskModal() {
+      if (taskCooldownSeconds > 0) {
+        alert(`Team Lead Dr. Elena Rostova is actively managing an in-flight directive. Please allow up to 1 minute for accurate synthesis and QA validation.\n\nCooldown: ${taskCooldownSeconds}s remaining.`);
+        return;
+      }
       document.getElementById('taskPromptInput').value = '';
       document.getElementById('newTaskModal').showModal();
     }
@@ -2045,6 +2258,10 @@
 
     // Task Dispatch
     async function dispatchTaskToLead() {
+      if (taskCooldownSeconds > 0) {
+        alert(`Team Lead is executing directive. Cooldown: ${taskCooldownSeconds}s remaining.`);
+        return;
+      }
       const prompt = document.getElementById('taskPromptInput').value.trim();
       if (!prompt) {
         alert('Please enter a task description.');
@@ -2064,6 +2281,7 @@
         const data = await res.json();
         if (data.success) {
           closeTaskModal();
+          startTaskCooldown(60);
           appendActivityLog('now', `Founder submitted new task directive: "${prompt.slice(0, 45)}..."`);
           await refreshAllRealData();
         } else {
@@ -2072,6 +2290,60 @@
       } catch (err) {
         alert('Failed to submit task: ' + err.message);
       }
+    }
+
+    // Cabin Follow-up Directive ("Suggest Something Else")
+    async function submitCabinFollowUp(empId, currentTaskId) {
+      const input = document.getElementById('cabinFollowUpInput');
+      if (!input) return;
+      const prompt = input.value.trim();
+      if (!prompt) {
+        alert('Please enter a follow-up directive.');
+        return;
+      }
+      input.disabled = true;
+      try {
+        const res = await fetch(`/api/studio/employee/${encodeURIComponent(empId)}/instruct`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`,
+            'X-Studio-CSRF': CSRF_TOKEN,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ instruction: prompt })
+        });
+        if (res.ok) {
+          input.value = '';
+          startTaskCooldown(60);
+          appendActivityLog('now', `Founder assigned follow-up directive: "${prompt.slice(0, 45)}..."`);
+          await refreshAllRealData();
+        } else {
+          const data = await res.json();
+          alert('Error: ' + (data.error || 'Failed to dispatch follow-up directive'));
+        }
+      } catch (err) {
+        alert('Connection error: ' + err.message);
+      } finally {
+        if (input) input.disabled = false;
+      }
+    }
+
+    // Dismiss Specialist back to standby pool
+    async function dismissCabinSpecialist(empId) {
+      try {
+        const res = await fetch(`/api/studio/employee/${encodeURIComponent(empId)}/release`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`,
+            'X-Studio-CSRF': CSRF_TOKEN,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (res.ok) {
+          appendActivityLog('now', `Specialist released to standby pool.`);
+          await refreshAllRealData();
+        }
+      } catch (err) {}
     }
 
     // Directive Modal
@@ -2162,6 +2434,47 @@
       document.getElementById('taskDetailModal').close();
     }
 
+    // Markdown-to-HTML parser for verified executive deliverable reports
+    function renderMarkdownToHtml(markdown) {
+      if (!markdown) return '';
+      let text = String(markdown).trim();
+
+      // Escape basic HTML entities for safety
+      text = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      // 1. Code blocks ```lang ... ```
+      text = text.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (match, lang, code) => {
+        return `<pre style="background: #0f172a; color: #f8fafc; padding: 14px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; overflow-x: auto; margin: 12px 0; border: 1px solid #1e293b;"><code>${code.trim()}</code></pre>`;
+      });
+
+      // 2. Inline code `code`
+      text = text.replace(/`([^`]+)`/g, '<code style="background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: \'JetBrains Mono\', monospace; font-size: 12px; border: 1px solid #e2e8f0;">$1</code>');
+
+      // 3. Headings
+      text = text.replace(/^### (.*$)/gim, '<h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-top: 16px; margin-bottom: 6px;">$1</h3>');
+      text = text.replace(/^## (.*$)/gim, '<h2 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-top: 18px; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">$1</h2>');
+      text = text.replace(/^# (.*$)/gim, '<h1 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-top: 20px; margin-bottom: 10px;">$1</h1>');
+
+      // 4. Bold and Italic
+      text = text.replace(/\*\*([^*]+)\*\*/g, '<strong style="color: #0f172a; font-weight: 600;">$1</strong>');
+      text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+      // 5. Unordered List Items (- or *)
+      text = text.replace(/^\s*[-*]\s+(.*$)/gim, '<li style="margin-left: 20px; margin-bottom: 6px; color: #334155; line-height: 1.6;">$1</li>');
+
+      // 6. Ordered List Items (1. item)
+      text = text.replace(/^\s*(\d+)\.\s+(.*$)/gim, '<div style="margin-top: 10px; margin-bottom: 6px; font-weight: 600; color: #0f172a;"><span style="color: #2563eb; margin-right: 6px;">$1.</span>$2</div>');
+
+      // 7. Paragraph and line breaks
+      text = text.replace(/\n\n+/g, '<div style="height: 10px;"></div>');
+      text = text.replace(/\n/g, '<br/>');
+
+      return text;
+    }
+
     // Dedicated Task Deliverable Report Viewer
     async function openTaskReportModal(specificTask) {
       const task = specificTask || selectedTaskForModal;
@@ -2181,9 +2494,12 @@
       statusBadge.className = `status-badge ${getStatusBadgeClass(task.status || 'COMPLETED')}`;
 
       // Check if deliverable exists on task
+      let rawReport = '';
       if (task.deliverable) {
         titleEl.innerText = task.deliverable.title || 'Task Deliverable Report';
-        contentEl.innerText = task.deliverable.content || (typeof task.deliverable === 'string' ? task.deliverable : JSON.stringify(task.deliverable, null, 2));
+        rawReport = task.deliverable.content || (typeof task.deliverable === 'string' ? task.deliverable : JSON.stringify(task.deliverable, null, 2));
+        contentEl._rawMarkdown = rawReport;
+        contentEl.innerHTML = renderMarkdownToHtml(rawReport);
       } else {
         contentEl.innerText = 'Fetching verified report from database...';
         try {
@@ -2194,12 +2510,18 @@
             const data = await res.json();
             if (data.report) {
               titleEl.innerText = data.report.title || 'Task Deliverable Report';
-              contentEl.innerText = data.report.content || 'Report verified.';
+              rawReport = data.report.content || 'Report verified.';
+              contentEl._rawMarkdown = rawReport;
+              contentEl.innerHTML = renderMarkdownToHtml(rawReport);
             } else {
-              contentEl.innerText = 'Task verified and completed. All 11 QA stages passed 100%.';
+              rawReport = 'Task verified and completed. All 11 QA stages passed 100%.';
+              contentEl._rawMarkdown = rawReport;
+              contentEl.innerHTML = renderMarkdownToHtml(rawReport);
             }
           } else {
-            contentEl.innerText = 'Task completed and verified under strict enterprise invariants.\n\nAuthor: ' + (task.active_agent || 'Specialist Agent') + '\nStatus: COMPLETED\nAll 11 Layered QA Verification stages confirmed clean.';
+            rawReport = '### Task Completed & Verified\n\n- **Author:** ' + (task.active_agent || 'Specialist Agent') + '\n- **Status:** COMPLETED\n- **QA Status:** All 11 Layered QA Verification stages confirmed clean.\n- **Audit:** Strict enterprise invariants active.';
+            contentEl._rawMarkdown = rawReport;
+            contentEl.innerHTML = renderMarkdownToHtml(rawReport);
           }
         } catch (err) {
           contentEl.innerText = 'Error loading report: ' + err.message;
@@ -2214,7 +2536,8 @@
     }
 
     function copyReportText() {
-      const content = document.getElementById('reportModalContent').innerText;
+      const contentEl = document.getElementById('reportModalContent');
+      const content = contentEl._rawMarkdown || contentEl.innerText;
       navigator.clipboard.writeText(content).then(() => {
         const btn = document.getElementById('btnCopyReport');
         const orig = btn.innerText;

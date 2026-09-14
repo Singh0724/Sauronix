@@ -438,16 +438,57 @@ export class CctvServer {
       }
     }
 
-    // POST /api/studio/employee/:id/instruct - Intervene & instruct worker to resume
+    // POST /api/studio/employee/:id/instruct - Intervene & instruct worker to resume or assign follow-up
     if (method === 'POST' && pathname.startsWith('/api/studio/employee/') && pathname.endsWith('/instruct')) {
       const match = pathname.match(/^\/api\/studio\/employee\/([^/]+)\/instruct$/);
       if (match) {
         try {
           const body = await this._parseBody(req);
-          const instructResult = this.teamLead.instructWorker(match[1], body.instruction);
-          this.broadcaster.log('FOUNDER', `Instructed worker ${match[1]}: "${body.instruction.slice(0, 40)}"`);
+          const empId = match[1];
+          const emp = this.employeePool.getEmployee(empId);
+          if (!emp) throw new Error(`Employee '${empId}' not found.`);
+
+          if (emp.status === 'DONE') {
+            // Assign direct follow-up task to this employee
+            const queuedTask = this.teamLead.enqueueTask(body.instruction, {
+              taskId: `TASK-${Date.now().toString().slice(-4)}`
+            });
+            queuedTask.assignedEmployee = emp;
+            queuedTask.status = 'ASSIGNED';
+            this.employeePool.setEmployeeState(empId, 'WORKING', { taskId: queuedTask.taskId, doubt: null });
+            this.broadcaster.log('FOUNDER', `Assigned follow-up task ${queuedTask.taskId} to ${emp.name}: "${body.instruction.slice(0, 40)}"`);
+            if (this.autoExecute) {
+              this.dispatchAutonomousExecution(queuedTask);
+            }
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ success: true, employee: emp, task: queuedTask, instruction: body.instruction }));
+          }
+
+          const instructResult = this.teamLead.instructWorker(empId, body.instruction);
+          this.broadcaster.log('FOUNDER', `Instructed worker ${empId}: "${body.instruction.slice(0, 40)}"`);
           res.writeHead(200, { 'Content-Type': 'application/json' });
           return res.end(JSON.stringify(instructResult));
+        } catch (err) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: err.message }));
+        }
+      }
+    }
+
+    // POST /api/studio/employee/:id/release - Release worker back to FREE standby pool
+    if (method === 'POST' && pathname.startsWith('/api/studio/employee/') && pathname.endsWith('/release')) {
+      const match = pathname.match(/^\/api\/studio\/employee\/([^/]+)\/release$/);
+      if (match) {
+        try {
+          const emp = this.employeePool.getEmployee(match[1]);
+          if (!emp) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: `Employee ${match[1]} not found` }));
+          }
+          this.employeePool.setEmployeeState(match[1], 'FREE');
+          this.broadcaster.log('FOUNDER', `Dismissed worker ${emp.name} to standby pool.`);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ success: true, employee: this.employeePool.getEmployee(match[1]) }));
         } catch (err) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           return res.end(JSON.stringify({ error: err.message }));
@@ -537,7 +578,7 @@ export class CctvServer {
     queueItem._executing = true;
 
     const isTest = Boolean(process.env.NODE_TEST_CONTEXT) || this.isTest;
-    const stageDelay = isTest ? 15 : 1200;
+    const stageDelay = isTest ? 15 : 12000;
 
     setImmediate(async () => {
       try {
