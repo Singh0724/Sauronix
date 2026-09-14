@@ -28,3 +28,8 @@ export { CctvServer, DEFAULT_AUTH_TOKEN, DEFAULT_CSRF_TOKEN } from './server/cct
 // Phase 4: Failure-Class Remediation & Knowledge Promotion
 export { FailureRouter, FAILURE_CLASSES, FAILURE_STRATEGIES } from './remediation/failure-router.js';
 export { KnowledgePromoter, VALID_CATEGORIES, KNOWLEDGE_STATUS } from './knowledge/knowledge-promoter.js';
+
+// Phase 5: Controlled Parallelism & Dynamic Risk Engine
+export { DynamicRiskEngine, RISK_TIERS, GOVERNANCE_POLICIES } from './risk/risk-engine.js';
+export { ParallelScheduler } from './scheduler/parallel-scheduler.js';
+export { PrGenerator } from './git/pr-generator.js';
