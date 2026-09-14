@@ -6,11 +6,19 @@ test('EmployeePool: initializes with default specialists and FREE status', () =>
   const pool = new EmployeePool();
   const statusList = pool.getPoolStatus();
 
-  assert.equal(statusList.length, 3);
+  assert.equal(statusList.length, 4);
   const coder = pool.getAvailableEmployee(EMPLOYEE_ROLES.SURGICAL_CODER);
   assert.ok(coder);
+  assert.equal(coder.name, 'Ada Sterling');
+  assert.equal(coder.experience, '50+ years');
+  assert.equal(coder.gender, 'Female');
   assert.equal(coder.status, EMPLOYEE_STATUS.FREE);
   assert.equal(coder.currentTaskId, null);
+
+  const marketer = pool.getAvailableEmployee(EMPLOYEE_ROLES.DIGITAL_MARKETER);
+  assert.ok(marketer);
+  assert.equal(marketer.name, 'Evelyn Reed');
+  assert.equal(marketer.experience, '50+ years');
 });
 
 test('EmployeePool: registers custom employee and finds by role', () => {

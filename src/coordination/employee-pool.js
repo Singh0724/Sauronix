@@ -6,23 +6,54 @@ export const EMPLOYEE_STATUS = Object.freeze({
 });
 
 export const EMPLOYEE_ROLES = Object.freeze({
-  SURGICAL_CODER: 'SURGICAL_CODER',
+  SOFTWARE_ENGINEER: 'SOFTWARE_ENGINEER',
+  SURGICAL_CODER: 'SOFTWARE_ENGINEER', // Alias for backward compatibility
+  DIGITAL_MARKETER: 'DIGITAL_MARKETER',
   QA_ENGINEER: 'QA_ENGINEER',
   RESEARCH_ANALYST: 'RESEARCH_ANALYST'
 });
 
 export class EmployeePool {
   constructor(initialEmployees = null) {
-    /** @type {Map<string, { id: string, name: string, role: string, status: string, currentTaskId: string|null, currentDoubt: string|null, updatedAt: string }>} */
+    /** @type {Map<string, { id: string, name: string, role: string, experience: string, gender: string, specialty: string, status: string, currentTaskId: string|null, currentDoubt: string|null, updatedAt: string }>} */
     this.employees = new Map();
 
     if (initialEmployees && Array.isArray(initialEmployees)) {
       initialEmployees.forEach(e => this.registerEmployee(e));
     } else {
-      // Seed default senior engineering specialist pool
-      this.registerEmployee({ id: 'EMP-01', name: 'Alex Chen', role: EMPLOYEE_ROLES.SURGICAL_CODER });
-      this.registerEmployee({ id: 'EMP-02', name: 'Priya Sharma', role: EMPLOYEE_ROLES.QA_ENGINEER });
-      this.registerEmployee({ id: 'EMP-03', name: 'Marcus Vance', role: EMPLOYEE_ROLES.RESEARCH_ANALYST });
+      // Seed our world-class team of female veteran specialists (50+ years experience each)
+      this.registerEmployee({
+        id: 'EMP-01',
+        name: 'Ada Sterling',
+        role: EMPLOYEE_ROLES.SOFTWARE_ENGINEER,
+        experience: '50+ years',
+        gender: 'Female',
+        specialty: 'High-performance core systems, surgical coding & clean architecture'
+      });
+      this.registerEmployee({
+        id: 'EMP-02',
+        name: 'Evelyn Reed',
+        role: EMPLOYEE_ROLES.DIGITAL_MARKETER,
+        experience: '50+ years',
+        gender: 'Female',
+        specialty: 'Growth architecture, technical SEO, conversion funnels & high-impact copy'
+      });
+      this.registerEmployee({
+        id: 'EMP-03',
+        name: 'Dr. Margaret Grace',
+        role: EMPLOYEE_ROLES.QA_ENGINEER,
+        experience: '50+ years',
+        gender: 'Female',
+        specialty: 'Zero-defect verification, 11-stage QA, mutation testing & SAST hardening'
+      });
+      this.registerEmployee({
+        id: 'EMP-04',
+        name: 'Dr. Katherine Ross',
+        role: EMPLOYEE_ROLES.RESEARCH_ANALYST,
+        experience: '50+ years',
+        gender: 'Female',
+        specialty: 'Deep technical investigation, AST code intelligence & market analysis'
+      });
     }
   }
 
@@ -32,15 +63,21 @@ export class EmployeePool {
    * @param {string} params.id
    * @param {string} params.name
    * @param {string} params.role
+   * @param {string} [params.experience='50+ years']
+   * @param {string} [params.gender='Female']
+   * @param {string} [params.specialty]
    */
-  registerEmployee({ id, name, role }) {
+  registerEmployee({ id, name, role, experience = '50+ years', gender = 'Female', specialty = 'Senior Engineering Specialist' }) {
     if (!id || !name || !role) {
       throw new Error('Employee must have id, name, and role specified.');
     }
     this.employees.set(id, {
       id,
       name,
-      role,
+      role: role === 'SURGICAL_CODER' ? EMPLOYEE_ROLES.SOFTWARE_ENGINEER : role,
+      experience,
+      gender,
+      specialty,
       status: EMPLOYEE_STATUS.FREE,
       currentTaskId: null,
       currentDoubt: null,
@@ -54,9 +91,10 @@ export class EmployeePool {
    * @returns {object|null}
    */
   getAvailableEmployee(role = null) {
+    const targetRole = role === 'SURGICAL_CODER' ? EMPLOYEE_ROLES.SOFTWARE_ENGINEER : role;
     for (const emp of this.employees.values()) {
       if (emp.status === EMPLOYEE_STATUS.FREE) {
-        if (!role || emp.role === role) {
+        if (!targetRole || emp.role === targetRole) {
           return emp;
         }
       }
@@ -112,10 +150,11 @@ export class EmployeePool {
       id: e.id,
       name: e.name,
       role: e.role,
+      experience: e.experience,
       status: e.status,
       currentTaskId: e.currentTaskId || 'None',
       currentDoubt: e.currentDoubt || 'None',
-      updatedAt: e.updatedAt
+      specialty: e.specialty
     }));
   }
 

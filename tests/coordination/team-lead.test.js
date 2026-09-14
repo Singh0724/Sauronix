@@ -155,17 +155,27 @@ test('StudioCli: team status and task delegation integration', () => {
 
   // 1. Team status check
   const team = cli.teamStatus();
-  assert.equal(team.length, 3);
+  assert.equal(team.length, 4);
   assert.equal(team[0].status, 'FREE');
 
-  // 2. Delegate unambiguous prompt
+  // 2. Delegate software engineering prompt
   const res = cli.delegate({
     taskId: 'TASK-116',
     rawPrompt: 'Add security headers to express middleware'
   });
   assert.equal(res.needsClarification, false);
   assert.equal(res.assignedEmployee.status, 'WORKING');
+  assert.equal(res.assignedEmployee.name, 'Ada Sterling');
   assert.equal(res.taskSpec.task_id, 'TASK-116');
+
+  // 3. Delegate digital marketing prompt -> routed to Evelyn Reed (DIGITAL_MARKETER)
+  const marketRes = cli.delegate({
+    taskId: 'TASK-118',
+    rawPrompt: 'Optimize landing page SEO meta tags and conversion funnel copy'
+  });
+  assert.equal(marketRes.needsClarification, false);
+  assert.equal(marketRes.assignedEmployee.name, 'Evelyn Reed');
+  assert.equal(marketRes.assignedEmployee.role, EMPLOYEE_ROLES.DIGITAL_MARKETER);
 
   // 3. Delegate ambiguous prompt requires clarification
   const ambig = cli.delegate({

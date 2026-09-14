@@ -310,7 +310,13 @@ if (import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`) {
       }
       case 'team': {
         const team = cli.teamStatus();
-        console.log('\n=== AUTONOMOUS STUDIO SPECIALIST EMPLOYEES ===\n');
+        const lead = cli.teamLead.leadProfile;
+        console.log('\n========================================================================================================');
+        console.log(`👑 TEAM LEAD: ${lead.name} | ${lead.experience} Experience | ${lead.gender}`);
+        console.log(`   Title:     ${lead.title}`);
+        console.log(`   Domain:    ${lead.specialty}`);
+        console.log('========================================================================================================\n');
+        console.log('SPECIALIST ENGINEERING & MARKETING SQUAD (50+ Years Experience Each):\n');
         console.table(team);
         break;
       }

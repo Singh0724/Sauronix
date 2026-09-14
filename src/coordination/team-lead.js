@@ -14,6 +14,16 @@ export class TeamLead {
     this.prGenerator = options.prGenerator || new PrGenerator();
     this.knowledgePromoter = options.knowledgePromoter;
 
+    /** @type {{ name: string, title: string, role: string, experience: string, gender: string, specialty: string }} */
+    this.leadProfile = Object.freeze({
+      name: 'Dr. Elena Rostova',
+      title: 'Chief Engineering Coordinator & Veteran Team Lead',
+      role: 'TEAM_LEAD',
+      experience: '50+ years',
+      gender: 'Female',
+      specialty: 'Distributed Systems, Autonomous Governance & Architectural Synthesis'
+    });
+
     /** @type {Map<string, { taskSpec: object, status: string, pendingClarification: object|null }>} */
     this.managedTasks = new Map();
   }
@@ -130,7 +140,21 @@ export class TeamLead {
         throw new Error(`Employee ${employee.name} (${employee.id}) is busy (${employee.status}).`);
       }
     } else {
-      employee = this.employeePool.getAvailableEmployee(role || EMPLOYEE_ROLES.SURGICAL_CODER);
+      let targetRole = role;
+      if (!targetRole && taskSpec && taskSpec.goal) {
+        const goal = taskSpec.goal.toLowerCase();
+        if (/marketing|seo|campaign|growth|funnel|copywriting|audience|conversion|landing/i.test(goal)) {
+          targetRole = EMPLOYEE_ROLES.DIGITAL_MARKETER;
+        } else if (/test|qa|mutation|coverage|audit|assert/i.test(goal)) {
+          targetRole = EMPLOYEE_ROLES.QA_ENGINEER;
+        } else if (/research|analyze|investigate|benchmark|feasibility|topology/i.test(goal)) {
+          targetRole = EMPLOYEE_ROLES.RESEARCH_ANALYST;
+        } else {
+          targetRole = EMPLOYEE_ROLES.SOFTWARE_ENGINEER;
+        }
+      }
+
+      employee = this.employeePool.getAvailableEmployee(targetRole || EMPLOYEE_ROLES.SOFTWARE_ENGINEER);
       if (!employee) {
         throw new Error('All specialist employee workers are currently working or blocked. Task queued.');
       }
