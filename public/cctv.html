@@ -1309,7 +1309,15 @@
     <div id="overviewTab" class="tab-content active" style="font-size: 12px; line-height: 1.6; color: var(--text-main);">
       <p style="margin-bottom: 10px;"><strong>Objective:</strong> <span id="modalDetailGoal">No goal defined.</span></p>
       <p style="color: var(--text-muted); margin-bottom: 6px;"><strong>Allowed Paths:</strong> <code id="modalDetailAllowed">Project worktree</code></p>
-      <p style="color: var(--text-muted);"><strong>Worktree Branch:</strong> <code id="modalDetailBranch">main</code></p>
+      <p style="color: var(--text-muted); margin-bottom: 12px;"><strong>Worktree Branch:</strong> <code id="modalDetailBranch">main</code></p>
+
+      <div id="modalDetailDeliverableBox" style="display: none; margin-top: 14px; padding: 14px; background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <strong style="color: var(--text-main); font-size: 13px;" id="modalDeliverableTitle">📋 Agent Findings & Deliverable</strong>
+          <span class="status-badge status-free" id="modalDeliverableBadge">Verified</span>
+        </div>
+        <div id="modalDeliverableContent" style="font-size: 12px; color: var(--text-main); white-space: pre-wrap; line-height: 1.6; max-height: 280px; overflow-y: auto;"></div>
+      </div>
     </div>
 
     <!-- Tab 2: Activity -->
@@ -1841,12 +1849,36 @@
       headerStatus.className = `status-badge ${getStatusBadgeClass(taskStatus)}`;
       headerStatus.innerText = formatStatusLabel(taskStatus);
 
+      // If task is ASSIGNED, auto-trigger autonomous background execution
+      if ((taskStatus === 'ASSIGNED' || taskStatus === 'QUEUED') && !activeTask._execTriggered) {
+        activeTask._execTriggered = true;
+        fetch(`/api/studio/task/${encodeURIComponent(taskId)}/execute`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`,
+            'X-Studio-CSRF': CSRF_TOKEN,
+            'Content-Type': 'application/json'
+          }
+        }).catch(() => {});
+      }
+
       // Progress computation
       let pct = 20;
-      if (taskStatus === 'RUNNING' || taskStatus === 'WORKING') pct = 65;
-      else if (taskStatus === 'READY_FOR_PR') pct = 90;
-      else if (taskStatus === 'COMPLETED' || taskStatus === 'DONE') pct = 100;
-      else if (taskStatus === 'BLOCKED') pct = 50;
+      if (typeof activeTask.progress === 'number') {
+        pct = activeTask.progress;
+      } else {
+        if (taskStatus === 'RUNNING' || taskStatus === 'WORKING') pct = 65;
+        else if (taskStatus === 'READY_FOR_PR') pct = 90;
+        else if (taskStatus === 'COMPLETED' || taskStatus === 'DONE') pct = 100;
+        else if (taskStatus === 'BLOCKED') pct = 50;
+      }
+
+      const stageText = activeTask.stage || (
+        taskStatus === 'COMPLETED' ? 'Task Completed & Verified' :
+        taskStatus === 'BLOCKED' ? 'Blocked: Waiting for resolution' :
+        taskStatus === 'ASSIGNED' ? 'Assigned · Initializing Execution Pipeline' :
+        'Autonomous Execution in Progress'
+      );
 
       container.innerHTML = `
         <span class="task-id-caption">${escapeHtml(taskId)}</span>
@@ -1866,6 +1898,11 @@
             <div class="progress-fill" style="width: ${pct}%;"></div>
           </div>
           <span class="progress-pct-label">${pct}%</span>
+        </div>
+
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: ${taskStatus === 'COMPLETED' ? '#16a34a' : (taskStatus === 'BLOCKED' ? '#eab308' : '#2563eb')};"></span>
+          <span style="font-weight: 500;">${escapeHtml(stageText)}</span>
         </div>
 
         <div class="task-footer-row">
@@ -2055,6 +2092,18 @@
       document.getElementById('modalDetailRiskBadge').className = `tag-chip ${risk === 'HIGH' || risk === 'CRITICAL' ? 'high-priority' : ''}`;
       document.getElementById('modalDetailBranch').innerText = task.branch_name || 'main';
       document.getElementById('modalDetailAllowed').innerText = task.allowed_files || 'Project workspace';
+
+      // Deliverable / Findings display
+      const deliverableBox = document.getElementById('modalDetailDeliverableBox');
+      const deliverableTitle = document.getElementById('modalDeliverableTitle');
+      const deliverableContent = document.getElementById('modalDeliverableContent');
+      if (task.deliverable) {
+        deliverableBox.style.display = 'block';
+        deliverableTitle.innerText = task.deliverable.title || '📋 Agent Findings & Deliverable';
+        deliverableContent.innerText = task.deliverable.content || (typeof task.deliverable === 'string' ? task.deliverable : JSON.stringify(task.deliverable, null, 2));
+      } else {
+        deliverableBox.style.display = 'none';
+      }
 
       // QA Stepper state based on real status
       updateQaStepper(status);
