@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { resolve, dirname } from 'node:path';
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 
 export class WorktreeManager {
   /**
@@ -32,10 +32,17 @@ export class WorktreeManager {
 
     const worktreePath = resolve(this.worktreeBaseDir, taskId);
 
-    // If worktree already exists, return existing
+    // If worktree already exists, verify it contains .git; if stale/empty, remove it
     if (existsSync(worktreePath)) {
-      this.activeLock = taskId;
-      return { worktreePath, branch: branchName };
+      if (!existsSync(resolve(worktreePath, '.git'))) {
+        try {
+          rmSync(worktreePath, { recursive: true, force: true });
+          execFileSync('git', ['worktree', 'prune'], { cwd: this.repoRoot, stdio: 'ignore' });
+        } catch {}
+      } else {
+        this.activeLock = taskId;
+        return { worktreePath, branch: branchName };
+      }
     }
 
     // Check if branch exists; if not create with -b, if yes checkout
@@ -128,6 +135,11 @@ export class WorktreeManager {
       } catch (err) {
         // Fallback: prune
         execFileSync('git', ['worktree', 'prune'], { cwd: this.repoRoot, stdio: 'ignore' });
+      }
+      if (existsSync(worktreePath)) {
+        try {
+          rmSync(worktreePath, { recursive: true, force: true });
+        } catch {}
       }
     }
 

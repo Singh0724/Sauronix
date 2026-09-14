@@ -982,12 +982,102 @@
       border-radius: 50%;
       background: var(--emerald-green);
     }
-    .cabin-followup-box {
-      margin-top: 14px;
-      padding: 14px;
-      background: #f8fafc;
+    .cabin-directive-card {
+      background: #ffffff;
       border: 1px solid var(--border-light);
       border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-top: 10px;
+    }
+    .cabin-directive-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .cabin-directive-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-subtle);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .cabin-directive-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .cabin-stepper {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .stepper-pill {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 6px 8px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+    .stepper-pill.active {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+    .stepper-pill.completed {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #059669;
+      font-weight: 600;
+    }
+    .stepper-num {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.06);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .stepper-pill.active .stepper-num {
+      background: var(--primary-blue);
+      color: #fff;
+    }
+    .stepper-pill.completed .stepper-num {
+      background: #10b981;
+      color: #fff;
+    }
+    .cabin-slim-track {
+      width: 100%;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .cabin-slim-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb, #10b981);
+      border-radius: 9999px;
+      transition: width 0.4s ease;
+    }
+    .cabin-followup-integrated {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-light);
     }
     .cabin-input {
       width: 100%;
@@ -1487,24 +1577,24 @@
 
   <!-- Dedicated Task Report Viewer Modal -->
   <dialog id="taskReportModal" style="width: 760px; max-width: 94vw; max-height: 88vh; padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-light); background: #ffffff !important; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);">
-    <div class="modal-head" style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-light);">
-      <div>
-        <div style="display: flex; align-items: center; gap: 8px;">
+    <div class="modal-head" style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-light); align-items: flex-start;">
+      <div style="max-width: calc(100% - 40px);">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <span style="font-size: 16px;">📄</span>
-          <h3 class="modal-title" id="reportModalTitle">Task Deliverable Report</h3>
+          <h3 class="modal-title" id="reportModalTitle" style="font-size: 15px; font-weight: 700; color: var(--text-main); word-break: break-word; line-height: 1.3;">Task Deliverable Report</h3>
           <span class="status-badge status-done" id="reportModalStatusBadge">Completed</span>
         </div>
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" id="reportModalMeta">Task ID: TASK-XXX • Author: Specialist</p>
       </div>
-      <button onclick="closeTaskReportModal()" style="background: transparent; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
+      <button onclick="closeTaskReportModal()" style="background: transparent; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted); padding: 4px;">✕</button>
     </div>
 
-    <div style="margin-bottom: 14px; padding: 10px 14px; background: var(--bg-subtle); border-radius: var(--radius-md); font-size: 12px; border: 1px solid var(--border-light);">
+    <div style="margin-bottom: 14px; padding: 10px 14px; background: var(--bg-subtle); border-radius: var(--radius-md); font-size: 12px; border: 1px solid var(--border-light); word-break: break-word;">
       <strong style="color: var(--text-main);">Directive / Goal:</strong>
       <span style="color: var(--text-muted); margin-left: 6px;" id="reportModalGoal">Goal text</span>
     </div>
 
-    <div id="reportModalContent" style="font-size: 13px; line-height: 1.7; color: var(--text-main); background: #ffffff; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 20px; max-height: 480px; overflow-y: auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <div id="reportModalContent" style="font-size: 13px; line-height: 1.7; color: var(--text-main); background: #ffffff; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 20px; max-height: 520px; overflow-y: auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
       Loading report...
     </div>
 
@@ -2076,30 +2166,54 @@
           </div>
         </div>
 
-        <div style="margin-top: 12px;">
-          <span class="task-id-caption">${escapeHtml(taskId)}</span>
-          <h3 class="task-hero-title">${escapeHtml(taskGoal.slice(0, 70))}${taskGoal.length > 70 ? '...' : ''}</h3>
-          <p class="task-hero-desc">${escapeHtml(taskGoal)}</p>
-        </div>
-
-        <div class="task-tag-row">
-          <span class="tag-chip ${riskLevel === 'HIGH' || riskLevel === 'CRITICAL' ? 'high-priority' : ''}">
-            ${escapeHtml(riskLevel)}
-          </span>
-          <span class="tag-chip">Worktree Isolated</span>
-          <span class="tag-chip">QA Enforced</span>
-        </div>
-
-        <div class="progress-bar-container">
-          <div class="progress-track">
-            <div class="progress-fill" style="width: ${pct}%;"></div>
+        <!-- Specialist Directive Card (Clean & Non-redundant) -->
+        <div class="cabin-directive-card">
+          <div class="cabin-directive-meta">
+            <span class="task-id-caption" style="margin: 0;">${escapeHtml(taskId)}</span>
+            <div class="task-tag-row" style="margin: 0;">
+              <span class="tag-chip ${riskLevel === 'HIGH' || riskLevel === 'CRITICAL' ? 'high-priority' : ''}">
+                ${escapeHtml(riskLevel)}
+              </span>
+              <span class="tag-chip">Isolated Worktree</span>
+              <span class="tag-chip">QA Enforced</span>
+            </div>
           </div>
-          <span class="progress-pct-label">${pct}%</span>
+          <div class="cabin-directive-body">
+            <div class="cabin-directive-label">DIRECTIVE / OBJECTIVE</div>
+            <div class="cabin-directive-text">${escapeHtml(taskGoal)}</div>
+          </div>
         </div>
 
-        <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; display: flex; align-items: center; gap: 6px;">
-          <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: ${isDone ? '#16a34a' : (taskStatus === 'BLOCKED' ? '#eab308' : '#2563eb')};"></span>
-          <span style="font-weight: 500;">${escapeHtml(stageText)}</span>
+        <!-- 4-Stage Execution Pipeline Stepper -->
+        <div class="cabin-stepper">
+          <div class="stepper-pill ${pct >= 25 ? (pct > 25 ? 'completed' : 'active') : 'active'}">
+            <span class="stepper-num">${pct > 25 ? '✓' : '1'}</span>
+            <span>Spec &amp; Route</span>
+          </div>
+          <div class="stepper-pill ${pct >= 65 ? (pct > 65 ? 'completed' : 'active') : ''}">
+            <span class="stepper-num">${pct > 65 ? '✓' : '2'}</span>
+            <span>Synthesis</span>
+          </div>
+          <div class="stepper-pill ${pct >= 90 ? (pct > 90 ? 'completed' : 'active') : ''}">
+            <span class="stepper-num">${pct > 90 ? '✓' : '3'}</span>
+            <span>QA Audit</span>
+          </div>
+          <div class="stepper-pill ${isDone || pct >= 100 ? 'completed' : ''}">
+            <span class="stepper-num">${isDone || pct >= 100 ? '✓' : '4'}</span>
+            <span>Deliverable</span>
+          </div>
+        </div>
+
+        <div class="cabin-slim-track">
+          <div class="cabin-slim-fill" style="width: ${pct}%;"></div>
+        </div>
+
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: ${isDone ? '#10b981' : (taskStatus === 'BLOCKED' ? '#f59e0b' : '#2563eb')};"></span>
+            <span style="font-weight: 500; color: var(--text-main);">${escapeHtml(stageText)}</span>
+          </div>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-subtle);">${pct}%</span>
         </div>
 
         <div class="task-footer-row" style="margin-top: 12px;">
@@ -2121,20 +2235,23 @@
 
         <!-- Follow-up Directive Workstation Box (When finished or waiting) -->
         ${isDone ? `
-          <div class="cabin-followup-box">
-            <div style="font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
-              <span>💬 Direct Specialist (Suggest Next Work / Revision):</span>
-              <span style="font-size: 11px; color: var(--text-muted); font-weight: 400;">Specialist waiting in cabin</span>
+          <div class="cabin-followup-integrated">
+            <div style="font-size: 11.5px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+              <span style="display: flex; align-items: center; gap: 6px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Direct ${escapeHtml(assigneeName)}:
+              </span>
+              <span style="font-size: 11px; color: var(--text-subtle); font-weight: 400;">Specialist stationed in cabin</span>
             </div>
             <div style="display: flex; gap: 8px;">
-              <input type="text" id="cabinFollowUpInput" class="cabin-input" placeholder="Suggest next work for ${escapeHtml(assigneeName)} (e.g. 'Now build tests for this')..." onkeydown="if(event.key==='Enter') submitCabinFollowUp('${escapeHtml(assignedEmp.id)}', '${escapeHtml(taskId)}')" />
+              <input type="text" id="cabinFollowUpInput" class="cabin-input" placeholder="Suggest next work or revision for ${escapeHtml(assigneeName)}..." onkeydown="if(event.key==='Enter') submitCabinFollowUp('${escapeHtml(assignedEmp.id)}', '${escapeHtml(taskId)}')" />
               <button class="btn-create-task" onclick="submitCabinFollowUp('${escapeHtml(assignedEmp.id)}', '${escapeHtml(taskId)}')" style="font-size: 12px; padding: 0 14px; height: 36px; white-space: nowrap;">
                 Direct →
               </button>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-              <span style="font-size: 11px; color: var(--text-muted);">Specialist stays stationed in cabin until new assignment.</span>
-              <button class="btn-secondary" onclick="dismissCabinSpecialist('${escapeHtml(assignedEmp.id)}')" style="font-size: 11px; padding: 4px 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+              <span style="font-size: 11px; color: var(--text-muted);">Awaiting your next directive or revision.</span>
+              <button class="btn-secondary" onclick="dismissCabinSpecialist('${escapeHtml(assignedEmp.id)}')" style="font-size: 11px; padding: 3px 10px;">
                 Dismiss to Standby
               </button>
             </div>
@@ -2442,40 +2559,102 @@
       if (!markdown) return '';
       let text = String(markdown).trim();
 
-      // Escape basic HTML entities for safety
+      // Escape HTML entities
       text = text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
 
-      // 1. Code blocks ```lang ... ```
+      // 1. Code blocks extraction
+      const codeBlocks = [];
       text = text.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (match, lang, code) => {
-        return `<pre style="background: #0f172a; color: #f8fafc; padding: 14px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; overflow-x: auto; margin: 12px 0; border: 1px solid #1e293b;"><code>${code.trim()}</code></pre>`;
+        const idx = codeBlocks.length;
+        codeBlocks.push(`<pre style="background: #0f172a; color: #f8fafc; padding: 14px 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; overflow-x: auto; margin: 12px 0; border: 1px solid #1e293b;"><code class="language-${lang}">${code.trim()}</code></pre>`);
+        return `\n\n__CODE_BLOCK_${idx}__\n\n`;
       });
 
-      // 2. Inline code `code`
-      text = text.replace(/`([^`]+)`/g, '<code style="background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: \'JetBrains Mono\', monospace; font-size: 12px; border: 1px solid #e2e8f0;">$1</code>');
+      // 2. Inline code
+      text = text.replace(/`([^`]+)`/g, '<code style="background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: \'JetBrains Mono\', monospace; font-size: 11.5px; border: 1px solid #e2e8f0;">$1</code>');
 
-      // 3. Headings
-      text = text.replace(/^### (.*$)/gim, '<h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-top: 16px; margin-bottom: 6px;">$1</h3>');
-      text = text.replace(/^## (.*$)/gim, '<h2 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-top: 18px; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">$1</h2>');
-      text = text.replace(/^# (.*$)/gim, '<h1 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-top: 20px; margin-bottom: 10px;">$1</h1>');
+      // 3. Horizontal rules
+      text = text.replace(/^---$/gm, '<hr style="border: none; border-top: 1px solid #e2e8f0; margin: 16px 0;" />');
 
-      // 4. Bold and Italic
+      // 4. Tables
+      text = text.replace(/((\|[^\n]+\|\r?\n)((?:\|[^\n]+\|\r?\n?)+))/g, (tableMatch) => {
+        const rows = tableMatch.trim().split('\n').map(r => r.trim());
+        if (rows.length < 2) return tableMatch;
+        let html = '<div style="overflow-x: auto; margin: 14px 0;"><table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden;">';
+        let isHeader = true;
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          if (/^\|[\s\-:|]+\|$/.test(row)) {
+            isHeader = false;
+            continue;
+          }
+          const cells = row.split('|').slice(1, -1).map(c => c.trim());
+          if (isHeader) {
+            html += '<tr style="background: #f8fafc; border-bottom: 2px solid #cbd5e1;">';
+            cells.forEach(c => {
+              html += `<th style="padding: 10px 12px; font-weight: 600; color: #0f172a;">${c}</th>`;
+            });
+            html += '</tr>';
+          } else {
+            html += '<tr style="border-bottom: 1px solid #e2e8f0;">';
+            cells.forEach(c => {
+              html += `<td style="padding: 9px 12px; color: #334155;">${c}</td>`;
+            });
+            html += '</tr>';
+          }
+        }
+        html += '</table></div>';
+        return `\n\n${html}\n\n`;
+      });
+
+      // 5. Headings
+      text = text.replace(/^### (.*$)/gm, '<h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-top: 18px; margin-bottom: 8px;">$1</h3>');
+      text = text.replace(/^## (.*$)/gm, '<h2 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-top: 22px; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">$1</h2>');
+      text = text.replace(/^# (.*$)/gm, '<h1 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-top: 24px; margin-bottom: 12px;">$1</h1>');
+
+      // 6. Blockquotes (handle escaped &gt;)
+      text = text.replace(/^&gt;\s*(.*$)/gm, '<blockquote style="border-left: 3px solid #2563eb; background: #eff6ff; padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0; color: #1e3a8a; font-size: 12px; line-height: 1.5;">$1</blockquote>');
+
+      // 7. Bold & Italic
       text = text.replace(/\*\*([^*]+)\*\*/g, '<strong style="color: #0f172a; font-weight: 600;">$1</strong>');
       text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
 
-      // 5. Unordered List Items (- or *)
-      text = text.replace(/^\s*[-*]\s+(.*$)/gim, '<li style="margin-left: 20px; margin-bottom: 6px; color: #334155; line-height: 1.6;">$1</li>');
+      // 8. Group consecutive list items into <ul> or <ol>
+      text = text.replace(/^(\s*)[-*]\s+(.*$)/gm, '$1<li-u>$2</li-u>');
+      text = text.replace(/^(\s*)(\d+)\.\s+(.*$)/gm, '$1<li-o n="$2">$3</li-o>');
 
-      // 6. Ordered List Items (1. item)
-      text = text.replace(/^\s*(\d+)\.\s+(.*$)/gim, '<div style="margin-top: 10px; margin-bottom: 6px; font-weight: 600; color: #0f172a;"><span style="color: #2563eb; margin-right: 6px;">$1.</span>$2</div>');
+      text = text.replace(/(<li-u>[\s\S]*?<\/li-u>(?:\s*<li-u>[\s\S]*?<\/li-u>)*)/g, (match) => {
+        const cleanItems = match.replace(/<li-u>(.*?)<\/li-u>/g, '<li style="margin-bottom: 5px; color: #334155; line-height: 1.5;">$1</li>');
+        return `<ul style="margin: 8px 0 12px 0; padding-left: 20px; list-style-type: disc;">${cleanItems}</ul>`;
+      });
 
-      // 7. Paragraph and line breaks
-      text = text.replace(/\n\n+/g, '<div style="height: 10px;"></div>');
-      text = text.replace(/\n/g, '<br/>');
+      text = text.replace(/(<li-o[^>]*>[\s\S]*?<\/li-o>(?:\s*<li-o[^>]*>[\s\S]*?<\/li-o>)*)/g, (match) => {
+        const cleanItems = match.replace(/<li-o[^>]*>(.*?)<\/li-o>/g, '<li style="margin-bottom: 5px; color: #334155; line-height: 1.5;">$1</li>');
+        return `<ol style="margin: 8px 0 12px 0; padding-left: 20px;">${cleanItems}</ol>`;
+      });
 
-      return text;
+      // 9. Split blocks and wrap paragraphs
+      const blocks = text.split(/\n{2,}/);
+      const formattedBlocks = blocks.map(block => {
+        block = block.trim();
+        if (!block) return '';
+        if (block.startsWith('__CODE_BLOCK_') || block.startsWith('<h') || block.startsWith('<div') || block.startsWith('<table') || block.startsWith('<blockquote') || block.startsWith('<hr') || block.startsWith('<ul') || block.startsWith('<ol')) {
+          return block;
+        }
+        return `<p style="margin: 0 0 10px 0; color: #334155; line-height: 1.6;">${block.replace(/\n/g, '<br/>')}</p>`;
+      });
+
+      let result = formattedBlocks.join('\n');
+
+      // Restore code blocks
+      codeBlocks.forEach((codeHtml, idx) => {
+        result = result.replace(`__CODE_BLOCK_${idx}__`, codeHtml);
+      });
+
+      return result;
     }
 
     // Dedicated Task Deliverable Report Viewer

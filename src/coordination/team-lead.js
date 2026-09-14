@@ -420,8 +420,8 @@ export class TeamLead {
    */
   _inferRoleFromGoal(goal) {
     const g = (goal || '').toLowerCase();
-    // 1. Research, Tool Evaluation, Model Comparison, Reports, Feasibility, Exploration
-    if (/report|which ai|best ai|ai tool|image generation|image gen|generator|compare|recommend|evaluation|evaluate|benchmark|research|analyze|investigate|feasibility|topology|find|explore|how we can|model|llm/i.test(g)) {
+    // 1. Research, AI Model Evaluation, Model Comparison, Reports, Feasibility, Exploration
+    if (/report|which ai|best ai|free ai|\bai\b|claude|chatgpt|openai|\bgpt\b|deepseek|llama|qwen|gemini|mistral|anthropic|accuracy|image generation|image gen|generator|compare|recommend|evaluation|evaluate|benchmark|research|reserach|analyze|investigate|feasibility|topology|\bfind\b|explore|how we can|\bmodels?\b|\bllms?\b|reasoning/i.test(g)) {
       return EMPLOYEE_ROLES.RESEARCH_ANALYST;
     }
     // 2. Frontend, Web, UI/UX, CSS, Marketing
