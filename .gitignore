@@ -14,8 +14,10 @@ yarn-error.log*
 .worktrees/
 
 # SQLite Database Files (WAL & Shared Memory, Local databases)
+db/*.sqlite
 db/*.sqlite-wal
 db/*.sqlite-shm
+*.sqlite
 *.sqlite-wal
 *.sqlite-shm
 backups/
