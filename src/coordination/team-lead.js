@@ -172,6 +172,40 @@ export class TeamLead {
     // Set employee state to WORKING
     this.employeePool.setEmployeeState(employee.id, EMPLOYEE_STATUS.WORKING, { taskId });
 
+    // Synchronize to SQLite studioDb if available
+    if (this.studioDb && taskSpec) {
+      try {
+        const existing = this.studioDb.prepare('SELECT task_id FROM tasks WHERE task_id = ?').get(taskId);
+        if (!existing) {
+          this.studioDb.prepare(`
+            INSERT INTO tasks (
+              task_id, goal, risk_level, status, active_agent, attempt_count, max_attempts,
+              allowed_files, forbidden_files, branch_name, worktree_path, spec_sha
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          `).run(
+            taskId,
+            taskSpec.goal || 'Autonomous Engineering Task',
+            taskSpec.risk_level || taskSpec.riskLevel || 'MEDIUM',
+            'RUNNING',
+            employee.name,
+            1,
+            3,
+            JSON.stringify(taskSpec.allowed_files || []),
+            JSON.stringify(taskSpec.forbidden_files || []),
+            `feature/${taskId.toLowerCase()}`,
+            `.worktrees/${taskId.toLowerCase()}`,
+            taskSpec.spec_sha || `sha_${Date.now()}`
+          );
+        } else {
+          this.studioDb.prepare(`
+            UPDATE tasks SET status = 'RUNNING', active_agent = ?, updated_at = CURRENT_TIMESTAMP WHERE task_id = ?
+          `).run(employee.name, taskId);
+        }
+      } catch (err) {
+        // Safe ignore
+      }
+    }
+
     return {
       assignedEmployee: employee,
       taskSpec
@@ -195,18 +229,39 @@ export class TeamLead {
 
     // Transition employee to BLOCKED
     this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.BLOCKED, { taskId, doubt });
+    if (this.studioDb) {
+      try {
+        this.studioDb.prepare(`
+          UPDATE tasks SET status = 'BLOCKED', updated_at = CURRENT_TIMESTAMP WHERE task_id = ?
+        `).run(taskId);
+      } catch (err) {}
+    }
 
     // 1. Check if Team Lead can resolve using senior invariants or promoted patterns
     const doubtLower = (doubt || '').toLowerCase();
     if (failureClass === 'SYNTAX_ERROR' || /(syntax|bracket|comma|token|parse)/i.test(doubtLower)) {
       const guidance = 'Team Lead Guidance: Retain original function envelope. Check missing brackets or commas without modifying outer signature.';
       this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.WORKING, { taskId, doubt: null });
+      if (this.studioDb) {
+        try {
+          this.studioDb.prepare(`
+            UPDATE tasks SET status = 'RUNNING', updated_at = CURRENT_TIMESTAMP WHERE task_id = ?
+          `).run(taskId);
+        } catch (err) {}
+      }
       return { resolved: true, guidance };
     }
 
     if (failureClass === 'TIMEOUT_DEADLOCK' || /(timeout|timed out|deadlock|hang|stuck)/i.test(doubtLower)) {
       const guidance = 'Team Lead Guidance: Inspect async promise resolution and release any open SQLite connection handles.';
       this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.WORKING, { taskId, doubt: null });
+      if (this.studioDb) {
+        try {
+          this.studioDb.prepare(`
+            UPDATE tasks SET status = 'RUNNING', updated_at = CURRENT_TIMESTAMP WHERE task_id = ?
+          `).run(taskId);
+        } catch (err) {}
+      }
       return { resolved: true, guidance };
     }
 
@@ -269,6 +324,14 @@ export class TeamLead {
 
     // Release employee back to FREE for next assignment
     this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.FREE);
+
+    if (this.studioDb) {
+      try {
+        this.studioDb.prepare(`
+          UPDATE tasks SET status = 'COMPLETED', updated_at = CURRENT_TIMESTAMP WHERE task_id = ?
+        `).run(taskSpec.task_id);
+      } catch (err) {}
+    }
 
     // Mark task completed in queue if present
     const queued = this.taskQueue.find(t => t.taskId === taskSpec.task_id);
@@ -393,6 +456,13 @@ export class TeamLead {
     if (!employee) throw new Error(`Employee '${employeeId}' not found.`);
 
     this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.BLOCKED, { doubt: reason });
+    if (this.studioDb && employee.currentTaskId) {
+      try {
+        this.studioDb.prepare(`
+          UPDATE tasks SET status = 'PAUSED', updated_at = CURRENT_TIMESTAMP WHERE task_id = ?
+        `).run(employee.currentTaskId);
+      } catch (err) {}
+    }
     return {
       success: true,
       employee: this.employeePool.getEmployee(employeeId),
@@ -418,6 +488,13 @@ export class TeamLead {
 
     // Unblock and resume
     this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.WORKING, { doubt: null });
+    if (this.studioDb && employee.currentTaskId) {
+      try {
+        this.studioDb.prepare(`
+          UPDATE tasks SET status = 'RUNNING', updated_at = CURRENT_TIMESTAMP WHERE task_id = ?
+        `).run(employee.currentTaskId);
+      } catch (err) {}
+    }
     return {
       success: true,
       employee: this.employeePool.getEmployee(employeeId),
