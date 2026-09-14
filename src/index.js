@@ -20,3 +20,7 @@ export { DiffRiskScorer } from './qa/diff-risk-scorer.js';
 export { MutationTester } from './qa/mutation-tester.js';
 export { LayeredQARunner } from './qa/qa-runner.js';
 export { SingleAgentPipeline } from './orchestrator/single-agent-loop.js';
+
+// Phase 3: Mission Control & CCTV Telemetry
+export { EventBroadcaster } from './server/event-broadcaster.js';
+export { CctvServer, DEFAULT_AUTH_TOKEN, DEFAULT_CSRF_TOKEN } from './server/cctv-server.js';
