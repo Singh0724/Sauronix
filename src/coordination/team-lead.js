@@ -26,6 +26,10 @@ export class TeamLead {
 
     /** @type {Map<string, { taskSpec: object, status: string, pendingClarification: object|null }>} */
     this.managedTasks = new Map();
+
+    /** @type {Array<{ id: string, taskId: string, rawPrompt: string, suggestedFiles: string[]|null, attachments: any[], status: string, taskSpec: object|null, assignedEmployee: object|null, enqueuedAt: string, error?: string }>} */
+    this.taskQueue = [];
+    this.nextQueueSeq = 601;
   }
 
   /**
@@ -245,6 +249,14 @@ export class TeamLead {
     // Mark employee as DONE temporarily during review
     this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.DONE, { taskId: taskSpec.task_id });
 
+    // Record into weekly audit history
+    this.employeePool.recordCompletedTask(employeeId, {
+      taskId: taskSpec.task_id,
+      goal: taskSpec.goal,
+      prTitle: `feat(${taskSpec.task_id.toLowerCase()}): ${taskSpec.goal}`,
+      commitSha
+    });
+
     // Generate verified PR package
     const prPackage = this.prGenerator.generatePullRequest({
       taskSpec,
@@ -257,10 +269,215 @@ export class TeamLead {
     // Release employee back to FREE for next assignment
     this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.FREE);
 
+    // Mark task completed in queue if present
+    const queued = this.taskQueue.find(t => t.taskId === taskSpec.task_id);
+    if (queued) queued.status = 'COMPLETED';
+
+    // Auto-process queue to pick up next pending task
+    this.processQueue();
+
     return {
       approved: true,
       prPackage,
       employee
+    };
+  }
+
+  /**
+   * Enqueue a task for sequential refinement and specialist execution.
+   * @param {string} rawPrompt
+   * @param {object} [options]
+   * @param {string} [options.taskId]
+   * @param {string[]} [options.suggestedFiles]
+   * @param {any[]} [options.attachments]
+   * @returns {object} The enqueued task object
+   */
+  enqueueTask(rawPrompt, { taskId = null, suggestedFiles = null, attachments = [] } = {}) {
+    const id = taskId || `TASK-${this.nextQueueSeq++}`;
+    const queueItem = {
+      id,
+      taskId: id,
+      rawPrompt,
+      suggestedFiles,
+      attachments,
+      status: 'QUEUED', // QUEUED, AWAITING_CLARIFICATION, ASSIGNED, COMPLETED, ERROR
+      taskSpec: null,
+      assignedEmployee: null,
+      enqueuedAt: new Date().toISOString()
+    };
+    this.taskQueue.push(queueItem);
+    this.processQueue();
+    return queueItem;
+  }
+
+  /**
+   * Process the task queue FIFO: refine next available tasks and assign to free specialists.
+   * @returns {number} Number of dispatched tasks
+   */
+  processQueue() {
+    let dispatched = 0;
+    for (const item of this.taskQueue) {
+      if (item.status !== 'QUEUED') continue;
+
+      try {
+        const refinement = this.analyzeAndRefineTask({
+          taskId: item.taskId,
+          rawPrompt: item.rawPrompt,
+          suggestedFiles: item.suggestedFiles
+        });
+
+        if (refinement.needsClarification) {
+          item.status = 'AWAITING_CLARIFICATION';
+          item.clarification = refinement;
+          continue;
+        }
+
+        item.taskSpec = refinement.taskSpec;
+
+        // Try assigning to available specialist
+        const targetRole = this._inferRoleFromGoal(item.taskSpec.goal);
+        const freeEmp = this.employeePool.getAvailableEmployee(targetRole);
+
+        if (freeEmp) {
+          const assignment = this.assignTask({ taskSpec: item.taskSpec, employeeId: freeEmp.id });
+          item.status = 'ASSIGNED';
+          item.assignedEmployee = assignment.assignedEmployee;
+          dispatched++;
+        }
+      } catch (err) {
+        // If employee pool was busy, item remains QUEUED for next tick
+        if (!err.message.includes('currently working or blocked')) {
+          item.status = 'ERROR';
+          item.error = err.message;
+        }
+      }
+    }
+    return dispatched;
+  }
+
+  /**
+   * Get full queue of tasks.
+   * @returns {object[]}
+   */
+  getQueue() {
+    return [...this.taskQueue];
+  }
+
+  /**
+   * Helper to infer role from goal string.
+   * @private
+   */
+  _inferRoleFromGoal(goal) {
+    const g = (goal || '').toLowerCase();
+    if (/marketing|seo|campaign|growth|funnel|copywriting|audience|conversion|landing/i.test(g)) {
+      return EMPLOYEE_ROLES.DIGITAL_MARKETER;
+    }
+    if (/test|qa|mutation|coverage|audit|assert/i.test(g)) {
+      return EMPLOYEE_ROLES.QA_ENGINEER;
+    }
+    if (/research|analyze|investigate|benchmark|feasibility|topology|find|explore|how we can|architecture/i.test(g)) {
+      return EMPLOYEE_ROLES.RESEARCH_ANALYST;
+    }
+    return EMPLOYEE_ROLES.SOFTWARE_ENGINEER;
+  }
+
+  /**
+   * Pause a specific employee immediately.
+   * @param {string} employeeId
+   * @param {string} [reason]
+   * @returns {{ success: boolean, employee: object, message: string }}
+   */
+  pauseWorker(employeeId, reason = 'Paused by Founder directive for inspection') {
+    const employee = this.employeePool.getEmployee(employeeId);
+    if (!employee) throw new Error(`Employee '${employeeId}' not found.`);
+
+    this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.BLOCKED, { doubt: reason });
+    return {
+      success: true,
+      employee: this.employeePool.getEmployee(employeeId),
+      message: `Worker ${employee.name} (${employee.id}) PAUSED safely.`
+    };
+  }
+
+  /**
+   * Provide corrective instructions to a worker and resume execution.
+   * @param {string} employeeId
+   * @param {string} founderInstruction
+   * @returns {{ success: boolean, employee: object, instruction: string }}
+   */
+  instructWorker(employeeId, founderInstruction) {
+    const employee = this.employeePool.getEmployee(employeeId);
+    if (!employee) throw new Error(`Employee '${employeeId}' not found.`);
+    if (!founderInstruction || !founderInstruction.trim()) {
+      throw new Error('Founder instruction cannot be empty.');
+    }
+
+    // Unblock and resume
+    this.employeePool.setEmployeeState(employeeId, EMPLOYEE_STATUS.WORKING, { doubt: null });
+    return {
+      success: true,
+      employee: this.employeePool.getEmployee(employeeId),
+      instruction: founderInstruction,
+      message: `Worker ${employee.name} resumed with founder directive.`
+    };
+  }
+
+  /**
+   * Ask any employee what they are doing and generate a tailored natural language voice script.
+   * @param {string} employeeId
+   * @returns {{ employeeId: string, name: string, role: string, status: string, spokenText: string, speechBubble: string, voicePitch: number, voiceRate: number }}
+   */
+  askWorker(employeeId) {
+    if (employeeId === 'LEAD-01' || employeeId === 'TEAM_LEAD') {
+      const activeQueueCount = this.taskQueue.filter(t => t.status === 'QUEUED').length;
+      const inProgressCount = this.taskQueue.filter(t => t.status === 'ASSIGNED').length;
+      const spokenText = `I am Dr. Elena Rostova, Chief Engineering Coordinator. I am orchestrating the veteran engineering squad. We have ${activeQueueCount} tasks in the refinement backlog, and ${inProgressCount} active specialist operations underway across our worktrees. All governance policies are strictly enforced.`;
+      return {
+        employeeId: 'LEAD-01',
+        name: this.leadProfile.name,
+        role: this.leadProfile.role,
+        status: 'COORDINATING',
+        spokenText,
+        speechBubble: spokenText,
+        voicePitch: 1.0,
+        voiceRate: 1.0
+      };
+    }
+
+    const emp = this.employeePool.getEmployee(employeeId);
+    if (!emp) throw new Error(`Employee '${employeeId}' not found.`);
+
+    let spokenText = '';
+    const intro = emp.introPhrase || `${emp.name}, ${emp.role.replace(/_/g, ' ')}.`;
+
+    switch (emp.status) {
+      case EMPLOYEE_STATUS.FREE:
+        spokenText = `I am ${intro} All systems are nominal and my Git worktree is clean. I am standing by for your next architectural directive.`;
+        break;
+      case EMPLOYEE_STATUS.WORKING:
+        spokenText = `I am ${intro} Currently actively executing task ${emp.currentTaskId}. Applying surgical diffs within our isolated worktree and maintaining 100 percent invariant compliance.`;
+        break;
+      case EMPLOYEE_STATUS.BLOCKED:
+        spokenText = `I am ${intro} My execution is currently paused. Reason: ${emp.currentDoubt || 'Awaiting founder intervention'}. Ready to receive your corrective instructions.`;
+        break;
+      case EMPLOYEE_STATUS.DONE:
+        spokenText = `I am ${intro} I have completed task ${emp.currentTaskId}. Layered QA verification receipts are generated, and my Pull Request package is submitted to Dr. Elena Rostova for review.`;
+        break;
+      default:
+        spokenText = `I am ${intro} Status: ${emp.status}.`;
+    }
+
+    return {
+      employeeId: emp.id,
+      name: emp.name,
+      role: emp.role,
+      status: emp.status,
+      spokenText,
+      speechBubble: spokenText,
+      voicePitch: emp.voicePitch || 1.0,
+      voiceRate: emp.voiceRate || 1.0,
+      avatar: emp.avatar,
+      hologramColor: emp.hologramColor
     };
   }
 }

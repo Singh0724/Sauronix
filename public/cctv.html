@@ -3,211 +3,976 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Founder CCTV Mission Control | Autonomous AI Studio v5.0</title>
+  <title>Founder Cyber-Office Robot Control Hub | Autonomous AI Studio v5.0</title>
   <style>
     :root {
-      --bg: #090d16;
-      --panel: #111726;
-      --border: #1e293b;
+      --bg: #060913;
+      --bg-card: rgba(13, 19, 36, 0.75);
+      --border: rgba(30, 41, 59, 0.8);
+      --border-glow: rgba(59, 130, 246, 0.4);
       --primary: #3b82f6;
-      --accent: #10b981;
-      --warning: #f59e0b;
+      --cyan: #06b6d4;
+      --pink: #ec4899;
+      --emerald: #10b981;
+      --amber: #f59e0b;
       --danger: #ef4444;
       --text: #f8fafc;
-      --muted: #94a3b8;
+      --text-muted: #94a3b8;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
-    body { background: var(--bg); color: var(--text); padding: 16px; height: 100vh; display: flex; flex-direction: column; gap: 16px; }
+    body {
+      background: radial-gradient(circle at 50% 0%, #0d1527 0%, var(--bg) 70%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 20px;
+      gap: 16px;
+      overflow-x: hidden;
+    }
+
+    /* Top Command Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 22px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-logo { font-size: 1.8rem; filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.6)); }
+    .brand h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+    .brand p { font-size: 0.75rem; color: var(--cyan); font-family: monospace; }
     
-    .header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; }
-    .status-badge { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.85rem; color: var(--accent); }
-    .pulse { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); animation: blink 1.5s infinite; }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--emerald);
+      letter-spacing: 0.05em;
+    }
+    .pulse-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 10px var(--emerald);
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
 
-    .grid { display: grid; grid-template-columns: 340px 1fr 400px; gap: 16px; flex: 1; min-height: 0; }
-    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; min-height: 0; }
-    .card-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 12px; display: flex; justify-content: space-between; }
+    .top-actions { display: flex; align-items: center; gap: 12px; }
+    .btn-icon {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-icon:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--cyan); }
 
-    /* Telemetry Panel */
-    .metric-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
-    .metric-label { color: var(--muted); }
-    .metric-value { font-weight: 600; font-family: monospace; }
-    .risk-pill { padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; }
-    .risk-high { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
-    .risk-medium { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid var(--warning); }
-    .risk-low { background: rgba(16, 185, 129, 0.2); color: var(--accent); border: 1px solid var(--accent); }
+    /* Main Dashboard Grid */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 1fr 390px;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+    }
 
-    /* Timeline Feed */
-    .timeline { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 6px; }
-    .event-item { background: rgba(255,255,255,0.02); border-left: 3px solid var(--primary); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.8rem; }
-    .event-item.warn { border-left-color: var(--warning); background: rgba(245, 158, 11, 0.05); }
-    .event-item.reject { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.05); }
-    .event-time { font-family: monospace; color: var(--muted); font-size: 0.75rem; margin-bottom: 2px; }
+    .main-viewport { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
 
-    /* Terminal Monitor */
-    .terminal-container { flex: 1; background: #000; border: 1px solid var(--border); border-radius: 6px; padding: 12px; font-family: monospace; font-size: 0.8rem; color: #4ade80; overflow-y: auto; white-space: pre-wrap; line-height: 1.4; }
+    /* Robot Squad Grid */
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--cyan);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .robot-squad-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+    }
 
-    /* Controls */
-    .btn-group { display: flex; gap: 10px; }
-    .btn { padding: 8px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: none; transition: opacity 0.2s; }
-    .btn:hover { opacity: 0.85; }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn-warning { background: var(--warning); color: #000; }
-    .btn-primary { background: var(--primary); color: #fff; }
+    .robot-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .robot-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-glow);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    .robot-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-accent, var(--primary));
+      box-shadow: 0 0 12px var(--card-accent, var(--primary));
+    }
+
+    .robot-header { display: flex; align-items: center; gap: 10px; }
+    .robot-avatar {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    .robot-info { flex: 1; min-width: 0; }
+    .robot-name { font-size: 0.85rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .robot-role { font-size: 0.7rem; color: var(--text-muted); font-family: monospace; }
+    .robot-exp { font-size: 0.65rem; color: var(--amber); font-weight: 600; }
+
+    .robot-status-pill {
+      align-self: flex-start;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .status-free { background: rgba(16, 185, 129, 0.15); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.4); }
+    .status-working { background: rgba(6, 182, 212, 0.2); color: var(--cyan); border: 1px solid var(--cyan); animation: working-glow 2s infinite; }
+    .status-blocked { background: rgba(245, 158, 11, 0.2); color: var(--amber); border: 1px solid var(--amber); animation: blink 1.2s infinite; }
+    .status-done { background: rgba(147, 51, 234, 0.2); color: #c084fc; border: 1px solid #c084fc; }
+
+    @keyframes working-glow { 0%, 100% { box-shadow: 0 0 5px rgba(6, 182, 212, 0.3); } 50% { box-shadow: 0 0 15px rgba(6, 182, 212, 0.6); } }
+
+    .robot-task-snippet {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+    }
+
+    .robot-actions { display: flex; gap: 6px; margin-top: auto; }
+    .btn-card {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .btn-card:hover { background: rgba(255, 255, 255, 0.12); border-color: var(--cyan); }
+    .btn-card.pause { border-color: rgba(245, 158, 11, 0.4); color: var(--amber); }
+    .btn-card.pause:hover { background: rgba(245, 158, 11, 0.2); }
+
+    /* Speech Bubble Visual Overlay */
+    .speech-bubble {
+      position: absolute;
+      inset: 8px;
+      background: rgba(6, 9, 19, 0.95);
+      border: 1px solid var(--cyan);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      color: #e2e8f0;
+      z-index: 10;
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+      animation: bubble-fade 0.2s ease-out;
+    }
+    @keyframes bubble-fade { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    .speech-text { line-height: 1.35; overflow-y: auto; max-height: 110px; }
+    .speech-close { align-self: flex-end; font-size: 0.7rem; color: var(--cyan); cursor: pointer; text-decoration: underline; }
+
+    /* Bottom Row: Dispatch Box & Task Queue */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+      backdrop-filter: blur(10px);
+    }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; }
+
+    /* Dispatch Box */
+    .dispatch-input {
+      width: 100%;
+      height: 75px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      color: var(--text);
+      font-size: 0.8rem;
+      resize: none;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .dispatch-input:focus { border-color: var(--cyan); box-shadow: 0 0 10px rgba(6, 182, 212, 0.2); }
+
+    .drop-zone {
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.01);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .drop-zone:hover, .drop-zone.dragover { border-color: var(--cyan); background: rgba(6, 182, 212, 0.05); color: var(--cyan); }
+    .thumbnail-bar { display: flex; gap: 8px; overflow-x: auto; padding-top: 4px; }
+    .thumb-item {
+      position: relative;
+      width: 44px; height: 44px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .thumb-item img { width: 100%; height: 100%; object-fit: cover; }
+    .thumb-remove {
+      position: absolute;
+      top: 1px; right: 1px;
+      background: rgba(0,0,0,0.8);
+      color: var(--danger);
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .btn-dispatch {
+      background: linear-gradient(135deg, #2563eb, #06b6d4);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+      transition: all 0.2s;
+    }
+    .btn-dispatch:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5); }
+
+    /* Task Queue Board */
+    .queue-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 4px;
+    }
+    .queue-item {
+      background: rgba(0, 0, 0, 0.25);
+      border-left: 3px solid var(--cyan);
+      border-radius: 0 8px 8px 0;
+      padding: 8px 10px;
+      font-size: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .queue-item.active { border-left-color: var(--emerald); background: rgba(16, 185, 129, 0.05); }
+    .queue-item.waiting { border-left-color: var(--amber); }
+    .queue-meta { display: flex; flex-direction: column; gap: 2px; }
+    .queue-id { font-weight: 800; font-family: monospace; color: var(--cyan); }
+    .queue-prompt { color: #cbd5e1; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Side Bar: 1-Week History & Live Feed */
+    .side-bar { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+    .tab-bar { display: flex; gap: 6px; background: rgba(0,0,0,0.3); padding: 4px; border-radius: 8px; }
+    .tab-btn {
+      flex: 1;
+      padding: 6px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .tab-btn.active { background: var(--bg-card); color: var(--cyan); border: 1px solid var(--border); }
+
+    .history-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 4px;
+    }
+    .history-card {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.72rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .history-top { display: flex; justify-content: space-between; font-weight: 700; }
+    .history-author { color: var(--cyan); }
+    .history-time { color: var(--text-muted); font-family: monospace; font-size: 0.65rem; }
+    .history-goal { color: #e2e8f0; }
+    .history-badge {
+      align-self: flex-start;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--emerald);
+      font-family: monospace;
+    }
+
+    /* Directive Dialog Modal */
+    dialog {
+      margin: auto;
+      background: #090d1a;
+      border: 1px solid var(--cyan);
+      border-radius: 12px;
+      padding: 20px;
+      color: var(--text);
+      max-width: 480px;
+      width: 90vw;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(6, 182, 212, 0.25);
+    }
+    dialog::backdrop { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); }
+    .dialog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .dialog-header h3 { font-size: 1rem; color: var(--cyan); }
+    .dialog-input {
+      width: 100%;
+      height: 90px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      color: var(--text);
+      font-size: 0.82rem;
+      resize: none;
+      margin: 12px 0;
+    }
+    .dialog-footer { display: flex; justify-content: flex-end; gap: 8px; }
+
+    /* Live CCTV Logs */
+    .terminal-feed {
+      flex: 1;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: #34d399;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <div>
-      <h1 style="font-size: 1.15rem; font-weight: 700;">Founder CCTV Mission Control v5.0</h1>
-      <p style="font-size: 0.75rem; color: var(--muted);">Autonomous Engineering Studio • Authenticated Control Plane</p>
-    </div>
-    <div class="status-badge" id="studioStatus">
-      <div class="pulse"></div> ENGINE ONLINE
-    </div>
-    <div class="btn-group">
-      <button class="btn btn-warning" onclick="triggerSafePause()">⏸️ Safe Pause</button>
-      <button class="btn btn-danger" onclick="triggerEmergencyStop()">🛑 Emergency Stop & Freeze</button>
-      <button class="btn btn-primary" onclick="inspectWorktree()">🔍 Inspect Active Diff</button>
-    </div>
-  </div>
-
-  <div class="grid">
-    <!-- Col 1: Active Task Context & Risk Engine -->
-    <div class="card">
-      <div class="card-title">Task Context & Governance</div>
-      <div class="metric-row">
-        <span class="metric-label">Active Task</span>
-        <span class="metric-value" id="valTaskId">TASK-108</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-label">Risk Rating</span>
-        <span class="risk-pill risk-high" id="valRiskRating">HIGH (AUTH)</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-label">Stage</span>
-        <span class="metric-value" id="valStage" style="color: var(--primary);">SURGICAL CODING</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-label">Attempt</span>
-        <span class="metric-value" id="valAttempt">1 / 2</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-label">Allowed Paths</span>
-        <span class="metric-value" id="valAllowedFiles">src/auth/oauth.js</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-label">Active Worktree</span>
-        <span class="metric-value" id="valWorktree">.worktrees/t-108</span>
-      </div>
-
-      <div class="card-title" style="margin-top: 20px;">Gate Verification Progress</div>
-      <div class="metric-row">
-        <span class="metric-label">1. Spec Contract Gate</span>
-        <span class="metric-value" id="gateSpec" style="color: var(--accent);">PASSED ✓</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-label">2. Surgical Coder</span>
-        <span class="metric-value" id="gateCoder" style="color: var(--primary);">ACTIVE ⚙</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-label">3. 11-Stage QA Runner</span>
-        <span class="metric-value" id="gateQA" style="color: var(--muted);">PENDING —</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-label">4. Security & PR Gate</span>
-        <span class="metric-value" id="gatePR" style="color: var(--muted);">PENDING —</span>
+  <!-- Top Navigation & Control Bar -->
+  <header class="top-bar">
+    <div class="brand">
+      <div class="brand-logo">🤖</div>
+      <div>
+        <h1>Founder CCTV Mission Control • Cyber-Office Robot Hub</h1>
+        <p>Autonomous AI Enterprise Studio v5.0 • 5-Member Veteran Squad</p>
       </div>
     </div>
 
-    <!-- Col 2: Live CCTV Flight Feed -->
-    <div class="card">
-      <div class="card-title">
-        <span>Flight Recorder Stream</span>
-        <span style="font-size: 0.75rem; color: var(--muted);">Direct SQLite Sync</span>
-      </div>
-      <div class="terminal-container" id="terminalStream">[SYSTEM] Initializing Mission Control SSE link...</div>
+    <div class="status-badge" id="hudEngineStatus">
+      <div class="pulse-dot"></div>
+      ENGINE ONLINE (PORT 3000)
     </div>
 
-    <!-- Col 3: Decision Timeline (Why vs What) -->
-    <div class="card">
-      <div class="card-title">Decision Timeline ("Why")</div>
-      <div class="timeline" id="timelineFeed">
-        <div class="event-item">
-          <div class="event-time">System Startup</div>
-          <strong>Control Plane Mounted</strong><br>
-          SQLite WAL operational truth active.
+    <div class="top-actions">
+      <button class="btn-icon" onclick="toggleVoice()" id="voiceToggleBtn">
+        <span id="voiceIcon">🔊</span> Voice Intercom: ON
+      </button>
+      <button class="btn-icon" onclick="refreshTeamData()">🔄 Refresh</button>
+      <button class="btn-icon" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.4);" onclick="triggerEmergencyStop()">🛑 Stop & Freeze</button>
+    </div>
+  </header>
+
+  <div class="dashboard-layout">
+    
+    <!-- Left: Robot Workforce + Dispatch + Queue -->
+    <main class="main-viewport">
+      
+      <!-- 5-Member Robot Workforce Section -->
+      <section>
+        <div class="section-title">
+          <span>👑 Robot Specialist Squad (50+ Years Experience Each)</span>
+          <span id="squadSummary" style="font-family: monospace; font-size: 0.72rem; color: var(--text-muted);">4 Active Workers • 1 Commander</span>
         </div>
+
+        <div class="robot-squad-grid" id="robotSquadContainer">
+          <!-- Dynamically Rendered by renderRobots() -->
+        </div>
+      </section>
+
+      <!-- Bottom Grid: Dispatch Box + Task Queue -->
+      <div class="bottom-grid">
+        
+        <!-- Task Dispatcher -->
+        <section class="panel">
+          <div class="panel-header">
+            <h2 class="section-title" style="margin: 0;">⚡ Assign Task to Team Lead</h2>
+            <span style="font-size: 0.7rem; color: var(--cyan); font-family: monospace;">Dr. Elena Rostova</span>
+          </div>
+
+          <textarea id="taskPromptInput" class="dispatch-input" placeholder="Type instructions or directives for the Team Lead (e.g. 'Build Stripe payment webhook router' or 'Optimize landing page SEO')..."></textarea>
+
+          <div class="drop-zone" id="imageDropZone" onclick="document.getElementById('imageFileInput').click()">
+            <span>📎 Drag & Drop UI mockups, screenshots, or click to attach</span>
+            <input type="file" id="imageFileInput" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
+          </div>
+
+          <div class="thumbnail-bar" id="thumbnailBar"></div>
+
+          <button class="btn-dispatch" onclick="dispatchTaskToLead()">
+            <span>🚀 Dispatch to Team Lead</span>
+          </button>
+        </section>
+
+        <!-- Live Queue Board -->
+        <section class="panel">
+          <div class="panel-header">
+            <h2 class="section-title" style="margin: 0;">📋 Multi-Task Backlog & Queue</h2>
+            <span id="queueCountBadge" style="font-size: 0.7rem; color: var(--amber); font-family: monospace;">0 In Queue</span>
+          </div>
+
+          <div class="queue-list" id="queueListContainer">
+            <div style="color: var(--text-muted); font-size: 0.75rem; text-align: center; padding-top: 20px;">
+              Queue is clear. Dispatch tasks to queue them sequentially!
+            </div>
+          </div>
+        </section>
+
       </div>
-    </div>
+    </main>
+
+    <!-- Right Sidebar: 1-Week History & Live CCTV Telemetry -->
+    <aside class="side-bar">
+      <section class="panel" style="flex: 1;">
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tabHistoryBtn" onclick="switchSideTab('history')">📅 1-Week Work History</button>
+          <button class="tab-btn" id="tabTerminalBtn" onclick="switchSideTab('terminal')">📟 Live CCTV Log</button>
+        </div>
+
+        <!-- Tab 1: 1-Week Work History -->
+        <div class="history-list" id="historyTabContent">
+          <div style="color: var(--text-muted); font-size: 0.75rem; text-align: center; padding-top: 20px;">
+            Loading 7-day completed task audit...
+          </div>
+        </div>
+
+        <!-- Tab 2: Terminal Logs -->
+        <div class="terminal-feed" id="terminalTabContent" style="display: none;">
+[System]: Connecting to Authenticated CCTV Event Stream...
+        </div>
+      </section>
+    </aside>
+
   </div>
 
+  <!-- Direct Intervention Modal Dialog -->
+  <dialog id="directiveModal">
+    <div class="dialog-header">
+      <h3 id="modalEmployeeTitle">Direct Instruction to Worker</h3>
+      <button onclick="closeDirectiveModal()" style="background: transparent; border: none; color: var(--text-muted); font-size: 1rem; cursor: pointer;">✕</button>
+    </div>
+    <p style="font-size: 0.75rem; color: var(--text-muted);" id="modalEmployeeSub">Provide corrective instructions. The specialist's worktree is frozen and will resume with your direction.</p>
+    
+    <textarea id="founderInstructionInput" class="dialog-input" placeholder="Type corrective guidance (e.g. 'Use async iteration instead of recursive promises')..."></textarea>
+
+    <div class="dialog-footer">
+      <button class="btn-icon" onclick="closeDirectiveModal()">Cancel</button>
+      <button class="btn-dispatch" style="padding: 8px 16px;" onclick="submitFounderInstruction()">🚀 Resume Worker</button>
+    </div>
+  </dialog>
+
+  <!-- Client-side Logic: SSE, Audio Speech, Queue, & Actions -->
   <script>
-    const authToken = localStorage.getItem('STUDIO_AUTH_TOKEN') || 'founder_secure_vault_token_2026';
-    const csrfToken = localStorage.getItem('STUDIO_CSRF_TOKEN') || 'csrf_founder_guard_token_2026';
+    const AUTH_TOKEN = 'founder_secure_vault_token_2026';
+    const CSRF_TOKEN = 'csrf_founder_guard_token_2026';
 
-    const evtSource = new EventSource(`/api/cctv/stream?token=${encodeURIComponent(authToken)}`);
+    let voiceEnabled = true;
+    let currentInterveneEmpId = null;
+    let imageAttachments = [];
+    let activeSpeechBubbleTimeout = null;
 
-    evtSource.onmessage = function(e) {
-      const msg = JSON.parse(e.data);
+    // 1. Voice Synthesis Engine
+    function speakText(text, pitch = 1.0, rate = 1.0) {
+      if (!voiceEnabled || !('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
 
-      if (msg.type === 'log') {
-        const stream = document.getElementById('terminalStream');
-        stream.innerHTML += `\n[${msg.timestamp}] [${msg.agent || 'SYSTEM'}] ${msg.message}`;
-        stream.scrollTop = stream.scrollHeight;
-      } else if (msg.type === 'decision') {
-        const timeline = document.getElementById('timelineFeed');
-        const item = document.createElement('div');
-        item.className = `event-item ${msg.status || 'normal'}`;
-        item.innerHTML = `<div class="event-time">${msg.timestamp} • ${msg.gate}</div><strong>${msg.title}</strong><br>${msg.explanation}`;
-        timeline.prepend(item);
-      } else if (msg.type === 'task_update') {
-        if (msg.task) {
-          if (msg.task.task_id) document.getElementById('valTaskId').textContent = msg.task.task_id;
-          if (msg.task.risk_level) document.getElementById('valRiskRating').textContent = msg.task.risk_level;
-          if (msg.task.status) document.getElementById('valStage').textContent = msg.task.status;
-        }
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.pitch = pitch;
+      utterance.rate = rate;
+
+      // Prefer a natural English female voice if available
+      const voices = window.speechSynthesis.getVoices();
+      const femaleVoice = voices.find(v => (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Samantha') || v.name.includes('Google UK English Female')));
+      if (femaleVoice) utterance.voice = femaleVoice;
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function toggleVoice() {
+      voiceEnabled = !voiceEnabled;
+      const btn = document.getElementById('voiceToggleBtn');
+      btn.innerHTML = voiceEnabled ? '<span>🔊</span> Voice Intercom: ON' : '<span>🔇</span> Voice Intercom: MUTED';
+      if (!voiceEnabled) window.speechSynthesis.cancel();
+    }
+
+    // 2. Fetch Team & Render Robot Cards
+    async function refreshTeamData() {
+      try {
+        const res = await fetch('/api/studio/team', {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        const data = await res.json();
+        renderRobots(data.lead, data.employees);
+      } catch (err) {
+        console.error('Failed to load team data', err);
       }
-    };
+    }
 
-    evtSource.onerror = function() {
-      document.getElementById('studioStatus').innerHTML = '<span style="color: var(--danger);">DISCONNECTED</span>';
-    };
+    function renderRobots(lead, employees) {
+      const container = document.getElementById('robotSquadContainer');
+      container.innerHTML = '';
 
-    function authedFetch(url, options = {}) {
-      return fetch(url, {
-        ...options,
-        headers: {
-          'Authorization': `Bearer ${authToken}`,
-          'X-Studio-CSRF': csrfToken,
-          'Content-Type': 'application/json',
-          ...(options.headers || {})
+      // 1. Render Team Lead
+      if (lead) {
+        const leadCard = document.createElement('div');
+        leadCard.className = 'robot-card';
+        leadCard.style.setProperty('--card-accent', '#f59e0b');
+        leadCard.innerHTML = `
+          <div class="robot-header">
+            <div class="robot-avatar">👑</div>
+            <div class="robot-info">
+              <div class="robot-name">${lead.name}</div>
+              <div class="robot-role">Commander (Lead)</div>
+              <div class="robot-exp">50+ Yrs Exp • Female</div>
+            </div>
+          </div>
+          <div class="robot-status-pill status-working">⚡ COORDINATING SQUAD</div>
+          <div class="robot-task-snippet">Orchestrating multi-task queue, prompt contracts, and QA reviews.</div>
+          <div class="robot-actions">
+            <button class="btn-card" onclick="askWorker('LEAD-01')">🎙️ Ask Status</button>
+          </div>
+          <div id="bubble-LEAD-01" class="speech-bubble" style="display: none;"></div>
+        `;
+        container.appendChild(leadCard);
+      }
+
+      // 2. Render 4 Specialist Employees
+      employees.forEach(emp => {
+        const card = document.createElement('div');
+        card.className = 'robot-card';
+        card.style.setProperty('--card-accent', emp.hologramColor || '#06b6d4');
+
+        let statusClass = 'status-free';
+        let statusText = '🟢 FREE / STANDBY';
+        if (emp.status === 'WORKING') {
+          statusClass = 'status-working';
+          statusText = `⚡ WORKING [${emp.currentTaskId || 'TASK'}]`;
+        } else if (emp.status === 'BLOCKED') {
+          statusClass = 'status-blocked';
+          statusText = '⚠️ PAUSED / DIRECTIVE';
+        } else if (emp.status === 'DONE') {
+          statusClass = 'status-done';
+          statusText = '✔ DONE / PR READY';
         }
+
+        card.innerHTML = `
+          <div class="robot-header">
+            <div class="robot-avatar">${emp.avatar || '🤖'}</div>
+            <div class="robot-info">
+              <div class="robot-name">${emp.name}</div>
+              <div class="robot-role">${emp.role.replace(/_/g, ' ')}</div>
+              <div class="robot-exp">${emp.experience} • ${emp.gender}</div>
+            </div>
+          </div>
+          <div class="robot-status-pill ${statusClass}">${statusText}</div>
+          <div class="robot-task-snippet">${emp.currentDoubt ? 'Blocker: ' + emp.currentDoubt : (emp.currentTaskId ? 'Task ' + emp.currentTaskId + ' in progress' : emp.specialty.slice(0, 50) + '...')}</div>
+          <div class="robot-actions">
+            <button class="btn-card" onclick="askWorker('${emp.id}')">🎙️ Ask</button>
+            <button class="btn-card pause" onclick="openDirectiveModal('${emp.id}', '${emp.name}')">⏸️ Pause</button>
+          </div>
+          <div id="bubble-${emp.id}" class="speech-bubble" style="display: none;"></div>
+        `;
+        container.appendChild(card);
       });
     }
 
-    function triggerSafePause() {
-      authedFetch('/api/studio/pause', { method: 'POST' })
-        .then(res => res.json())
-        .then(data => alert(`Studio Pause Signal Dispatched: ${data.message || 'OK'}`));
-    }
+    // 3. Voice Intercom Query ("Ask Employee")
+    async function askWorker(empId) {
+      try {
+        const res = await fetch(`/api/studio/employee/${empId}/ask`, {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        const data = await res.json();
 
-    function triggerEmergencyStop() {
-      if (confirm("EMERGENCY STOP: Freeze active worktree, capture diffs to forensic incident, and halt execution?")) {
-        const activeTaskId = document.getElementById('valTaskId').textContent.trim();
-        authedFetch('/api/studio/emergency-stop', {
-          method: 'POST',
-          body: JSON.stringify({ taskId: activeTaskId, reason: 'Manual emergency stop triggered via CCTV UI' })
-        })
-        .then(res => res.json())
-        .then(data => alert(`Studio Frozen: ${data.message || 'Incident recorded.'}`));
+        // 1. Speak aloud
+        speakText(data.spokenText, data.voicePitch, data.voiceRate);
+
+        // 2. Show speech bubble on card
+        const bubble = document.getElementById(`bubble-${empId}`);
+        if (bubble) {
+          bubble.innerHTML = `
+            <div class="speech-text">"${data.speechBubble}"</div>
+            <div class="speech-close" onclick="closeBubble('${empId}')">Close ×</div>
+          `;
+          bubble.style.display = 'flex';
+          clearTimeout(activeSpeechBubbleTimeout);
+          activeSpeechBubbleTimeout = setTimeout(() => { bubble.style.display = 'none'; }, 9000);
+        }
+      } catch (err) {
+        console.error('Failed to ask employee', err);
       }
     }
 
-    function inspectWorktree() {
-      window.open(`/api/studio/active-diff?token=${encodeURIComponent(authToken)}`, '_blank');
+    function closeBubble(empId) {
+      const bubble = document.getElementById(`bubble-${empId}`);
+      if (bubble) bubble.style.display = 'none';
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     }
+
+    // 4. Pause & Intervene Directive Modal
+    function openDirectiveModal(empId, empName) {
+      currentInterveneEmpId = empId;
+      document.getElementById('modalEmployeeTitle').innerText = `Direct Instruction to ${empName}`;
+      document.getElementById('founderInstructionInput').value = '';
+      const modal = document.getElementById('directiveModal');
+      modal.showModal();
+
+      // Send pause to server immediately
+      fetch(`/api/studio/employee/${empId}/pause`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${AUTH_TOKEN}`,
+          'X-Studio-CSRF': CSRF_TOKEN,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ reason: 'Paused for founder inspection' })
+      }).then(() => refreshTeamData());
+    }
+
+    function closeDirectiveModal() {
+      document.getElementById('directiveModal').close();
+    }
+
+    async function submitFounderInstruction() {
+      const instruction = document.getElementById('founderInstructionInput').value.trim();
+      if (!instruction) {
+        alert('Please enter instructions for the specialist.');
+        return;
+      }
+
+      try {
+        await fetch(`/api/studio/employee/${currentInterveneEmpId}/instruct`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`,
+            'X-Studio-CSRF': CSRF_TOKEN,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ instruction })
+        });
+        closeDirectiveModal();
+        refreshTeamData();
+      } catch (err) {
+        alert('Failed to instruct employee: ' + err.message);
+      }
+    }
+
+    // 5. Image Drag & Drop and Preview
+    function handleImageSelect(event) {
+      const files = event.target.files;
+      for (const file of files) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          imageAttachments.push(e.target.result);
+          renderThumbnails();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    const dropZone = document.getElementById('imageDropZone');
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          imageAttachments.push(ev.target.result);
+          renderThumbnails();
+        };
+        reader.readAsDataURL(e.dataTransfer.files[0]);
+      }
+    });
+
+    function renderThumbnails() {
+      const bar = document.getElementById('thumbnailBar');
+      bar.innerHTML = '';
+      imageAttachments.forEach((imgSrc, idx) => {
+        const thumb = document.createElement('div');
+        thumb.className = 'thumb-item';
+        thumb.innerHTML = `
+          <img src="${imgSrc}" />
+          <div class="thumb-remove" onclick="removeImage(${idx})">×</div>
+        `;
+        bar.appendChild(thumb);
+      });
+    }
+
+    function removeImage(idx) {
+      imageAttachments.splice(idx, 1);
+      renderThumbnails();
+    }
+
+    // 6. Dispatch Task to Team Lead Queue
+    async function dispatchTaskToLead() {
+      const prompt = document.getElementById('taskPromptInput').value.trim();
+      if (!prompt) {
+        alert('Please enter a task prompt.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/studio/delegate', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`,
+            'X-Studio-CSRF': CSRF_TOKEN,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            prompt,
+            attachments: imageAttachments
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('taskPromptInput').value = '';
+          imageAttachments = [];
+          renderThumbnails();
+          refreshQueue();
+          refreshTeamData();
+        }
+      } catch (err) {
+        alert('Failed to dispatch task: ' + err.message);
+      }
+    }
+
+    // 7. Refresh Task Queue
+    async function refreshQueue() {
+      try {
+        const res = await fetch('/api/studio/queue', {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        const data = await res.json();
+        renderQueue(data.queue || []);
+      } catch (err) {
+        console.error('Failed to load queue', err);
+      }
+    }
+
+    function renderQueue(queue) {
+      const container = document.getElementById('queueListContainer');
+      const badge = document.getElementById('queueCountBadge');
+      badge.innerText = `${queue.length} In Queue`;
+
+      if (queue.length === 0) {
+        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.75rem; text-align: center; padding-top: 20px;">Queue is clear. Dispatch tasks to queue them sequentially!</div>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      queue.forEach((item, idx) => {
+        const qItem = document.createElement('div');
+        qItem.className = `queue-item ${item.status === 'ASSIGNED' ? 'active' : 'waiting'}`;
+        qItem.innerHTML = `
+          <div class="queue-meta">
+            <span class="queue-id">[#${idx + 1}] ${item.taskId}</span>
+            <span class="queue-prompt">${item.rawPrompt}</span>
+          </div>
+          <div style="font-size: 0.68rem; font-family: monospace; color: var(--cyan); font-weight: 700;">
+            ${item.assignedEmployee ? item.assignedEmployee.name : item.status}
+          </div>
+        `;
+        container.appendChild(qItem);
+      });
+    }
+
+    // 8. 1-Week Work History
+    async function refreshHistory() {
+      try {
+        const res = await fetch('/api/studio/history?days=7', {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        const data = await res.json();
+        renderHistory(data.history || []);
+      } catch (err) {
+        console.error('Failed to load history', err);
+      }
+    }
+
+    function renderHistory(history) {
+      const container = document.getElementById('historyTabContent');
+      if (history.length === 0) {
+        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.75rem; text-align: center; padding-top: 20px;">No completed tasks in the last 7 days yet. Tasks will appear here upon QA and PR completion.</div>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      history.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'history-card';
+        card.innerHTML = `
+          <div class="history-top">
+            <span class="history-author">🤖 ${item.employeeName}</span>
+            <span class="history-time">${new Date(item.timestamp).toLocaleDateString()}</span>
+          </div>
+          <div class="history-goal">${item.goal}</div>
+          <div class="history-badge">PR: ${item.taskId} • 11-Stage QA Pass</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // 9. Side Tabs Switch
+    function switchSideTab(tab) {
+      document.getElementById('tabHistoryBtn').classList.toggle('active', tab === 'history');
+      document.getElementById('tabTerminalBtn').classList.toggle('active', tab === 'terminal');
+      document.getElementById('historyTabContent').style.display = tab === 'history' ? 'flex' : 'none';
+      document.getElementById('terminalTabContent').style.display = tab === 'terminal' ? 'block' : 'none';
+    }
+
+    // 10. SSE Telemetry Stream
+    function initSSE() {
+      const sseUrl = `/api/cctv/stream?token=${AUTH_TOKEN}`;
+      const source = new EventSource(sseUrl);
+      const logArea = document.getElementById('terminalTabContent');
+
+      source.addEventListener('log', (e) => {
+        const data = JSON.parse(e.data);
+        logArea.textContent += `\n[${data.time}] ${data.level}: ${data.message}`;
+        logArea.scrollTop = logArea.scrollHeight;
+        refreshTeamData();
+        refreshQueue();
+      });
+
+      source.addEventListener('decision', (e) => {
+        refreshQueue();
+        refreshTeamData();
+      });
+    }
+
+    function triggerEmergencyStop() {
+      if (!confirm('Execute Emergency Stop and freeze all worktrees?')) return;
+      fetch('/api/studio/emergency-stop', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${AUTH_TOKEN}`,
+          'X-Studio-CSRF': CSRF_TOKEN,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ reason: 'Emergency Stop invoked from Robot Cyber-Dashboard' })
+      }).then(() => {
+        alert('Emergency Stop Executed: Forensic state frozen.');
+        refreshTeamData();
+      });
+    }
+
+    // Initialize
+    refreshTeamData();
+    refreshQueue();
+    refreshHistory();
+    initSSE();
   </script>
 </body>
 </html>

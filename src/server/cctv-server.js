@@ -7,6 +7,8 @@ import { StudioDatabase, getStudioDb } from '../storage/db.js';
 import { WorktreeManager } from '../git/worktree-manager.js';
 import { EmergencyStopController } from '../control/emergency-stop.js';
 import { TaskStateMachine } from '../state/task-state-machine.js';
+import { EmployeePool } from '../coordination/employee-pool.js';
+import { TeamLead } from '../coordination/team-lead.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -45,6 +47,12 @@ export class CctvServer {
     this.authToken = options.authToken || DEFAULT_AUTH_TOKEN;
     this.csrfToken = options.csrfToken || DEFAULT_CSRF_TOKEN;
     this.isPaused = false;
+
+    this.employeePool = options.employeePool || new EmployeePool();
+    this.teamLead = options.teamLead || new TeamLead({
+      employeePool: this.employeePool,
+      studioDb: this.studioDb
+    });
 
     this.server = createServer((req, res) => this._handleRequest(req, res));
   }
@@ -174,6 +182,47 @@ export class CctvServer {
       return res.end(diff);
     }
 
+    // GET /api/studio/team - Real-time team roster, status & stats
+    if (method === 'GET' && pathname === '/api/studio/team') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({
+        lead: this.teamLead.leadProfile,
+        employees: this.employeePool.getPoolStatus()
+      }));
+    }
+
+    // GET /api/studio/queue - Full task backlog & queue
+    if (method === 'GET' && pathname === '/api/studio/queue') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({
+        queue: this.teamLead.getQueue()
+      }));
+    }
+
+    // GET /api/studio/history - 7-day completed work list
+    if (method === 'GET' && pathname === '/api/studio/history') {
+      const days = parseInt(url.searchParams.get('days') || '7', 10);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({
+        history: this.employeePool.getWeeklyHistory(days)
+      }));
+    }
+
+    // GET /api/studio/employee/:id/ask - Voice Intercom status query
+    if (method === 'GET' && pathname.startsWith('/api/studio/employee/') && pathname.endsWith('/ask')) {
+      const match = pathname.match(/^\/api\/studio\/employee\/([^/]+)\/ask$/);
+      if (match) {
+        try {
+          const askData = this.teamLead.askWorker(match[1]);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify(askData));
+        } catch (err) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: err.message }));
+        }
+      }
+    }
+
     // CSRF verification for all mutating POST routes
     if (method === 'POST') {
       if (!this._validateCsrf(req)) {
@@ -238,6 +287,70 @@ export class CctvServer {
       } catch (err) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: err.message }));
+      }
+    }
+
+    // POST /api/studio/delegate - Assign task to Team Lead queue (with optional image)
+    if (method === 'POST' && pathname === '/api/studio/delegate') {
+      try {
+        const body = await this._parseBody(req);
+        if (!body.prompt) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: 'Task prompt is required' }));
+        }
+
+        const queuedTask = this.teamLead.enqueueTask(body.prompt, {
+          taskId: body.taskId,
+          suggestedFiles: body.suggestedFiles,
+          attachments: body.attachments || []
+        });
+
+        this.broadcaster.log('FOUNDER', `Queued task ${queuedTask.taskId}: "${body.prompt.slice(0, 45)}"`);
+        this.broadcaster.decision({
+          gate: 'Task Dispatch',
+          title: `Dispatched ${queuedTask.taskId}`,
+          explanation: `Enqueued for Team Lead refinement. Status: ${queuedTask.status}`
+        });
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ success: true, task: queuedTask }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: err.message }));
+      }
+    }
+
+    // POST /api/studio/employee/:id/pause - Pause worker safely
+    if (method === 'POST' && pathname.startsWith('/api/studio/employee/') && pathname.endsWith('/pause')) {
+      const match = pathname.match(/^\/api\/studio\/employee\/([^/]+)\/pause$/);
+      if (match) {
+        try {
+          const body = await this._parseBody(req);
+          const pauseResult = this.teamLead.pauseWorker(match[1], body.reason);
+          this.broadcaster.log('FOUNDER', `Paused worker ${match[1]}`);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify(pauseResult));
+        } catch (err) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: err.message }));
+        }
+      }
+    }
+
+    // POST /api/studio/employee/:id/instruct - Intervene & instruct worker to resume
+    if (method === 'POST' && pathname.startsWith('/api/studio/employee/') && pathname.endsWith('/instruct')) {
+      const match = pathname.match(/^\/api\/studio\/employee\/([^/]+)\/instruct$/);
+      if (match) {
+        try {
+          const body = await this._parseBody(req);
+          const instructResult = this.teamLead.instructWorker(match[1], body.instruction);
+          this.broadcaster.log('FOUNDER', `Instructed worker ${match[1]}: "${body.instruction.slice(0, 40)}"`);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify(instructResult));
+        } catch (err) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: err.message }));
+        }
       }
     }
 
